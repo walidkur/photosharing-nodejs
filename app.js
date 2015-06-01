@@ -6,9 +6,6 @@ var cookieParser = require('cookie-parser');
 var bodyParser = require('body-parser');
 var passport = require('passport');
 var session = require('express-session');
-var multer = require('multer');
-
-
 
 var routes = require('./routes/index');
 var users = require('./routes/users');
@@ -39,11 +36,7 @@ require ('./config/passport.js')(passport);
 
 app.use('/', routes);
 app.use('/users', users);
-app.use(multer({onFileUploadComplete: function(file){
 
-  console.log(file.fieldname + "uploaded to " + file.path);
-
-}}));
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
