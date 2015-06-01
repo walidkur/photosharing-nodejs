@@ -23,7 +23,6 @@ function(accessToken, refreshToken, profile, done){
 
   return done(null, user);
 
-
 }
 
 ));
@@ -38,7 +37,7 @@ passport.serializeUser(function(user, done){
 passport.deserializeUser(function(user, done){
 
   done(null, user);
-  
+
 });
 
 

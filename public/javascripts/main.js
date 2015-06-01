@@ -16,7 +16,7 @@
 (function(){
 	var account = angular.module('account', []);
 
-	var mainController = account.controller('mainController', ['$scope', '$http', '$templateCache', function($scope, $http, $templateCache){
+	account.controller('mainController', ['$scope', '$http', '$templateCache', function($scope, $http, $templateCache){
 		var main = this;
 		var documents = [];
 
@@ -50,4 +50,4 @@
 
 		main.getAll();
 	}]);
-})
+})()
