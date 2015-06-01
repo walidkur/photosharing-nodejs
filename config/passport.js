@@ -1,7 +1,7 @@
 var passport = require('passport'),
     IBMStrategy = require('passport-ibm-connections-cloud').Strategy;
 
-var variable = require('/bin/credentials/server');
+var variable = require('../bin/credentials/server');
 
 
 module.exports = function(passport){
@@ -9,10 +9,10 @@ module.exports = function(passport){
 passport.use(new IBMStrategy(
 
 {
-  clientID: variable.clientID,
-  clientSecret: variable.clientSecret,
-  callbackURL: variable.callback,
-  hostname: variable.hostname
+  clientID: variable.server.clientID,
+  clientSecret: variable.server.clientSecret,
+  callbackURL: variable.server.callback,
+  hostname: variable.server.hoster
 },
 
 
