@@ -12,18 +12,32 @@ passport.use(new IBMStrategy(
   callbackURL: 'https://connections-test.mybluemix.net/callback',
   hostname: 'apps.collabservnext.com'
 },
+
+
 function(accessToken, refreshToken, profile, done){
 
+  var user = profile;
+  user.accessToken = accessToken;
 
-  console.log(profile.id);
-  return done(null);
+  return done(null, user);
 
 
 }
 
-
-
-
 ));
+
+
+passport.serializeUser(function(user, done){
+
+  done(null, user);
+
+});
+
+passport.deserializeUser(function(user, done){
+
+  done(null, user);
+  
+});
+
 
 };
