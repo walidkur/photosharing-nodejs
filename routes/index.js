@@ -2,7 +2,6 @@ var express = require('express');
 var passport = require('passport');
 var request = require('request');
 var fs = require('fs');
-var multer = require('multer');
 var router = express.Router();
 var Busboy = require('busboy');
 
@@ -20,24 +19,7 @@ router.get('/callback', passport.authenticate('ibm-connections-cloud', {successR
 
 router.get('/account', function(req, res, next) {
 
-  var options = {
-
-    url: 'http://apps.collabservnext.com/files/oauth/api/myuserlibrary/feed',
-    headers: {'Authorization': 'Bearer ' + req.user.accessToken},
-
-  }
-
-  request.get(options, function(error, response, body){
-
-    if(error){
-      res.send(error);
-    }
-    else{
-
-    res.send("User ID: " + req.user.id + " Access Token: " + req.user.accessToken + " Display Name: " + req.user.displayName + " API Request: " + body + " Status Code: " + response.statusCode);
-
-  }
-  });
+res.render('account');
 
 });
 
@@ -89,6 +71,29 @@ router.post('/upload/submit', function(req, res, next) {
 
 });
 
+router.get('/getFeed', function(req, res, next){
+  var options = {
+
+    url: 'http://apps.collabservnext.com/files/oauth/api/myuserlibrary/feed',
+    headers: {'Authorization': 'Bearer ' + req.user.accessToken},
+
+  }
+
+  request.get(options, function(error, response, body){
+
+    if(error){
+      res.send(error);
+    }
+    else{
+
+  res.send(body);
+
+  }
+
+
+
+});
+});
 
 
 module.exports = router;
