@@ -6,8 +6,10 @@
 		<script src="javascripts/main.js"></script>
 	</head>
 	<body ng-app="account" ng-controller="mainController as main">
-		<div ng-repeat="entry in main.documents">
-			{{entry.name}}
+		<div ng-repeat="title in main.entry">
+			{{title.name}}
+			<a href="/update/{{title.docid}}">Update</a>
+			<button ng-click="main.delete(title.docid)">Delete</button>
 		</div>
 	</body>
 </html>
