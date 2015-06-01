@@ -71,6 +71,31 @@ router.post('/upload/submit', function(req, res, next) {
 
 });
 
+router.get('/update/:fileID', function(req, res, next){
+
+  res.render('update', {ID: req.params.fileID});
+
+});
+
+
+router.post('/update/:fileID', function(req, res, next){
+
+  var options = {
+
+    url: '/files/basic/api/myuserlibrary/document/' + req.params.fileID + '/media' + '?commentNotification=' + req.body.commentNotification,
+    headers: {'Authorization': 'Bearer ' + req.user.accessToken}
+
+  }
+
+  request.put(options, function(error, response, body){
+
+    res.send(response.status);
+
+  });
+
+});
+
+
 router.get('/getFeed', function(req, res, next){
   var options = {
 
