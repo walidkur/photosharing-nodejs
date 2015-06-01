@@ -18,7 +18,7 @@
 
 	account.controller('mainController', ['$scope', '$http', '$templateCache', function($scope, $http, $templateCache){
 		var main = this;
-		var documents = [];
+		main.entry = [];
 
 		main.getAll = function(){
 			$http({
@@ -26,28 +26,32 @@
 				url: '/getFeed',
 				cache: $templateCache
 			}).success(function(data, status){
+				main.entry = [];
 				main.parseData(data);
 			});
 		};
 
 		main.parseData = function(data){
-			if(window.DOMParser){
-				var parser = new DOMParser();
-				var xmlDoc = parser.parseFromString(data, "text/xml");
-				var entries = xmlDoc.getElementsByTagName("entry");
-				var entry;
-				for(entry in entries){
-					var entryJSON;
-					entryJSON.name = entry.getElementsByTagName("title")[0].childNodes[0].nodeValue;
-					main.documents.push(entryJSON);
-				}
-			} else {
-				xmlDoc = new ActiveXObject("Microsoft.XMLDOM");
-				xmlDoc.async = false;
-				xmlDoc.loadXML(data);
+			var xmlDoc = $.parseXML(data);
+			var $xml = $(xmlDoc);
+			var $entry = $xml.find("entry");
+			var $title = $entry.find("title");
+			var $uuid = $entry.find("td:uuid");
+			for(var i = 0; i < $title.length; i++){
+				main.entry.push({name: $title[i].innerHTML, docid: $uuid[i].innerHTML});
 			}
+		};
+
+		main.delete = function(docid) {
+			$http({
+				url: '/delete/' + docid,
+				method: 'DELETE',
+				cache: $templateCache
+			}).success(function(data, status){
+				main.getAll();
+			});
 		};
 
 		main.getAll();
 	}]);
-})()
+})();
