@@ -36,7 +36,7 @@
 			var $xml = $(xmlDoc);
 			var $entry = $xml.find("entry");
 			var $title = $entry.find("title");
-			var $uuid = $entry.find("td:uuid");
+			var $uuid = $entry.find("uuid");
 			for(var i = 0; i < $title.length; i++){
 				main.entry.push({name: $title[i].innerHTML, docid: $uuid[i].innerHTML});
 			}
