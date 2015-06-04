@@ -18,8 +18,12 @@ router.get('/login', passport.authenticate('ibm-connections-cloud'));
 router.get('/callback', passport.authenticate('ibm-connections-cloud', {successReturnToOrRedirect: '/account', failureRedirect: '/login'}));
 
 router.get('/account', function(req, res, next) {
+  if(req.user) {
+      res.render('account');
+  } else {
+    res.redirect('/login');
+  }
 
-res.render('account');
 
 });
 
@@ -86,13 +90,15 @@ router.post('/delete/:fileID', function(req, res, next){
 
   };
 
+  console.log('Sending Request')
   request.delete(options, function(error, response, body){
+    console.log(response.statusCode);
 
     res.send(response.statusCode);
   });
 
 
-}
+});
 
 
 router.post('/update/:fileID', function(req, res, next){
@@ -134,13 +140,13 @@ router.get('/getFeed', function(req, res, next){
     }
     else{
 
-  res.send(body);
+      res.send(body);
 
-  }
+    }
 
 
 
-});
+  });
 });
 
 
