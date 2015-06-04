@@ -21,6 +21,8 @@ function(accessToken, refreshToken, profile, done){
   var user = profile;
   user.accessToken = accessToken;
 
+  console.log('Auth Token: ' + accessToken);
+
   return done(null, user);
 
 }

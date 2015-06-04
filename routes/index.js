@@ -80,16 +80,22 @@ router.get('/update/:fileID', function(req, res, next){
 
 router.post('/update/:fileID', function(req, res, next){
 
+  console.log('body : ' + req.body.commentNotification);
+
   var options = {
 
-    url: '/files/basic/api/myuserlibrary/document/' + req.params.fileID + '/media' + '?commentNotification=' + req.body.commentNotification,
+    url: 'https://apps.collabservnext.com/files/basic/api/myuserlibrary/document/' + req.params.fileID + '/media' + '?commentNotification=' + req.body.commentNotification,
     headers: {'Authorization': 'Bearer ' + req.user.accessToken}
 
-  }
+  };
+
+  console.log('Send request');
 
   request.put(options, function(error, response, body){
 
-    res.send(response.status);
+    console.log(response.statusCode);
+
+    res.send(response.statusCode);
 
   });
 
@@ -99,7 +105,7 @@ router.post('/update/:fileID', function(req, res, next){
 router.get('/getFeed', function(req, res, next){
   var options = {
 
-    url: 'http://apps.collabservnext.com/files/oauth/api/myuserlibrary/feed',
+    url: 'https://apps.collabservnext.com/files/oauth/api/myuserlibrary/feed',
     headers: {'Authorization': 'Bearer ' + req.user.accessToken},
 
   }
