@@ -1,46 +1,46 @@
 var passport = require('passport'),
-    IBMStrategy = require('passport-ibm-connections-cloud').Strategy;
+IBMStrategy = require('passport-ibm-connections-cloud').Strategy;
 
 var variable = require('../bin/credentials/server');
 
 
 module.exports = function(passport){
 
-passport.use(new IBMStrategy(
+  passport.use(new IBMStrategy(
 
-{
-  clientID: variable.server.clientID,
-  clientSecret: variable.server.clientSecret,
-  callbackURL: variable.server.callback,
-  hostname: variable.server.hoster
-},
-
-
-function(accessToken, refreshToken, profile, done){
-
-  var user = profile;
-  user.accessToken = accessToken;
-
-  console.log('Auth Token: ' + accessToken);
-
-  return done(null, user);
-
-}
-
-));
+    {
+      clientID: variable.server.clientID,
+      clientSecret: variable.server.clientSecret,
+      callbackURL: variable.server.callback,
+      hostname: variable.server.hoster
+    },
 
 
-passport.serializeUser(function(user, done){
+    function(accessToken, refreshToken, profile, done){
 
-  done(null, user);
+      var user = profile;
+      user.accessToken = accessToken;
 
-});
+      console.log('Auth Token: ' + accessToken);
 
-passport.deserializeUser(function(user, done){
+      return done(null, user);
 
-  done(null, user);
+    }
 
-});
+  ));
+
+
+  passport.serializeUser(function(user, done){
+
+    done(null, user);
+
+  });
+
+  passport.deserializeUser(function(user, done){
+
+    done(null, user);
+
+  });
 
 
 };

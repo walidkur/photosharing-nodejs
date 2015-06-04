@@ -1,15 +1,15 @@
 <html>
-	<head>
-		<title>Account</title>
-		<script src="https://code.jquery.com/jquery-2.1.4.min.js"></script>
-		<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.3.14/angular.min.js"></script>
-		<script src="javascripts/main.js"></script>
-	</head>
-	<body ng-app="account" ng-controller="mainController as main">
-		<div ng-repeat="title in main.entry">
-			{{title.name}}
-			<a href="/update/{{title.docid}}">Update</a>
-			<button ng-click="main.delete(title.docid)">Delete</button>
-		</div>
-	</body>
+<head>
+	<title>Account</title>
+	<script src="https://code.jquery.com/jquery-2.1.4.min.js"></script>
+	<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.3.14/angular.min.js"></script>
+	<script src="javascripts/main.js"></script>
+</head>
+<body ng-app="account" ng-controller="mainController as main">
+	<div ng-repeat="title in main.entry">
+		{{title.name}}
+		<a href="/update/{{title.docid}}">Update</a>
+		<button ng-click="main.delete(title.docid)">Delete</button>
+	</div>
+</body>
 </html>
