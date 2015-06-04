@@ -77,6 +77,23 @@ router.get('/update/:fileID', function(req, res, next){
 
 });
 
+router.post('/delete/:fileID', function(req, res, next){
+
+  var options = {
+
+    url: 'https://apps.collabservnext.com/files/basic/api/myuserlibrary/document/' + req.params.fileID + '/entry',
+    headers: {'Authorization': 'Bearer ' + req.user.accessToken}
+
+  };
+
+  request.delete(options, function(error, response, body){
+
+    res.send(response.statusCode);
+  });
+
+
+}
+
 
 router.post('/update/:fileID', function(req, res, next){
 
