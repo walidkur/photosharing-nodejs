@@ -45,7 +45,7 @@ limitations under the License. */
 		main.delete = function(docid) {
 			$http({
 				url: '/delete/' + docid,
-				method: 'DELETE',
+				method: 'POST',
 				cache: $templateCache
 			}).success(function(data, status){
 				main.getAll();
