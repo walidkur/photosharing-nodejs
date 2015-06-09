@@ -143,7 +143,7 @@ router.get('/commments', function(req, res, next){
   } else {
     var url = 'https://' + server.domain + 'files/oauth/api/userlibrary/' + req.query.userid + '/document/' + req.query.id + '/feed';
 
-    var headers: {'Authorization': 'Bearer ' + req.user.accessToken};
+    var headers = {'Authorization': 'Bearer ' + req.user.accessToken};
 
     var options = {
       url: url,
