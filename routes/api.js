@@ -16,6 +16,7 @@ limitations under the License. */
 var express = require('express');
 var router = express.Router();
 var server = require('../config/server');
+var parseString = require('xml2js').parseString;
 
 /* GET home page. */
 router.get('/', function(req, res, next) {
@@ -51,9 +52,9 @@ router.get('/feed', function(req, res, next){
     if(error){
       res.send(error);
     } else {
-      //the xml containing all the photos will be returned in the body
-      //therefore we just want to pass this along to the front end to process
-      res.send(body);
+      parseString(body, function(err, result){
+        console.log(result);
+      });
     }
   });
 });
@@ -83,16 +84,14 @@ router.get('/photo', function(req, res, next){
         if(error){
           res.send(error);
         } else {
-          //the xml containing all the photos will be returned in the body
-          //therefore we just want to pass this along to the front end to process
-          res.send(body);
+
         }
       });
   }
 
 });
 
-router.get('/metadata', function(req, res, next){
+router.get('/like', function(req, res, next){
   if(!req.user)
     res.redirect('/');
 
@@ -118,6 +117,17 @@ router.get('/metadata', function(req, res, next){
     });
   }
 });
+
+router.post('/like', function(req, res, next){
+  if(!req.user)
+    res.redirect('/');
+
+  if(isEmpty(req.query.id)){
+    req.status(412).end();
+  } else {
+
+  }
+})
 
 router.get('/commments', function(req, res, next){
   if(!req.user)
@@ -189,7 +199,7 @@ router.post('/upload', function(req, res, next){
 
       busboy.on('finish', function(){
         res.status(200).end();
-      })
+      });
     }
   });
 });
