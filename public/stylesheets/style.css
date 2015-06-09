@@ -6,3 +6,57 @@ body {
 a {
   color: #00B7FF;
 }
+
+/* ANIMATIONS
+============================================================================= */
+
+/* leaving animations ----------------------------------------- */
+
+@keyframes slideOutLeft {
+  to      { transform: translateX(-100%); }
+}
+
+@keyframes slideOutRight {
+  to      { transform: translateX(100%); }
+}
+
+@keyframes slideOutDown {
+  to       { transform:translateY(100%); }
+}
+
+
+/* entering animations --------------------------------------- */
+
+@keyframes slideInLeft {
+  from    { transform:translateX(-100%); }
+  to      { transform: translateX(0); }
+}
+
+/* slide in from the right */
+@keyframes slideInRight {
+  from    { transform:translateX(100%); }
+  to      { transform: translateX(0); }
+}
+
+/* slide in from the bottom */
+@keyframes slideInDown {
+  from    { transform:translateY(-100%); }
+  to      { transform: translateY(0); }
+}
+
+.ng-enter       { z-index: 8888; }
+.ng-leave       { z-index: 9999; }
+
+/* page specific animations ------------------------ */
+
+/* home -------------------------- */
+.page-home.ng-enter         { animation:slideInLeft 0.5s both ease-in; }
+.page-home.ng-leave         { animation:slideOutRight 0.5s both ease-in; }
+
+/* about ------------------------ */
+.page-photo.ng-enter        { animation:slideInDown 0.5s both ease-in; }
+.page-photo.ng-leave        { animation:slideOutDown 0.5s both ease-in; }
+
+/* contact ---------------------- */
+.page-profile.ng-enter      { animation:slideInRight 0.5s both ease-in; }
+.page-profile.ng-leave      { animation:slideOutLeft 0.5s both ease-in; }

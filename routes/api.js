@@ -11,7 +11,7 @@ router.get('/', function(req, res, next) {
 router.get('/getFeed', function(req, res, next){
   //config.server.domain is the domain name of the server (without the https or the directoy i.e example.com)
   var url = 'https://' + server.domain + '/files/basic/anonymous/api/documents/feed';
-  var headers = {'Authorization': 'Bearer ' + req.user.accessToken};
+  //var headers = {'Authorization': 'Bearer ' + req.user.accessToken};
 
   var options = {
     url: url,

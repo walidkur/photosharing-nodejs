@@ -17,6 +17,8 @@
   "dependencies": {
     "angular-latest": "~1.4.0",
     "angular-ui-router": "~0.2.15",
-    "bootstrap": "~3.3.4"
+    "bootstrap": "~3.3.4",
+    "angular-animate": "~1.4.0",
+    "fontawesome": "~4.3.0"
   }
 }
