@@ -28,7 +28,7 @@ router.get('/feed', function(req, res, next){
     res.redirect('/');
 
   //config.server.domain is the domain name of the server (without the https or the directoy i.e example.com)
-  var url = 'https://' + server.domain + '/files/basic/anonymous/api/documents/feed';
+  var url = 'https://' + server.domain + '/files/oauth/anonymous/api/documents/feed';
 
   //if query parameters exist, append them onto the url
   if(!isEmpty(req.query.q)){
@@ -63,11 +63,11 @@ router.get('/photo', function(req, res, next){
   if(!req.user)
     res.redirect('/');
 
-  //if no id was passed, redirect them back to the feed
+  //if no id was passed, return an error code
   if(isEmpty(req.query.id)){
     res.status(412).end();
   } else {
-      var url = 'https://' + server.domain + '/files/basic/api/myuserlibrary/document/' + req.query.id + '/media';
+      var url = 'https://' + server.domain + '/files/oauth/api/myuserlibrary/document/' + req.query.id + '/media';
 
       // we must attach the key we got through passportto the header as
       // Authorization: Bearer + key. Passport gives us access to the user profile
@@ -91,6 +91,62 @@ router.get('/photo', function(req, res, next){
   }
 
 });
+
+router.get('/metadata', function(req, res, next){
+  if(!req.user)
+    res.redirect('/');
+
+  //if no id was passed
+  if(isEmpty(req.query.id)){
+    res.status(412).end();
+  } else {
+    var url = 'https://' + server.domain + 'files/ouath/api/myuserlibrary/document/' + req.query.id + '/entry';
+
+    var headers = {'Authorization': 'Bearer ' + req.user.accessToken};
+
+    var options = {
+      url: url,
+      headers: headers
+    };
+
+    request.get(options, function(error, response, body){
+      if(error){
+        res.send(error);
+      } else {
+        res.send(body);
+      }
+    });
+  }
+});
+
+router.get('/commments', function(req, res, next){
+  if(!req.user)
+    res.redirect('/');
+
+  //if no id was passed
+  if(isEmpty(req.query.id)){
+    res.status(412).end();
+  } else if(isEmpty(req.query.userid)){
+    res.status(412).end();
+  } else {
+    var url = 'https://' + server.domain + 'files/oauth/api/userlibrary/' + req.query.userid + '/document/' + req.query.id + '/feed';
+
+    var headers: {'Authorization': 'Bearer ' + req.user.accessToken};
+
+    var options = {
+      url: url,
+      headers: headers
+    };
+
+    request.get(options, function(error, response, body){
+      if(error){
+        res.send(error);
+      } else {
+        res.send(body);
+      }
+    })
+  }
+})
 
 var hasOwnProperty = Object.prototype.hasOwnProperty;
 
