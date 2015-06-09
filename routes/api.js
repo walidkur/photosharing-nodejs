@@ -144,9 +144,55 @@ router.get('/commments', function(req, res, next){
       } else {
         res.send(body);
       }
-    })
+    });
   }
-})
+});
+
+router.post('/upload', function(req, res, next){
+
+  var url = 'https://' + server.domain + '/files/oauth/api/nonce';
+
+  var headers = {'Authorization': 'Bearer ' + req.user.accessToken};
+
+  var options = {
+    url: url,
+    headers: headers
+  };
+
+  request.get(options, function(error, response, body){
+    if(error){
+      res.send(error);
+    } else {
+      var nonce = body;
+      var busboy = new Busyboy({headers: req.headers});
+
+      busboy.on('file', function(fieldname, file, filename, encoding, mimetype){
+        var url = 'https://' + server.domain + '/files/oauth/api/myuserlibrary/feed';
+        var headers = {
+          'Authorization': 'Bearer ' + req.user.accessToken,
+          'Slug': filename,
+          'X-Update-Nonce': nonce
+        };
+
+        var options = {
+          url: url,
+          headers: headers
+        };
+
+        file.pipe(request.post(options, function(error, response, body){
+          if(error){
+            res.send(error);
+          }
+        }));
+
+      });
+
+      busboy.on('finish', function(){
+        res.status(200).end();
+      })
+    }
+  });
+});
 
 var hasOwnProperty = Object.prototype.hasOwnProperty;
 
