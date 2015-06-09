@@ -1,4 +1,4 @@
 node_modules/
 public/components/*
-bin/credentials/
+config/server.js
 npm-debug.log

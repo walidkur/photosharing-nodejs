@@ -1,6 +1,6 @@
 var express = require('express');
 var router = express.Router();
-var config = require('../bin/server');
+var server = require('../config/server');
 
 /* GET home page. */
 router.get('/', function(req, res, next) {
@@ -10,7 +10,7 @@ router.get('/', function(req, res, next) {
 //getfeed for home page content
 router.get('/getFeed', function(req, res, next){
   //config.server.domain is the domain name of the server (without the https or the directoy i.e example.com)
-  var url = {'https://' + config.server.domain + '/files/basic/anonymous/api/documents/feed'};
+  var url = 'https://' + server.domain + '/files/basic/anonymous/api/documents/feed';
   var headers = {'Authorization': 'Bearer ' + req.user.accessToken};
 
   var options = {
