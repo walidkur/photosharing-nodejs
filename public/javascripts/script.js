@@ -7,7 +7,7 @@ photoApp.config(function($routeProvider) {
   // route for the home page
   .when('/', {
     templateUrl : 'pages/page-home.html',
-    controller  : 'mainController'
+    controller  : 'homeController'
   })
 
   // route for the about page
@@ -24,7 +24,7 @@ photoApp.config(function($routeProvider) {
 });
 
 // create the controller and inject Angular's $scope
-photoApp.controller('mainController', function($scope, $http) {
+photoApp.controller('homeController', function($scope, $http) {
 
   $scope.pageClass = 'page-home';
   $scope.entries = [];
@@ -33,7 +33,7 @@ photoApp.controller('mainController', function($scope, $http) {
 
     $http({
       method:'GET',
-      url:'/api/getFeed'
+      url:'/api/feed'
     }).success(function(data, status){
       $scope.entries = [];
       $scope.parseData(data);
