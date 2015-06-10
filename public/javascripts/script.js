@@ -27,7 +27,7 @@ photoApp.config(function($routeProvider) {
 photoApp.controller('homeController', function($scope, $http) {
 
   $scope.pageClass = 'page-home';
-  $scope.entries = [];
+
 
   var getFeed = function(){
 
@@ -35,29 +35,10 @@ photoApp.controller('homeController', function($scope, $http) {
       method:'GET',
       url:'/api/feed'
     }).success(function(data, status){
-      $scope.entries = [];
-      $scope.parseData(data);
+      $scope.data = data;
     });
 
   }
-
-  $scope.parseData = function(data){
-    var xmlDoc = $.parseXML(data);
-    var $xml = $(xmlDoc);
-    var $entry = $xml.find("entry");
-    var $title = $entry.find("title");
-    var $uuid = $entry.find("uuid");
-    for(var i = 0; i < $title.length; i++){
-      var dataEntry = {
-        name: $title[i].innerHTML,
-        docid: $uuid[i].innerHTML,
-      }
-      $scope.entries.push(dataEntry)
-    }
-    }
-
-
-    getFeed();
 
 
   });

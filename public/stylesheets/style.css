@@ -7,6 +7,11 @@ a {
   color: #00B7FF;
 }
 
+#logo {
+  font-family: 'Sue Ellen Francisco', cursive;
+  color: white;
+}
+
 /* ANIMATIONS
 ============================================================================= */
 
