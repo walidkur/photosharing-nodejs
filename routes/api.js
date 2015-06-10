@@ -17,6 +17,7 @@ var express = require('express');
 var router = express.Router();
 var config = require('../config/server');
 var parseString = require('xml2js').parseString;
+var request = require('request');
 
 /* GET home page. */
 router.get('/', function(req, res, next) {
@@ -30,11 +31,11 @@ router.get('/feed', function(req, res, next){
 
   //config.server.domain is the domain name of the server (without the https or the directoy i.e example.com)
 
-  var url = 'https://' + config.server.domain + '/files/oauth/anonymous/api/documents/feed';
+  var url = 'https://' + config.server.domain + '/files/oauth/api/documents/feed?visibility=public';
 
   //if query parameters exist, append them onto the url
   if(!isEmpty(req.query.q)){
-    url = url + '?q=' + req.query.q;
+    url = url + '?tag=' + req.query.q;
   }
 
   var headers = {};
@@ -42,7 +43,7 @@ router.get('/feed', function(req, res, next){
   // we must attach the key we got through passportto the header as
   // Authorization: Bearer + key. Passport gives us access to the user profile
   // we saved through the request user object
-  headers['Authorization'] = req.user.accessToken;
+  headers['Authorization'] = 'Bearer ' + req.user.accessToken;
 
 
   var options = {
@@ -55,7 +56,24 @@ router.get('/feed', function(req, res, next){
       res.send(error);
     } else {
       parseString(body, function(err, result){
-        console.log(result);
+        var photos = [];
+        var entries = result.feed.entry;
+        console.log(entries[0].link);
+        for(var i = 0; i < entries.length; i++){
+          var photo = {};
+          var entry = entries[i];
+          console.log('entry: ' + entry);
+          for(var j = 0; j < entry.link.length; j++){
+            var link = entry.link[j];
+            console.log('link: ' + link);
+            var type = link.$.type;
+            console.log('type: ' + type);
+            if(!isEmpty(type) && type.includes('image'))
+              photo.link = link.$.href;
+          }
+          photos.push(photo);
+        }
+        res.send(photos);
       });
     }
   });
@@ -93,6 +111,7 @@ router.get('/photo', function(req, res, next){
 
 });
 
+//get a file likes
 router.get('/like', function(req, res, next){
   if(!req.user)
     res.redirect('/');
@@ -114,7 +133,9 @@ router.get('/like', function(req, res, next){
       if(error){
         res.send(error);
       } else {
-        res.send(body);
+        parseString(body, function(err, result){
+          console.log(result);
+        });
       }
     });
   }
@@ -160,6 +181,7 @@ router.get('/commments', function(req, res, next){
   }
 });
 
+//upload a file
 router.post('/upload', function(req, res, next){
 
   var url = 'https://' + config.server.domain + '/files/oauth/api/nonce';

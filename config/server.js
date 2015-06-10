@@ -1,8 +1,8 @@
 var server = {
 
-  callback: 'https://photonode.mybluemix.net/callback',
-  clientSecret: '6b7c29b5a51140ef48d1370b26b8317dc56a0cf69ff0766221b3ca4d0821e0fc1e7912337bcfe6b8bb14adb89fe776bfc3ffc3819326a21560febf48e3077d7bfd4e0ad5a693655293d48d21bee7acc27003f05c5e97afe6eb029462b7affe3cae17542ac877ed696d6fad701b573b10243dc7f2849bf387e96b296268f32',
-  clientID: 'app_22191313_1433876719030',
+  callback: 'https://server-test.mybluemix.net/callback',
+  clientSecret: 'c4bdb3abcb5f89d5297afc6dcf692a4186d8309b58d9389e75d8bfc2c5ea0f0565c5e17b05666452ed80f68cb7875aa2a13f25819635738cba700d8ec53fbf4e61145ea844737e6445150b56a4d324df6768d49c004d6691412c776632c1f6ee8373c93a15d023cb778bb0e3727e6c481947c55874536ba781711dc9ded09e2',
+  clientID: 'app_22191313_1433948324358',
   domain: 'apps.na.collabserv.com',
 
 

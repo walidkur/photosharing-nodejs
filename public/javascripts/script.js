@@ -33,7 +33,7 @@ photoApp.controller('mainController', function($scope, $http) {
 
     $http({
       method:'GET',
-      url:'/api/getFeed'
+      url:'/api/feed'
     }).success(function(data, status){
       $scope.entries = [];
       $scope.parseData(data);

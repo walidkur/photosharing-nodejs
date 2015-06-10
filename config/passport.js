@@ -20,11 +20,6 @@ var config = require('./server');
 
 
 module.exports = function(passport){
-  console.log('Authenticating with:');
-  console.log('id: ' + config.server.clientID);
-  console.log('secret: ' + config.server.clientSecret);
-  console.log('callback: ' + config.server.callback);
-  console.log('hostname: ' + config.server.domain);
 
   passport.use(new IBMStrategy(
 
