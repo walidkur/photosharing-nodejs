@@ -58,21 +58,25 @@ router.get('/feed', function(req, res, next){
       parseString(body, function(err, result){
         var photos = [];
         var entries = result.feed.entry;
+        console.log('length: ' + entries.length);
         console.log(entries[0].link);
         for(var i = 0; i < entries.length; i++){
           var photo = {};
           var entry = entries[i];
           console.log('entry: ' + entry);
+          console.log('length: ' + entry.link.length);
           for(var j = 0; j < entry.link.length; j++){
             var link = entry.link[j];
             console.log('link: ' + link);
             var type = link.$.type;
             console.log('type: ' + type);
-            if(!isEmpty(type) && type.includes('image'))
+            if(!(type === undefined) && (type.indexOf('image') > -1))
               photo.link = link.$.href;
           }
+          console.log('pushing :' + photo);
           photos.push(photo);
         }
+        console.log('sending response');
         res.send(photos);
       });
     }
