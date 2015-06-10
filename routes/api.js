@@ -15,7 +15,7 @@ limitations under the License. */
 
 var express = require('express');
 var router = express.Router();
-var server = require('../config/server');
+var config = require('../config/server');
 var parseString = require('xml2js').parseString;
 
 /* GET home page. */
@@ -30,7 +30,7 @@ router.get('/feed', function(req, res, next){
 
   //config.server.domain is the domain name of the server (without the https or the directoy i.e example.com)
 
-  var url = 'https://' + server.domain + '/files/oauth/anonymous/api/documents/feed';
+  var url = 'https://' + config.server.domain + '/files/oauth/anonymous/api/documents/feed';
 
   //if query parameters exist, append them onto the url
   if(!isEmpty(req.query.q)){
@@ -101,7 +101,7 @@ router.get('/like', function(req, res, next){
   if(isEmpty(req.query.id)){
     res.status(412).end();
   } else {
-    var url = 'https://' + server.domain + 'files/ouath/api/myuserlibrary/document/' + req.query.id + '/entry';
+    var url = 'https://' + config.server.domain + 'files/ouath/api/myuserlibrary/document/' + req.query.id + '/entry';
 
     var headers = {'Authorization': 'Bearer ' + req.user.accessToken};
 
@@ -141,7 +141,7 @@ router.get('/commments', function(req, res, next){
   } else if(isEmpty(req.query.userid)){
     res.status(412).end();
   } else {
-    var url = 'https://' + server.domain + 'files/oauth/api/userlibrary/' + req.query.userid + '/document/' + req.query.id + '/feed';
+    var url = 'https://' + config.server.domain + 'files/oauth/api/userlibrary/' + req.query.userid + '/document/' + req.query.id + '/feed';
 
     var headers = {'Authorization': 'Bearer ' + req.user.accessToken};
 
@@ -162,7 +162,7 @@ router.get('/commments', function(req, res, next){
 
 router.post('/upload', function(req, res, next){
 
-  var url = 'https://' + server.domain + '/files/oauth/api/nonce';
+  var url = 'https://' + config.server.domain + '/files/oauth/api/nonce';
 
   var headers = {'Authorization': 'Bearer ' + req.user.accessToken};
 

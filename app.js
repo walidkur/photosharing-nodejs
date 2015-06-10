@@ -40,11 +40,11 @@ app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 
 //conigure passport
-/*app.use(session({secret: 'ibmsecret'}));
+app.use(session({secret: 'ibmsecret'}));
 app.use(passport.initialize());
 app.use(passport.session());
 //reference our passport config file
-require ('./config/passport.js')(passport);*/
+require ('./config/passport.js')(passport);
 
 app.use('/', index);
 app.use('/api', api);
