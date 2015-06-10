@@ -16,18 +16,23 @@ limitations under the License. */
 var passport = require('passport'),
 IBMStrategy = require('passport-ibm-connections-cloud').Strategy;
 
-var server = require('./server');
+var config = require('./server');
 
 
 module.exports = function(passport){
+  console.log('Authenticating with:');
+  console.log('id: ' + config.server.clientID);
+  console.log('secret: ' + config.server.clientSecret);
+  console.log('callback: ' + config.server.callback);
+  console.log('hostname: ' + config.server.domain);
 
   passport.use(new IBMStrategy(
 
     {
-      clientID: server.clientID,
-      clientSecret: server.clientSecret,
-      callbackURL: server.callback,
-      hostname: server.domain
+      clientID: config.server.clientID,
+      clientSecret: config.server.clientSecret,
+      callbackURL: config.server.callback,
+      hostname: config.server.domain
     },
 
 

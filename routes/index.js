@@ -23,8 +23,8 @@ router.get('/', function(req, res, next) {
   if(req.user)
     res.render('index');
   else
-    passport.authenticate('ibm-connections-cloud');
-});
+    next();
+}, passport.authenticate('ibm-connections-cloud'));
 
 router.get('/callback', passport.authenticate('ibm-connections-cloud', {successReturnToOrRedirect:'/', failureRedirect: '/'}));
 
