@@ -31,7 +31,7 @@ router.get('/feed', function(req, res, next){
 
   //config.server.domain is the domain name of the server (without the https or the directoy i.e example.com)
 
-  var url = 'https://' + config.server.domain + '/files/oauth/api/documents/feed?visibility=public';
+  var url = 'https://' + config.server.domain + '/files/oauth/api/documents/feed?visibility=public&includeTags=true';
 
   //if query parameters exist, append them onto the url
   if(!isEmpty(req.query.q)){
@@ -58,22 +58,31 @@ router.get('/feed', function(req, res, next){
       parseString(body, function(err, result){
         var photos = [];
         var entries = result.feed.entry;
-        console.log('length: ' + entries.length);
-        console.log(entries[0].link);
+        console.log('first entry: ' + JSON.stringify(entries[0]));
         for(var i = 0; i < entries.length; i++){
           var photo = {};
           var entry = entries[i];
-          console.log('entry: ' + entry);
-          console.log('length: ' + entry.link.length);
+          photo.id = entry['td:uuid'][0];
+          photo.label = entry['td:label'][0];
+          var tags = [];
+          for(var j = 1; j < entry.category.length; j ++){
+            var category = entry.category[j];
+            var tag = category.$.label;
+            tags.push(tag);
+          }
+          photo.tags = tags;
+          photo.photographer = entry.author[0].name[0];
+          photo.caption = entry.title['_'];
+          photo.published = entry.published[0];
           for(var j = 0; j < entry.link.length; j++){
             var link = entry.link[j];
-            console.log('link: ' + link);
             var type = link.$.type;
-            console.log('type: ' + type);
-            if(!(type === undefined) && (type.indexOf('image') > -1))
+            if(!(type === undefined) && (type.indexOf('image') > -1)){
               photo.link = link.$.href;
+              break;
+            }
           }
-          console.log('pushing :' + photo);
+          console.log('pushing :' + JSON.stringify(photo));
           photos.push(photo);
         }
         console.log('sending response');
