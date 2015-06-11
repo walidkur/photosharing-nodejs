@@ -40,6 +40,7 @@ photoApp.controller('homeController', function($scope, $http) {
 
   }
 
+  getFeed();
 
   });
 

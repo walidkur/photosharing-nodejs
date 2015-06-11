@@ -18,7 +18,8 @@ var router = express.Router();
 var config = require('../config/server');
 var parseString = require('xml2js').parseString;
 var request = require('request');
-var fs = require('fs');
+var Busboy = require('busboy');
+
 
 /* GET home page. */
 router.get('/', function(req, res, next) {
@@ -128,12 +129,9 @@ router.get('/feed', function(req, res, next){
 
 //get photo for retrieving a photo by id
 router.get('/photo', function(req, res, next){
-  if(!req.user){
-    console.log('user not found');
-    res.status(403).end();
-  }
 
-  console.log('id: ' + req.query.id);
+  if(!req.user)
+    res.status(403).end();
 
   //if no id was passed, return an error code
   if(isEmpty(req.query.id)){
@@ -192,7 +190,7 @@ router.get('/photo', function(req, res, next){
 //get a file likes
 router.get('/like', function(req, res, next){
   if(!req.user)
-    res.redirect('/');
+    res.status(403).end();
 
   //if no id was passed
   if(isEmpty(req.query.id)){
@@ -221,7 +219,7 @@ router.get('/like', function(req, res, next){
 
 router.post('/like', function(req, res, next){
   if(!req.user)
-    res.redirect('/');
+    res.status(403).end();
 
   if(isEmpty(req.query.id)){
     req.status(412).end();
@@ -232,7 +230,7 @@ router.post('/like', function(req, res, next){
 
 router.get('/commments', function(req, res, next){
   if(!req.user)
-    res.redirect('/');
+    res.status(403).end();
 
   //if no id was passed
   if(isEmpty(req.query.id)){
@@ -261,7 +259,12 @@ router.get('/commments', function(req, res, next){
 
 //upload a file
 router.post('/upload', function(req, res, next){
+  // if the user does not exist, send back forbidden
+  if(!req.user)
+    res.status(403).end()
 
+  // before uploading, we must obtain a nonce, which is a handshake between
+  // the api and our server to allow us to post to the server
   var url = 'https://' + config.server.domain + '/files/oauth/api/nonce';
 
   var headers = {'Authorization': 'Bearer ' + req.user.accessToken};
@@ -271,18 +274,35 @@ router.post('/upload', function(req, res, next){
     headers: headers
   };
 
+  // making the nonce request
   request.get(options, function(error, response, body){
-    if(error){
-      res.send(error);
-    } else {
-      var nonce = body;
-      var busboy = new Busyboy({headers: req.headers});
 
+    // if there was an error log the error and send back an error
+    if(error){
+      console.log('nonce failed: ' + error);
+      res.status(500).end()
+    } else {
+
+      // the nonce is returned in the body of the response
+      var nonce = body;
+
+      // to obtain the file from the client, we use a module called busboy
+      // that allows us to obtain the file stream from the client
+      var busboy = new Busboy({headers: req.headers});
+
+      // when busboy encounters a file (which should be the only thing it
+      // obtains from the page) it will then pip the file to a request to the
+      // api server
       busboy.on('file', function(fieldname, file, filename, encoding, mimetype){
         var url = 'https://' + server.domain + '/files/oauth/api/myuserlibrary/feed';
+
+        // the slug is used to tell the api what it should call the file
+        var slug = filename;
+
         var headers = {
           'Authorization': 'Bearer ' + req.user.accessToken,
-          'Slug': filename,
+          'Slug': slug,
+          //the nonce is the nonce we obtained before
           'X-Update-Nonce': nonce
         };
 
@@ -291,14 +311,21 @@ router.post('/upload', function(req, res, next){
           headers: headers
         };
 
+        // we then pipe the file to the request to the api server
         file.pipe(request.post(options, function(error, response, body){
+
+          // if we recieve an error then log it and send and erro back to the
+          // client
           if(error){
-            res.send(error);
+            console.log('upload failed: ' + error);
+            res.status(500).end();
           }
         }));
 
       });
 
+      // when the busboy finishes processing the file, send back an OK status
+      // and close the connection
       busboy.on('finish', function(){
         res.status(200).end();
       });
