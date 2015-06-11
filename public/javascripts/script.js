@@ -36,7 +36,6 @@ photoApp.controller('homeController', function($scope, $http) {
       url:'/api/feed'
     }).success(function(data, status){
       $scope.data = data;
-      console.log(data);
     });
 
   }
