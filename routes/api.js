@@ -57,8 +57,8 @@ router.get('/feed', function(req, res, next){
     // if there is an error lets log it to the console and inform the angular
     // of our app so it can be handled
     if(error){
-      console.log('Error occured while getting feed from Connections Cloud');
-      res.send(error);
+      console.log('Error occured while getting feed from Connections Cloud: ' + error);
+      res.status(500).end();
     } else {
 
       // otherwise, the api returns an xml which can be easily converted to a
