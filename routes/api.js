@@ -20,6 +20,7 @@ var parseString = require('xml2js').parseString;
 var request = require('request');
 var Busboy = require('busboy');
 
+
 /* GET home page. */
 router.get('/', function(req, res, next) {
   res.redirect('/');
@@ -128,14 +129,16 @@ router.get('/feed', function(req, res, next){
 
 //get photo for retrieving a photo by id
 router.get('/photo', function(req, res, next){
+
   if(!req.user)
     res.status(403).end();
 
   //if no id was passed, return an error code
   if(isEmpty(req.query.id)){
+    console.log('query not found');
     res.status(412).end();
   } else {
-      var url = 'https://' + server.domain + '/files/oauth/api/myuserlibrary/document/' + req.query.id + '/media';
+      var url = 'https://' + config.server.domain + '/files/oauth/api/myuserlibrary/document/' + req.query.id + '/entry?includeTags=true';
 
       // we must attach the key we got through passportto the header as
       // Authorization: Bearer + key. Passport gives us access to the user profile
@@ -149,9 +152,35 @@ router.get('/photo', function(req, res, next){
 
       request.get(options, function(error, response, body){
         if(error){
-          res.send(error);
+          console.log('photo error: ' + error);
+          res.status(500).end();
         } else {
-
+          //see get feed for more details
+          parseString(body, function(err, result){
+            var photo = {};
+            var entry = result.entry;
+            photo.id = entry['td:uuid'][0];
+            var tags = [];
+            for(var j = 1; j < entry.category.length; j ++){
+              var category = entry.category[j];
+              var tag = category.$.label;
+              tags.push(tag);
+            }
+            photo.tags = tags;
+            for(var j = 0; j < entry.link.length; j++){
+              var link = entry.link[j];
+              var type = link.$.type;
+              if(!(type === undefined) && (type.indexOf('image') > -1)){
+                photo.link = link.$.href;
+                break;
+              }
+            }
+            photo.photographer = entry.author[0].name[0];
+            photo.title = entry.title['_'];
+            photo.published = entry.published[0];
+            console.log('Sending response');
+            res.send(photo);
+          });
         }
       });
   }
