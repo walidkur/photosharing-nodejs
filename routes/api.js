@@ -18,6 +18,7 @@ var router = express.Router();
 var config = require('../config/server');
 var parseString = require('xml2js').parseString;
 var request = require('request');
+var fs = require('fs');
 
 /* GET home page. */
 router.get('/', function(req, res, next) {
@@ -27,7 +28,7 @@ router.get('/', function(req, res, next) {
 //getfeed for home page content
 router.get('/feed', function(req, res, next){
   if(!req.user)
-    res.redirect('/');
+    res.status(403).end();
 
   //config.server.domain is the domain name of the server (without the https or the directoy i.e example.com)
 
@@ -56,8 +57,8 @@ router.get('/feed', function(req, res, next){
     // if there is an error lets log it to the console and inform the angular
     // of our app so it can be handled
     if(error){
-      console.log('Error occured while getting feed from Connections Cloud');
-      res.send(error);
+      console.log('Error occured while getting feed from Connections Cloud: ' + error);
+      res.status(500).end();
     } else {
 
       // otherwise, the api returns an xml which can be easily converted to a
@@ -116,7 +117,7 @@ router.get('/feed', function(req, res, next){
           console.log('pushing :' + JSON.stringify(photo));
           photos.push(photo);
         }
-        
+
         //return our photos array
         console.log('sending response');
         res.send(photos);
@@ -127,14 +128,19 @@ router.get('/feed', function(req, res, next){
 
 //get photo for retrieving a photo by id
 router.get('/photo', function(req, res, next){
-  if(!req.user)
-    res.redirect('/');
+  if(!req.user){
+    console.log('user not found');
+    res.status(403).end();
+  }
+
+  console.log('id: ' + req.query.id);
 
   //if no id was passed, return an error code
   if(isEmpty(req.query.id)){
+    console.log('query not found');
     res.status(412).end();
   } else {
-      var url = 'https://' + server.domain + '/files/oauth/api/myuserlibrary/document/' + req.query.id + '/media';
+      var url = 'https://' + config.server.domain + '/files/oauth/api/myuserlibrary/document/' + req.query.id + '/entry?includeTags=true';
 
       // we must attach the key we got through passportto the header as
       // Authorization: Bearer + key. Passport gives us access to the user profile
@@ -148,9 +154,35 @@ router.get('/photo', function(req, res, next){
 
       request.get(options, function(error, response, body){
         if(error){
-          res.send(error);
+          console.log('photo error: ' + error);
+          res.status(500).end();
         } else {
-
+          //see get feed for more details
+          parseString(body, function(err, result){
+            var photo = {};
+            var entry = result.entry;
+            photo.id = entry['td:uuid'][0];
+            var tags = [];
+            for(var j = 1; j < entry.category.length; j ++){
+              var category = entry.category[j];
+              var tag = category.$.label;
+              tags.push(tag);
+            }
+            photo.tags = tags;
+            for(var j = 0; j < entry.link.length; j++){
+              var link = entry.link[j];
+              var type = link.$.type;
+              if(!(type === undefined) && (type.indexOf('image') > -1)){
+                photo.link = link.$.href;
+                break;
+              }
+            }
+            photo.photographer = entry.author[0].name[0];
+            photo.title = entry.title['_'];
+            photo.published = entry.published[0];
+            console.log('Sending response');
+            res.send(photo);
+          });
         }
       });
   }
