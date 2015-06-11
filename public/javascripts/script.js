@@ -11,7 +11,7 @@ photoApp.config(function($routeProvider) {
   })
 
   // route for the about page
-  .when('/photo', {
+  .when('/photo/:id', {
     templateUrl : 'pages/page-photo.html',
     controller  : 'photoController'
   })
@@ -24,7 +24,7 @@ photoApp.config(function($routeProvider) {
 });
 
 // create the controller and inject Angular's $scope
-photoApp.controller('homeController', function($scope, $http) {
+photoApp.controller('homeController', function($scope, $http, $route, $routeParams) {
 
   $scope.pageClass = 'page-home';
 
@@ -44,9 +44,26 @@ photoApp.controller('homeController', function($scope, $http) {
 
   });
 
-  photoApp.controller('photoController', function($scope) {
+  photoApp.controller('photoController', function($scope, $http, $route, $routeParams) {
+
     $scope.pageClass = 'page-photo';
-    $scope.message = 'Look! I am an about page.';
+    $scope.photoUrl = '/photo/';
+
+    var getPhoto = function(){
+
+      $http({
+        method:'GET',
+        url:'/api/photo?id=' + $routeParams.id
+      }).success(function(data, status){
+        $scope.data = data;
+      });
+
+      console.log(data);
+
+    }
+
+  getPhoto();
+
   });
 
   photoApp.controller('profileController', function($scope) {

@@ -8,7 +8,7 @@
 
 <div class="row" ng-repeat="entry in data">
 
-  <div class="col-sm-2"><img src={{entry.link}}></img></div>
+  <div class="col-sm-2"><a href={{photoUrl + entry.id}}><img src={{entry.link}}></img></a></div>
 
     <div ng-repeat="entry in data">
       <h1>{{entry.id}}</h1>
