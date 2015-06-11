@@ -28,7 +28,7 @@ router.get('/', function(req, res, next) {
 //getfeed for home page content
 router.get('/feed', function(req, res, next){
   if(!req.user)
-    res.redirect('/');
+    res.status(403).end();
 
   //config.server.domain is the domain name of the server (without the https or the directoy i.e example.com)
 
@@ -129,7 +129,7 @@ router.get('/feed', function(req, res, next){
 //get photo for retrieving a photo by id
 router.get('/photo', function(req, res, next){
   if(!req.user)
-    res.redirect('/');
+    res.status(403).end();
 
   //if no id was passed, return an error code
   if(isEmpty(req.query.id)){
@@ -161,7 +161,7 @@ router.get('/photo', function(req, res, next){
 //get a file likes
 router.get('/like', function(req, res, next){
   if(!req.user)
-    res.redirect('/');
+    res.status(403).end();
 
   //if no id was passed
   if(isEmpty(req.query.id)){
@@ -201,7 +201,7 @@ router.post('/like', function(req, res, next){
 
 router.get('/commments', function(req, res, next){
   if(!req.user)
-    res.redirect('/');
+    res.status(403).end();
 
   //if no id was passed
   if(isEmpty(req.query.id)){
