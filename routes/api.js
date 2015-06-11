@@ -52,18 +52,37 @@ router.get('/feed', function(req, res, next){
   };
 
   request.get(options, function(error, response, body){
+
+    // if there is an error lets log it to the console and inform the angular
+    // of our app so it can be handled
     if(error){
+      console.log('Error occured while getting feed from Connections Cloud');
       res.send(error);
     } else {
+
+      // otherwise, the api returns an xml which can be easily converted to a
+      // JSON to make parsing easier using the xml2js module for nodejs
       parseString(body, function(err, result){
+
+        // initialize the array of photos we will be sending back
         var photos = [];
+
+        // get the actual entries object in the response
         var entries = result.feed.entry;
-        console.log('first entry: ' + JSON.stringify(entries[0]));
+
+        // iterate over the entries to send back each photo that was returned
         for(var i = 0; i < entries.length; i++){
           var photo = {};
           var entry = entries[i];
+
+          // the photo id which is used to reference the photo internally for
+          // ibm connection cloud, this will need to be stored to quickly
+          // get the photo and information on the photo later
           photo.id = entry['td:uuid'][0];
-          photo.label = entry['td:label'][0];
+
+          // iterate through the tags in the entry and build an object that has
+          // all the tags, starting at 1 because the first category describes
+          // the document and is not a true 'tag'
           var tags = [];
           for(var j = 1; j < entry.category.length; j ++){
             var category = entry.category[j];
@@ -71,9 +90,19 @@ router.get('/feed', function(req, res, next){
             tags.push(tag);
           }
           photo.tags = tags;
+
+          // the author of the file, and in our case the photographer
           photo.photographer = entry.author[0].name[0];
-          photo.caption = entry.title['_'];
+
+          // the title of the document
+          photo.title = entry.title['_'];
+
+          // the upload date of the document
           photo.published = entry.published[0];
+
+          // the link object contains many links related to the document,
+          // however we want the link to the actual image, therefore we will
+          // look for the object with the type of image
           for(var j = 0; j < entry.link.length; j++){
             var link = entry.link[j];
             var type = link.$.type;
@@ -82,9 +111,13 @@ router.get('/feed', function(req, res, next){
               break;
             }
           }
+
+          // push the photo to our photos array
           console.log('pushing :' + JSON.stringify(photo));
           photos.push(photo);
         }
+        
+        //return our photos array
         console.log('sending response');
         res.send(photos);
       });
