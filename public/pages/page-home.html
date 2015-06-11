@@ -2,8 +2,27 @@
 <h2>Home</h2>
 
 <a href="#profile" class="btn btn-success btn-lg">Profile</a>
-<a href="#photo" class="btn btn-danger btn-lg">Photo</a>
+<a href="#photo" class="btn btn-success btn-lg">Photo</a>
 
-<div ng-repeat="entry in entries">
-  {{data.link}}
-<div>
+
+<div class="row">
+  <div class="col-sm-2"><img class="img-responsive" src={{data[0].link}}></img></div>
+  <div class="col-sm-2"><img class="img-responsive" src={{data[1].link}}></img></div>
+  <div class="col-sm-2"><img class="img-responsive" src={{data[2].link}}></img></div>
+  <div class="col-sm-2"><img class="img-responsive" src={{data[3].link}}></img></div>
+  <div class="col-sm-2"><img class="img-responsive" src={{data[4].link}}></img></div>
+
+</div>
+
+
+<div ng-repeat="entry in data">
+
+
+
+  {{entry.id}}
+  {{entry.tag}}
+  {{entry.photographer}}
+  {{entry.title}}
+  {{entry.published}}
+
+</div>
