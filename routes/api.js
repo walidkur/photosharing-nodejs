@@ -19,6 +19,7 @@ var config = require('../config/server');
 var parseString = require('xml2js').parseString;
 var request = require('request');
 var Busboy = require('busboy');
+var fs = require('fs');
 
 
 /* GET home page. */
@@ -196,7 +197,7 @@ router.get('/like', function(req, res, next){
   if(isEmpty(req.query.id)){
     res.status(412).end();
   } else {
-    var url = 'https://' + config.server.domain + 'files/ouath/api/myuserlibrary/document/' + req.query.id + '/entry';
+    var url = 'https://' + config.server.domain + '/files/ouath/api/myuserlibrary/document/' + req.query.id + '/entry';
 
     var headers = {'Authorization': 'Bearer ' + req.user.accessToken};
 
@@ -209,9 +210,14 @@ router.get('/like', function(req, res, next){
       if(error){
         res.send(error);
       } else {
-        parseString(body, function(err, result){
-          console.log(result);
-        });
+        fs.writeFile("response.txt", JSON.stringify(body));
+        // console.log(body);
+        // parseString(body, function(err, result){
+        //   if(err){
+        //     console.log('err : ' + err);
+        //   }
+        //   fs.writeFile("text.txt", JSON.stringify(result));
+        // });
       }
     });
   }
