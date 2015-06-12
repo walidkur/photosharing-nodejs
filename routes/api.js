@@ -19,7 +19,6 @@ var config = require('../config/server');
 var parseString = require('xml2js').parseString;
 var request = require('request');
 var Busboy = require('busboy');
-var fs = require('fs');
 
 
 /* GET home page. */
@@ -164,7 +163,6 @@ router.get('/photo', function(req, res, next){
           parseString(body, function(err, result){
             var photo = {};
             var entry = result.entry;
-            fs.writeFile("response.txt", JSON.stringify(entry));
             photo.id = entry['td:uuid'][0];
             var tags = [];
             for(var j = 1; j < entry.category.length; j ++){
