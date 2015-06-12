@@ -19,6 +19,7 @@ var config = require('../config/server');
 var parseString = require('xml2js').parseString;
 var request = require('request');
 var Busboy = require('busboy');
+var fs = require('fs');
 
 
 /* GET home page. */
@@ -117,6 +118,7 @@ router.get('/feed', function(req, res, next){
           // in addition we need to pass the library id of the entry, for later
           // calls in which we will have to pass the library id to the api
           photo.libraryid = entry['td:libraryId'][0];
+          console.log(photo.id + ' : ' + photo.libraryid);
 
           // push the photo to our photos array
           console.log('pushing :' + JSON.stringify(photo));
@@ -138,11 +140,11 @@ router.get('/photo', function(req, res, next){
     res.status(403).end();
 
   //if no id was passed, return an error code
-  if(isEmpty(req.query.id)){
+  if(isEmpty(req.query.id) || isEmpty(req.query.lid)){
     console.log('query not found');
     res.status(412).end();
   } else {
-      var url = 'https://' + config.server.domain + '/files/oauth/api/myuserlibrary/document/' + req.query.id + '/entry?includeTags=true';
+      var url = 'https://' + config.server.domain + '/files/oauth/api/library/' + req.query.lid + '/document/' + req.query.id + '/entry?includeTags=true';
 
       // we must attach the key we got through passportto the header as
       // Authorization: Bearer + key. Passport gives us access to the user profile
@@ -161,6 +163,7 @@ router.get('/photo', function(req, res, next){
         } else {
           //see get feed for more details
           parseString(body, function(err, result){
+            fs.writeFile("response.txt", JSON.stringify(result));
             var photo = {};
             var entry = result.entry;
             photo.id = entry['td:uuid'][0];
@@ -180,6 +183,7 @@ router.get('/photo', function(req, res, next){
               }
             }
             photo.photographer = entry.author[0].name[0];
+            photo.userid = entry.author[0]['snx:userid'][0];
             photo.title = entry.title[0]['_'];
             photo.published = entry.published[0];
             var socialx = entry['snx:rank'];
@@ -197,7 +201,6 @@ router.get('/photo', function(req, res, next){
         }
       });
   }
-
 });
 
 router.post('/like', function(req, res, next){
@@ -211,17 +214,18 @@ router.post('/like', function(req, res, next){
   }
 })
 
-router.get('/commments', function(req, res, next){
+router.get('/comments', function(req, res, next){
   if(!req.user)
     res.status(403).end();
 
   //if no id was passed
   if(isEmpty(req.query.id)){
+    console.log("query not found");
     res.status(412).end();
   } else if(isEmpty(req.query.userid)){
     res.status(412).end();
   } else {
-    var url = 'https://' + config.server.domain + 'files/oauth/api/userlibrary/' + req.query.userid + '/document/' + req.query.id + '/feed';
+    var url = 'https://' + config.server.domain + '/files/oauth/api/userlibrary/' + req.query.userid + '/document/' + req.query.id + '/feed?category=comment';
 
     var headers = {'Authorization': 'Bearer ' + req.user.accessToken};
 
@@ -230,11 +234,29 @@ router.get('/commments', function(req, res, next){
       headers: headers
     };
 
+    console.log(JSON.stringify(options));
+
+    console.log('Making request');
+
     request.get(options, function(error, response, body){
       if(error){
-        res.send(error);
+        console.log('error in get comment: ' + error);
+        res.status(500).end();
       } else {
-        res.send(body);
+        parseString(body, function(err, result){
+          // fs.writeFile("response.txt", JSON.stringify(result));
+          var comments = [];
+          var entries = result.feed.entry;
+          for(var i = 0; i < entries.length; i++){
+            var entry = entries[i];
+            var comment = {};
+            comment.author = entry.author[0].name[0];
+            comment.date = entry.published[0];
+            comment.content = entry.content[0]['_'];
+            comments.push(comment);
+          }
+          res.send(comments);
+        });
       }
     });
   }
@@ -314,6 +336,38 @@ router.post('/upload', function(req, res, next){
       });
     }
   });
+});
+
+router.get('/profile', function(req, res, next){
+  if(!req.user){
+    res.status(403).end();
+  }
+
+  if(isEmpty(req.query.displayName)){
+    console.log('query not found');
+    req.status(412).end()
+  } else {
+
+    var url = '/profiles/atom/search.do?displayName=' + req.query.displayName;
+
+    var headers = {'Authorization' : 'Bearer ' + req.user.accessToken};
+
+    var options = {
+      url : url,
+      headers : headers
+    };
+
+    request.get(options, function(error, response, body){
+      if(error){
+        console.log('error: ' + error);
+        res.status(500).end();
+      }
+
+      parseString(body, function(err, result){
+        fs.writeFile("response.txt", JSON.stringify(result));
+      });
+    });
+  }
 });
 
 var hasOwnProperty = Object.prototype.hasOwnProperty;
