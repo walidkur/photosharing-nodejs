@@ -19,7 +19,6 @@ var config = require('../config/server');
 var parseString = require('xml2js').parseString;
 var request = require('request');
 var Busboy = require('busboy');
-var fs = require('fs');
 
 
 /* GET home page. */
@@ -118,7 +117,6 @@ router.get('/feed', function(req, res, next){
           // in addition we need to pass the library id of the entry, for later
           // calls in which we will have to pass the library id to the api
           photo.libraryid = entry['td:libraryId'][0];
-          console.log(photo.id + ' : ' + photo.libraryid);
 
           // push the photo to our photos array
           console.log('pushing :' + JSON.stringify(photo));
@@ -233,10 +231,6 @@ router.get('/comments', function(req, res, next){
       url: url,
       headers: headers
     };
-
-    console.log(JSON.stringify(options));
-
-    console.log('Making request');
 
     request.get(options, function(error, response, body){
       if(error){
