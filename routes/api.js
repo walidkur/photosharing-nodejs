@@ -138,11 +138,11 @@ router.get('/photo', function(req, res, next){
     res.status(403).end();
 
   //if no id was passed, return an error code
-  if(isEmpty(req.query.id)){
+  if(isEmpty(req.query.id) || isEmpty(req.query.lid)){
     console.log('query not found');
     res.status(412).end();
   } else {
-      var url = 'https://' + config.server.domain + '/files/oauth/api/myuserlibrary/document/' + req.query.id + '/entry?includeTags=true';
+      var url = 'https://' + config.server.domain + '/files/oauth/api/library/' + req.query.lid + '/document/' + req.query.id + '/entry?includeTags=true';
 
       // we must attach the key we got through passportto the header as
       // Authorization: Bearer + key. Passport gives us access to the user profile
