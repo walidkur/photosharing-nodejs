@@ -15,6 +15,7 @@ var config = require('../config/server');
 var parseString = require('xml2js').parseString;
 var request = require('request');
 var Busboy = require('busboy');
+var fs = require('fs');
 
 
 /* GET home page. */
@@ -246,6 +247,8 @@ router.get('/comments', function(req, res, next){
       headers: headers
     };
 
+    console.log(JSON.stringify(options));
+
     request.get(options, function(error, response, body){
       if(error){
         console.log('error in get comment: ' + error);
@@ -258,6 +261,10 @@ router.get('/comments', function(req, res, next){
 
           // get the main data from the json
           var entries = result.feed.entry;
+
+          if(isEmpty(entries)){
+            res.send(comments).end();
+          }
 
           // iterate through the comments creating new objects and pushing them
           // to the array
