@@ -134,7 +134,7 @@ router.get('/photo', function(req, res, next){
     res.status(403).end();
 
   //if no id was passed, return an error code
-  if(isEmpty(req.query.id)){ //|| isEmpty(req.query.lid)){
+  if(isEmpty(req.query.id) || isEmpty(req.query.lid)){
     console.log('query not found');
     res.status(412).end();
   } else {
@@ -175,7 +175,7 @@ router.get('/photo', function(req, res, next){
               }
             }
             photo.photographer = entry.author[0].name[0];
-            photo.userid = entry.author[0]['snx:userid'][0];
+            photo.uid = entry.author[0]['snx:userid'][0];
             photo.title = entry.title[0]['_'];
             photo.published = entry.published[0];
             var socialx = entry['snx:rank'];
@@ -186,8 +186,7 @@ router.get('/photo', function(req, res, next){
                 break;
               }
             }
-            photo.libraryid = entry['td:libraryId'][0];
-            photo.userid = entry.author[0]['snx:userid'][0];
+            photo.lid = entry['td:libraryId'][0];
             console.log('Sending response');
             res.send(photo);
           });
@@ -235,10 +234,10 @@ router.get('/comments', function(req, res, next){
   if(isEmpty(req.query.id)){
     console.log("query not found");
     res.status(412).end();
-  } else if(isEmpty(req.query.userid)){
+  } else if(isEmpty(req.query.uid)){
     res.status(412).end();
   } else {
-    var url = 'https://' + config.server.domain + '/files/oauth/api/userlibrary/' + req.query.userid + '/document/' + req.query.id + '/feed?category=comment';
+    var url = 'https://' + config.server.domain + '/files/oauth/api/userlibrary/' + req.query.uid + '/document/' + req.query.id + '/feed?category=comment';
 
     var headers = {'Authorization': 'Bearer ' + req.user.accessToken};
 
@@ -372,12 +371,12 @@ router.get('/profile', function(req, res, next){
     res.status(403).end();
   }
 
-  if(isEmpty(req.query.userid)){
+  if(isEmpty(req.query.uid)){
     console.log('query not found');
     req.status(412).end()
   } else {
 
-    var url = 'https://' + config.server.domain + '/profiles/atom/profile.do?userid=' + req.query.userid;
+    var url = 'https://' + config.server.domain + '/profiles/atom/profile.do?userid=' + req.query.uid;
 
     var headers = {'Authorization' : 'Bearer ' + req.user.accessToken};
 
