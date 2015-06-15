@@ -19,7 +19,6 @@ var config = require('../config/server');
 var parseString = require('xml2js').parseString;
 var request = require('request');
 var Busboy = require('busboy');
-var fs = require('fs');
 
 
 /* GET home page. */
