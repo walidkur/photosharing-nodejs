@@ -1,15 +1,11 @@
 /* Copyright 2015 IBM Corporation
-
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
 You may obtain a copy of the License at
-
 http://www.apache.org/licenses/LICENSE-2.0
-
 Unless required by applicable law or agreed to in writing, software
 distributed under the License is distributed on an "AS IS" BASIS,
 WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-
 See the License for the specific language governing permissions and
 limitations under the License. */
 
@@ -138,7 +134,7 @@ router.get('/photo', function(req, res, next){
     res.status(403).end();
 
   //if no id was passed, return an error code
- if(isEmpty(req.query.id)){ //|| isEmpty(req.query.lid)){
+  if(isEmpty(req.query.id)){ //|| isEmpty(req.query.lid)){
     console.log('query not found');
     res.status(412).end();
   } else {
@@ -154,7 +150,6 @@ router.get('/photo', function(req, res, next){
         headers: headers
       };
 
-      console.log(url);
       request.get(options, function(error, response, body){
         if(error){
           console.log('photo error: ' + error);
@@ -164,10 +159,7 @@ router.get('/photo', function(req, res, next){
           parseString(body, function(err, result){
             var photo = {};
             var entry = result.entry;
-
-            console.log(result);
             photo.id = entry['td:uuid'][0];
-
             var tags = [];
             for(var j = 1; j < entry.category.length; j ++){
               var category = entry.category[j];
@@ -184,10 +176,7 @@ router.get('/photo', function(req, res, next){
               }
             }
             photo.photographer = entry.author[0].name[0];
-<<<<<<< HEAD
-=======
             photo.userid = entry.author[0]['snx:userid'][0];
->>>>>>> d1346cdf7c03d085466be1338375ae7f6aad2fbf
             photo.title = entry.title[0]['_'];
             photo.published = entry.published[0];
             var socialx = entry['snx:rank'];
@@ -199,20 +188,13 @@ router.get('/photo', function(req, res, next){
               }
             }
             photo.libraryid = entry['td:libraryId'][0];
-<<<<<<< HEAD
-=======
             photo.userid = entry.author[0]['snx:userid'][0];
->>>>>>> d1346cdf7c03d085466be1338375ae7f6aad2fbf
             console.log('Sending response');
             res.send(photo);
           });
         }
       });
   }
-<<<<<<< HEAD
-
-=======
->>>>>>> d1346cdf7c03d085466be1338375ae7f6aad2fbf
 });
 
 router.post('/like', function(req, res, next){
