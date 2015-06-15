@@ -247,8 +247,6 @@ router.get('/comments', function(req, res, next){
       headers: headers
     };
 
-    console.log(JSON.stringify(options));
-
     request.get(options, function(error, response, body){
       if(error){
         console.log('error in get comment: ' + error);
@@ -295,6 +293,59 @@ router.get('/comments', function(req, res, next){
         });
       }
     });
+  }
+});
+
+router.post('/comments', function(req, res, next){
+  if(!req.user)
+    res.status(403).end();
+
+  if(isEmpty(req.query.id)){
+    console.log("query not found");
+    res.status(412).end();
+  } else if(isEmpty(req.query.uid)){
+    res.status(412).end();
+  } else {
+
+    var url = 'https://apps.collabservnext.com/files/oauth/api/nonce';
+
+    var headers = {'Authorization': 'Bearer ' + req.user.accessToken}
+
+    var options = {
+      url: url,
+      headers: headers
+    }
+
+    request.get(options, function(error, response, body){
+      var nonce = body;
+
+      var body = '<?xml version="1.0" encoding="UTF-8"?><entry xmlns="http://www.w3.org/2005/Atom" xmlns:app="http://www.w3.org/2007/app" xmlns:snx="http://www.ibm.com/xmlns/prod/sn"><category scheme="tag:ibm.com,2006:td/type" term="comment" label="comment"/><content type="text">' + req.body.comment + '</content></entry>';
+
+      var url = 'https://' config.server.domain + '/files/oauth/api/userlibrary/' + req.query.uid + '/document/' + req.query.id + '/feed';
+
+      var headers = {
+        'Authorization': 'Bearer ' + req.user.accessToken,
+        'Content-Type': 'application/atom+xml',
+        'Content-Length': body.length,
+        'X-Update-Nonce': nonce
+      };
+
+      var options = {
+        url: url,
+        headers: headers,
+        body: body
+      };
+
+      request.post(options, function(error, response, body){
+        if(error){
+          console.log('error posting comment: ' + error);
+          res.status(500).end();
+        }
+
+        res.status(200).end();
+      });
+    });
+
   }
 });
 
