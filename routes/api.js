@@ -238,16 +238,37 @@ router.get('/comments', function(req, res, next){
         res.status(500).end();
       } else {
         parseString(body, function(err, result){
+
+          // create the comment array that we will return
           var comments = [];
+
+          // get the main data from the json
           var entries = result.feed.entry;
+
+          // iterate through the comments creating new objects and pushing them
+          // to the array
           for(var i = 0; i < entries.length; i++){
+
+            // grab the entry we are iterating on
             var entry = entries[i];
+
+            // create the comment we will add to the array
             var comment = {};
+
+            // grab the author name
             comment.author = entry.author[0].name[0];
+
+            // grab the publish date of the comment
             comment.date = entry.published[0];
+
+            // grab the content of the comment
             comment.content = entry.content[0]['_'];
+
+            // push the comment to the array
             comments.push(comment);
           }
+
+          //return the array of comments
           res.send(comments);
         });
       }
@@ -357,16 +378,29 @@ router.get('/profile', function(req, res, next){
       }
 
       parseString(body, function(err, result){
-        var entry = result.feed.entry[0];
+
+        // grab the main data of the json
+        var entry = result.feed.entry[0];\
+
+        // create the object we will send back
         var profile = {};
+
+        // grabbing the name of the profile
         profile.name = entry.contributor[0].name[0];
+
+        // grabbing the email of the profile
         profile.email = entry.contributor[0].email[0];
+
+        // iterate through the links to find the image that represents the
+        // profile picture
         for(var i = 0; i < entry.link.length; i++){
           if(entry.link[i].$.type.indexOf(image) > -1){
             profile.img = entry.link[i].$.href;
             break;
           }
         }
+
+        //send back the profile
         res.send(profile);
       });
     });
