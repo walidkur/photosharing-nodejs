@@ -97,7 +97,7 @@ router.get('/feed', function(req, res, next){
           photo.photographer = entry.author[0].name[0];
 
           // the title of the document
-          photo.title = entry.title['_'];
+          photo.title = entry.title[0]['_'];
 
           // the upload date of the document
           photo.published = entry.published[0];
@@ -113,6 +113,10 @@ router.get('/feed', function(req, res, next){
               break;
             }
           }
+
+          // in addition we need to pass the library id of the entry, for later
+          // calls in which we will have to pass the library id to the api
+          photo.libraryid = entry['td:libraryId'][0];
 
           // push the photo to our photos array
           console.log('pushing :' + JSON.stringify(photo));
@@ -134,11 +138,11 @@ router.get('/photo', function(req, res, next){
     res.status(403).end();
 
   //if no id was passed, return an error code
-  if(isEmpty(req.query.id)){
+  if(isEmpty(req.query.id) || isEmpty(req.query.lid)){
     console.log('query not found');
     res.status(412).end();
   } else {
-      var url = 'https://' + config.server.domain + '/files/oauth/api/myuserlibrary/document/' + req.query.id + '/entry?includeTags=true';
+      var url = 'https://' + config.server.domain + '/files/oauth/api/library/' + req.query.lid + '/document/' + req.query.id + '/entry?includeTags=true';
 
       // we must attach the key we got through passportto the header as
       // Authorization: Bearer + key. Passport gives us access to the user profile
@@ -150,6 +154,7 @@ router.get('/photo', function(req, res, next){
         headers: headers
       };
 
+      console.log(url);
       request.get(options, function(error, response, body){
         if(error){
           console.log('photo error: ' + error);
@@ -159,7 +164,10 @@ router.get('/photo', function(req, res, next){
           parseString(body, function(err, result){
             var photo = {};
             var entry = result.entry;
+
+            console.log(result);
             photo.id = entry['td:uuid'][0];
+
             var tags = [];
             for(var j = 1; j < entry.category.length; j ++){
               var category = entry.category[j];
@@ -176,8 +184,17 @@ router.get('/photo', function(req, res, next){
               }
             }
             photo.photographer = entry.author[0].name[0];
-            photo.title = entry.title['_'];
+            photo.title = entry.title[0]['_'];
             photo.published = entry.published[0];
+            var socialx = entry['snx:rank'];
+            for(var i = 0; i < socialx.length; i++){
+              var x = socialx[i];
+              if(x.$.scheme.indexOf('recommendations') > -1){
+                photo.likes = parseInt(x['_']);
+                break;
+              }
+            }
+            photo.libraryid = entry['td:libraryId'][0];
             console.log('Sending response');
             res.send(photo);
           });
@@ -185,36 +202,6 @@ router.get('/photo', function(req, res, next){
       });
   }
 
-});
-
-//get a file likes
-router.get('/like', function(req, res, next){
-  if(!req.user)
-    res.status(403).end();
-
-  //if no id was passed
-  if(isEmpty(req.query.id)){
-    res.status(412).end();
-  } else {
-    var url = 'https://' + config.server.domain + 'files/ouath/api/myuserlibrary/document/' + req.query.id + '/entry';
-
-    var headers = {'Authorization': 'Bearer ' + req.user.accessToken};
-
-    var options = {
-      url: url,
-      headers: headers
-    };
-
-    request.get(options, function(error, response, body){
-      if(error){
-        res.send(error);
-      } else {
-        parseString(body, function(err, result){
-          console.log(result);
-        });
-      }
-    });
-  }
 });
 
 router.post('/like', function(req, res, next){

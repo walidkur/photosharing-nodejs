@@ -11,7 +11,7 @@ photoApp.config(function($routeProvider) {
   })
 
   // route for the about page
-  .when('/photo/:id', {
+  .when('/photo/:libraryid/:id', {
     templateUrl : 'pages/page-photo.html',
     controller  : 'photoController'
   })
@@ -47,22 +47,33 @@ photoApp.controller('homeController', function($scope, $http, $route, $routePara
   photoApp.controller('photoController', function($scope, $http, $route, $routeParams) {
 
     $scope.pageClass = 'page-photo';
-    $scope.photoUrl = '/photo/';
+
+    console.log("photo is working!");
 
     var getPhoto = function(){
 
       $http({
         method:'GET',
-        url:'/api/photo?id=' + $routeParams.id
+        url:'/api/photo?lid=' + $routeParams.libraryid + '&id=' + $routeParams.id
       }).success(function(data, status){
-        $scope.data = data;
+        $scope.photo = data;
+        $scope.getComments(data.userid);
       });
-
-      console.log(data);
 
     }
 
-  getPhoto();
+    $scope.getComments = function(userid){
+
+      $http({
+        method:'GET',
+        url:'/api/comments?lid=' + userid + '&id=' + $routeParams.id
+      }).success(function(data, status){
+        $scope.comments = data;
+      });
+
+    }
+
+    getPhoto();
 
   });
 
