@@ -262,7 +262,7 @@ router.get('/comments', function(req, res, next){
 
           // catch if there are no comments on the photo
           if(isEmpty(entries)){
-            res.send(comments).end();
+            return res.send(comments);
           }
 
           // iterate through the comments creating new objects and pushing them
@@ -307,7 +307,7 @@ router.post('/comments', function(req, res, next){
     res.status(412).end();
   } else {
 
-    var url = 'https://apps.collabservnext.com/files/oauth/api/nonce';
+    var url = 'https://' + config.server.domain + '/files/oauth/api/nonce';
 
     var headers = {'Authorization': 'Bearer ' + req.user.accessToken}
 
@@ -444,6 +444,8 @@ router.get('/profile', function(req, res, next){
       headers : headers
     };
 
+    fs.writeFile("Request.txt", JSON.stringify(options));
+
     request.get(options, function(error, response, body){
       if(error){
         console.log('error: ' + error);
@@ -452,8 +454,14 @@ router.get('/profile', function(req, res, next){
 
       parseString(body, function(err, result){
 
+        var entry = result.feed.entry;
+
+        if(isEmpty(entry)){
+          return res.send("User does not exist.");
+        }
+
         // grab the main data of the json
-        var entry = result.feed.entry[0];
+        entry = result.feed.entry[0];
 
         // create the object we will send back
         var profile = {};
