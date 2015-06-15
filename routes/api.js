@@ -112,7 +112,7 @@ router.get('/feed', function(req, res, next){
 
           // in addition we need to pass the library id of the entry, for later
           // calls in which we will have to pass the library id to the api
-          photo.libraryid = entry['td:libraryId'][0];
+          photo.lid = entry['td:libraryId'][0];
 
           // push the photo to our photos array
           console.log('pushing :' + JSON.stringify(photo));
@@ -134,12 +134,11 @@ router.get('/photo', function(req, res, next){
     res.status(403).end();
 
   //if no id was passed, return an error code
-  if(isEmpty(req.query.id)){ //|| isEmpty(req.query.lid)){
+  if(isEmpty(req.query.id) || isEmpty(req.query.lid)){
     console.log('query not found');
     res.status(412).end();
   } else {
-      // var url = 'https://' + config.server.domain + '/files/oauth/api/library/' + req.query.lid + '/document/' + req.query.id + '/entry?includeTags=true';
-      var url = 'https://' + config.server.domain + '/files/basic/api/myuserlibrary/document/' + req.query.id + '/entry'
+      var url = 'https://' + config.server.domain + '/files/oauth/api/library/' + req.query.lid + '/document/' + req.query.id + '/entry?includeTags=true';
       // we must attach the key we got through passportto the header as
       // Authorization: Bearer + key. Passport gives us access to the user profile
       // we saved through the request user object
@@ -176,7 +175,7 @@ router.get('/photo', function(req, res, next){
               }
             }
             photo.photographer = entry.author[0].name[0];
-            photo.userid = entry.author[0]['snx:userid'][0];
+            photo.uid = entry.author[0]['snx:userid'][0];
             photo.title = entry.title[0]['_'];
             photo.published = entry.published[0];
             var socialx = entry['snx:rank'];
@@ -187,8 +186,7 @@ router.get('/photo', function(req, res, next){
                 break;
               }
             }
-            photo.libraryid = entry['td:libraryId'][0];
-            photo.userid = entry.author[0]['snx:userid'][0];
+            photo.lid = entry['td:libraryId'][0];
             console.log('Sending response');
             res.send(photo);
           });
@@ -197,14 +195,34 @@ router.get('/photo', function(req, res, next){
   }
 });
 
-router.post('/like', function(req, res, next){
+router.put('/like', function(req, res, next){
   if(!req.user)
     res.status(403).end();
 
-  if(isEmpty(req.query.id)){
+  if(isEmpty(req.query.id) || isEmpty(req.query.lid) || isEmpty(req.query.r)){
+    console.log('Query not found');
     req.status(412).end();
   } else {
+    var url = 'https://' + config.server.domain + '/files/oauth/api/library/' + req.query.lid + '/document/' + req.query.id + '/media?recommendation=' + req.query.r;
 
+    var headers = {'Authorization': 'Bearer ' + req.user.accessToken};
+
+    var options = {
+      url: url,
+      headers: headers
+    };
+
+    request.put(options, function(error, response, body){
+      if(error){
+        console.log('error in putting like: ' + error);
+        res.status(500).end();
+      } else {
+        parseString(body, function(err, result){
+          fs.writeFile("Response.txt", JSON.stringify(result));
+          res.send(200).end();
+        });
+      }
+    });
   }
 })
 
@@ -216,10 +234,10 @@ router.get('/comments', function(req, res, next){
   if(isEmpty(req.query.id)){
     console.log("query not found");
     res.status(412).end();
-  } else if(isEmpty(req.query.userid)){
+  } else if(isEmpty(req.query.uid)){
     res.status(412).end();
   } else {
-    var url = 'https://' + config.server.domain + '/files/oauth/api/userlibrary/' + req.query.userid + '/document/' + req.query.id + '/feed?category=comment';
+    var url = 'https://' + config.server.domain + '/files/oauth/api/userlibrary/' + req.query.uid + '/document/' + req.query.id + '/feed?category=comment';
 
     var headers = {'Authorization': 'Bearer ' + req.user.accessToken};
 
@@ -234,16 +252,37 @@ router.get('/comments', function(req, res, next){
         res.status(500).end();
       } else {
         parseString(body, function(err, result){
+
+          // create the comment array that we will return
           var comments = [];
+
+          // get the main data from the json
           var entries = result.feed.entry;
+
+          // iterate through the comments creating new objects and pushing them
+          // to the array
           for(var i = 0; i < entries.length; i++){
+
+            // grab the entry we are iterating on
             var entry = entries[i];
+
+            // create the comment we will add to the array
             var comment = {};
+
+            // grab the author name
             comment.author = entry.author[0].name[0];
+
+            // grab the publish date of the comment
             comment.date = entry.published[0];
+
+            // grab the content of the comment
             comment.content = entry.content[0]['_'];
+
+            // push the comment to the array
             comments.push(comment);
           }
+
+          //return the array of comments
           res.send(comments);
         });
       }
@@ -332,12 +371,12 @@ router.get('/profile', function(req, res, next){
     res.status(403).end();
   }
 
-  if(isEmpty(req.query.userid)){
+  if(isEmpty(req.query.uid)){
     console.log('query not found');
     req.status(412).end()
   } else {
 
-    var url = 'https://' + config.server.domain + '/profiles/atom/profile.do?userid=' + req.query.userid;
+    var url = 'https://' + config.server.domain + '/profiles/atom/profile.do?userid=' + req.query.uid;
 
     var headers = {'Authorization' : 'Bearer ' + req.user.accessToken};
 
@@ -353,16 +392,29 @@ router.get('/profile', function(req, res, next){
       }
 
       parseString(body, function(err, result){
+
+        // grab the main data of the json
         var entry = result.feed.entry[0];
+
+        // create the object we will send back
         var profile = {};
+
+        // grabbing the name of the profile
         profile.name = entry.contributor[0].name[0];
+
+        // grabbing the email of the profile
         profile.email = entry.contributor[0].email[0];
+
+        // iterate through the links to find the image that represents the
+        // profile picture
         for(var i = 0; i < entry.link.length; i++){
           if(entry.link[i].$.type.indexOf(image) > -1){
             profile.img = entry.link[i].$.href;
             break;
           }
         }
+
+        //send back the profile
         res.send(profile);
       });
     });
