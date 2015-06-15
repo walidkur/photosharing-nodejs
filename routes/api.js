@@ -139,12 +139,12 @@ router.get('/photo', function(req, res, next){
     res.status(403).end();
 
   //if no id was passed, return an error code
-  if(isEmpty(req.query.id) || isEmpty(req.query.lid)){
+  if(isEmpty(req.query.id)){ //|| isEmpty(req.query.lid)){
     console.log('query not found');
     res.status(412).end();
   } else {
-      var url = 'https://' + config.server.domain + '/files/oauth/api/library/' + req.query.lid + '/document/' + req.query.id + '/entry?includeTags=true';
-
+      // var url = 'https://' + config.server.domain + '/files/oauth/api/library/' + req.query.lid + '/document/' + req.query.id + '/entry?includeTags=true';
+      var url = 'https://' + config.server.domain + '/files/basic/api/myuserlibrary/document/' + req.query.id + '/entry'
       // we must attach the key we got through passportto the header as
       // Authorization: Bearer + key. Passport gives us access to the user profile
       // we saved through the request user object
@@ -193,6 +193,7 @@ router.get('/photo', function(req, res, next){
               }
             }
             photo.libraryid = entry['td:libraryId'][0];
+            photo.userid = entry.author[0]['snx:userid'][0];
             console.log('Sending response');
             res.send(photo);
           });
@@ -370,7 +371,7 @@ router.get('/profile', function(req, res, next){
         res.send(profile);
       });
     });
-  // }
+  }
 });
 
 var hasOwnProperty = Object.prototype.hasOwnProperty;
