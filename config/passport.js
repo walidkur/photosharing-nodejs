@@ -16,7 +16,7 @@ limitations under the License. */
 var passport = require('passport'),
 IBMStrategy = require('passport-ibm-connections-cloud').Strategy;
 
-var variable = require('../bin/credentials/server');
+var config = require('./server');
 
 
 module.exports = function(passport){
@@ -24,10 +24,10 @@ module.exports = function(passport){
   passport.use(new IBMStrategy(
 
     {
-      clientID: variable.server.clientID,
-      clientSecret: variable.server.clientSecret,
-      callbackURL: variable.server.callback,
-      hostname: variable.server.hoster
+      clientID: config.server.clientID,
+      clientSecret: config.server.clientSecret,
+      callbackURL: config.server.callback,
+      hostname: config.server.domain
     },
 
 
