@@ -19,6 +19,7 @@ var config = require('../config/server');
 var parseString = require('xml2js').parseString;
 var request = require('request');
 var Busboy = require('busboy');
+var fs = require('fs');
 
 
 /* GET home page. */
@@ -161,7 +162,6 @@ router.get('/photo', function(req, res, next){
         } else {
           //see get feed for more details
           parseString(body, function(err, result){
-            fs.writeFile("response.txt", JSON.stringify(result));
             var photo = {};
             var entry = result.entry;
             photo.id = entry['td:uuid'][0];
@@ -238,7 +238,6 @@ router.get('/comments', function(req, res, next){
         res.status(500).end();
       } else {
         parseString(body, function(err, result){
-          // fs.writeFile("response.txt", JSON.stringify(result));
           var comments = [];
           var entries = result.feed.entry;
           for(var i = 0; i < entries.length; i++){
@@ -337,12 +336,12 @@ router.get('/profile', function(req, res, next){
     res.status(403).end();
   }
 
-  if(isEmpty(req.query.displayName)){
+  if(isEmpty(req.query.userid)){
     console.log('query not found');
     req.status(412).end()
   } else {
 
-    var url = '/profiles/atom/search.do?displayName=' + req.query.displayName;
+    var url = 'https://' + config.server.domain + '/profiles/atom/profile.do?userid=' + req.query.userid;
 
     var headers = {'Authorization' : 'Bearer ' + req.user.accessToken};
 
@@ -358,10 +357,20 @@ router.get('/profile', function(req, res, next){
       }
 
       parseString(body, function(err, result){
-        fs.writeFile("response.txt", JSON.stringify(result));
+        var entry = result.feed.entry[0];
+        var profile = {};
+        profile.name = entry.contributor[0].name[0];
+        profile.email = entry.contributor[0].email[0];
+        for(var i = 0; i < entry.link.length; i++){
+          if(entry.link[i].$.type.indexOf(image) > -1){
+            profile.img = entry.link[i].$.href;
+            break;
+          }
+        }
+        res.send(profile);
       });
     });
-  }
+  // }
 });
 
 var hasOwnProperty = Object.prototype.hasOwnProperty;
