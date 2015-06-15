@@ -138,12 +138,12 @@ router.get('/photo', function(req, res, next){
     res.status(403).end();
 
   //if no id was passed, return an error code
-  if(isEmpty(req.query.id) || isEmpty(req.query.lid)){
+ if(isEmpty(req.query.id)){ //|| isEmpty(req.query.lid)){
     console.log('query not found');
     res.status(412).end();
   } else {
-      var url = 'https://' + config.server.domain + '/files/oauth/api/library/' + req.query.lid + '/document/' + req.query.id + '/entry?includeTags=true';
-
+      // var url = 'https://' + config.server.domain + '/files/oauth/api/library/' + req.query.lid + '/document/' + req.query.id + '/entry?includeTags=true';
+      var url = 'https://' + config.server.domain + '/files/basic/api/myuserlibrary/document/' + req.query.id + '/entry'
       // we must attach the key we got through passportto the header as
       // Authorization: Bearer + key. Passport gives us access to the user profile
       // we saved through the request user object
@@ -184,6 +184,10 @@ router.get('/photo', function(req, res, next){
               }
             }
             photo.photographer = entry.author[0].name[0];
+<<<<<<< HEAD
+=======
+            photo.userid = entry.author[0]['snx:userid'][0];
+>>>>>>> d1346cdf7c03d085466be1338375ae7f6aad2fbf
             photo.title = entry.title[0]['_'];
             photo.published = entry.published[0];
             var socialx = entry['snx:rank'];
@@ -195,13 +199,20 @@ router.get('/photo', function(req, res, next){
               }
             }
             photo.libraryid = entry['td:libraryId'][0];
+<<<<<<< HEAD
+=======
+            photo.userid = entry.author[0]['snx:userid'][0];
+>>>>>>> d1346cdf7c03d085466be1338375ae7f6aad2fbf
             console.log('Sending response');
             res.send(photo);
           });
         }
       });
   }
+<<<<<<< HEAD
 
+=======
+>>>>>>> d1346cdf7c03d085466be1338375ae7f6aad2fbf
 });
 
 router.post('/like', function(req, res, next){
@@ -215,17 +226,18 @@ router.post('/like', function(req, res, next){
   }
 })
 
-router.get('/commments', function(req, res, next){
+router.get('/comments', function(req, res, next){
   if(!req.user)
     res.status(403).end();
 
   //if no id was passed
   if(isEmpty(req.query.id)){
+    console.log("query not found");
     res.status(412).end();
   } else if(isEmpty(req.query.userid)){
     res.status(412).end();
   } else {
-    var url = 'https://' + config.server.domain + 'files/oauth/api/userlibrary/' + req.query.userid + '/document/' + req.query.id + '/feed';
+    var url = 'https://' + config.server.domain + '/files/oauth/api/userlibrary/' + req.query.userid + '/document/' + req.query.id + '/feed?category=comment';
 
     var headers = {'Authorization': 'Bearer ' + req.user.accessToken};
 
@@ -236,9 +248,22 @@ router.get('/commments', function(req, res, next){
 
     request.get(options, function(error, response, body){
       if(error){
-        res.send(error);
+        console.log('error in get comment: ' + error);
+        res.status(500).end();
       } else {
-        res.send(body);
+        parseString(body, function(err, result){
+          var comments = [];
+          var entries = result.feed.entry;
+          for(var i = 0; i < entries.length; i++){
+            var entry = entries[i];
+            var comment = {};
+            comment.author = entry.author[0].name[0];
+            comment.date = entry.published[0];
+            comment.content = entry.content[0]['_'];
+            comments.push(comment);
+          }
+          res.send(comments);
+        });
       }
     });
   }
@@ -318,6 +343,48 @@ router.post('/upload', function(req, res, next){
       });
     }
   });
+});
+
+router.get('/profile', function(req, res, next){
+  if(!req.user){
+    res.status(403).end();
+  }
+
+  if(isEmpty(req.query.userid)){
+    console.log('query not found');
+    req.status(412).end()
+  } else {
+
+    var url = 'https://' + config.server.domain + '/profiles/atom/profile.do?userid=' + req.query.userid;
+
+    var headers = {'Authorization' : 'Bearer ' + req.user.accessToken};
+
+    var options = {
+      url : url,
+      headers : headers
+    };
+
+    request.get(options, function(error, response, body){
+      if(error){
+        console.log('error: ' + error);
+        res.status(500).end();
+      }
+
+      parseString(body, function(err, result){
+        var entry = result.feed.entry[0];
+        var profile = {};
+        profile.name = entry.contributor[0].name[0];
+        profile.email = entry.contributor[0].email[0];
+        for(var i = 0; i < entry.link.length; i++){
+          if(entry.link[i].$.type.indexOf(image) > -1){
+            profile.img = entry.link[i].$.href;
+            break;
+          }
+        }
+        res.send(profile);
+      });
+    });
+  }
 });
 
 var hasOwnProperty = Object.prototype.hasOwnProperty;
