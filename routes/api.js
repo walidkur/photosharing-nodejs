@@ -376,7 +376,7 @@ router.get('/profile', function(req, res, next){
       parseString(body, function(err, result){
 
         // grab the main data of the json
-        var entry = result.feed.entry[0];\
+        var entry = result.feed.entry[0];
 
         // create the object we will send back
         var profile = {};
