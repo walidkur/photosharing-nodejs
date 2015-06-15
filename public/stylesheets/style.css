@@ -12,6 +12,22 @@ a {
   color: white;
 }
 
+#photoJumbotron{
+
+}
+
+#photoSquare{
+  position:relative;
+  overflow:hidden;
+  padding-bottom:100%;
+}
+
+#photoPhoto{
+  position:absolute;
+}
+
+
+
 /* ANIMATIONS
 ============================================================================= */
 

@@ -14,6 +14,7 @@ See the License for the specific language governing permissions and
 limitations under the License. */
 
 var express = require('express');
+
 var router = express.Router();
 var passport = require('passport');
 
@@ -27,5 +28,6 @@ router.get('/', function(req, res, next) {
 }, passport.authenticate('ibm-connections-cloud'));
 
 router.get('/callback', passport.authenticate('ibm-connections-cloud', {successReturnToOrRedirect:'/', failureRedirect: '/'}));
+
 
 module.exports = router;
