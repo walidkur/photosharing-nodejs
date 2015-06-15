@@ -1,0 +1,15 @@
+<h1>Welcome to the Home page!</h1>
+<h2>Home</h2>
+
+<a href="#profile" class="btn btn-success btn-lg">Profile</a>
+<a href="#photo" class="btn btn-success btn-lg">Photo</a>
+
+
+
+<div class="row" ng-repeat="entry in data">
+
+  <div class="col-sm-2">
+  <a href="#/photo/{{entry.libraryid}}/{{entry.id}}"><img src={{entry.link}}></img></a>
+  </div>
+
+</div>
