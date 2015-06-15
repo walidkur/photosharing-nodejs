@@ -1,18 +1,3 @@
-/* Copyright 2015 IBM Corporation
-
-Licensed under the Apache License, Version 2.0 (the "License");
-you may not use this file except in compliance with the License.
-You may obtain a copy of the License at
-
-http://www.apache.org/licenses/LICENSE-2.0
-
-Unless required by applicable law or agreed to in writing, software
-distributed under the License is distributed on an "AS IS" BASIS,
-WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-
-See the License for the specific language governing permissions and
-limitations under the License. */
-
 body {
   padding: 50px;
   font: 14px "Lucida Grande", Helvetica, Arial, sans-serif;
@@ -21,3 +6,78 @@ body {
 a {
   color: #00B7FF;
 }
+
+#logo {
+  font-family: 'Sue Ellen Francisco', cursive;
+  color: white;
+}
+
+#photoJumbotron{
+
+}
+
+#photoSquare{
+  position:relative;
+  overflow:hidden;
+  padding-bottom:100%;
+}
+
+#photoPhoto{
+  position:absolute;
+}
+
+
+
+/* ANIMATIONS
+============================================================================= */
+
+/* leaving animations ----------------------------------------- */
+
+@keyframes slideOutLeft {
+  to      { transform: translateX(-100%); }
+}
+
+@keyframes slideOutRight {
+  to      { transform: translateX(100%); }
+}
+
+@keyframes slideOutDown {
+  to       { transform:translateY(100%); }
+}
+
+
+/* entering animations --------------------------------------- */
+
+@keyframes slideInLeft {
+  from    { transform:translateX(-100%); }
+  to      { transform: translateX(0); }
+}
+
+/* slide in from the right */
+@keyframes slideInRight {
+  from    { transform:translateX(100%); }
+  to      { transform: translateX(0); }
+}
+
+/* slide in from the bottom */
+@keyframes slideInDown {
+  from    { transform:translateY(-100%); }
+  to      { transform: translateY(0); }
+}
+
+.ng-enter       { z-index: 8888; }
+.ng-leave       { z-index: 9999; }
+
+/* page specific animations ------------------------ */
+
+/* home -------------------------- */
+.page-home.ng-enter         { animation:slideInLeft 0.5s both ease-in; }
+.page-home.ng-leave         { animation:slideOutRight 0.5s both ease-in; }
+
+/* about ------------------------ */
+.page-photo.ng-enter        { animation:slideInDown 0.5s both ease-in; }
+.page-photo.ng-leave        { animation:slideOutDown 0.5s both ease-in; }
+
+/* contact ---------------------- */
+.page-profile.ng-enter      { animation:slideInRight 0.5s both ease-in; }
+.page-profile.ng-leave      { animation:slideOutLeft 0.5s both ease-in; }

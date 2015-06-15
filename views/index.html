@@ -1,0 +1,36 @@
+<html>
+
+<link rel="import" href="pages/partials/head.html">
+
+<body  ng-app="photoApp">
+
+<div class="container">
+
+  <nav style="background-color:#1D3261" class="navbar navbar-default navbar-fixed-top">
+
+    <div class="row">
+
+      <div class="col-sm-2">&nbsp;<h3 id="logo">Photo Node</h3></div>
+      <div class="col-sm-2"><button type="button" class="btn btn-primary navbar-btn">Profile <span class="glyphicon glyphicon-user"></span></button></div>
+      <div class="col-sm-2"></div>
+      <div class="col-sm-2">.col-md-1</div>
+      <div class="col-sm-2"><input type="text" class="form-control" placeholder="Search"></div>
+      <div class="col-sm-2">.col-md-1</div>
+
+   </div>
+
+  </nav>
+
+
+<div id="main">
+
+    <div class="page {{pageClass}}" ng-view></div>
+
+
+
+</div>
+
+</div>
+</body>
+
+</html>
