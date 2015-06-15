@@ -112,7 +112,7 @@ router.get('/feed', function(req, res, next){
 
           // in addition we need to pass the library id of the entry, for later
           // calls in which we will have to pass the library id to the api
-          photo.libraryid = entry['td:libraryId'][0];
+          photo.lid = entry['td:libraryId'][0];
 
           // push the photo to our photos array
           console.log('pushing :' + JSON.stringify(photo));
@@ -138,8 +138,7 @@ router.get('/photo', function(req, res, next){
     console.log('query not found');
     res.status(412).end();
   } else {
-      // var url = 'https://' + config.server.domain + '/files/oauth/api/library/' + req.query.lid + '/document/' + req.query.id + '/entry?includeTags=true';
-      var url = 'https://' + config.server.domain + '/files/basic/api/myuserlibrary/document/' + req.query.id + '/entry'
+      var url = 'https://' + config.server.domain + '/files/oauth/api/library/' + req.query.lid + '/document/' + req.query.id + '/entry?includeTags=true';
       // we must attach the key we got through passportto the header as
       // Authorization: Bearer + key. Passport gives us access to the user profile
       // we saved through the request user object
@@ -197,14 +196,34 @@ router.get('/photo', function(req, res, next){
   }
 });
 
-router.post('/like', function(req, res, next){
+router.put('/like', function(req, res, next){
   if(!req.user)
     res.status(403).end();
 
-  if(isEmpty(req.query.id)){
+  if(isEmpty(req.query.id) || isEmpty(req.query.lid) || isEmpty(req.query.r)){
+    console.log('Query not found');
     req.status(412).end();
   } else {
+    var url = 'https://' + config.server.domain + '/files/oauth/api/library/' + req.query.lid + '/document/' + req.query.id + '/media?recommendation=' + req.query.r;
 
+    var headers = {'Authorization': 'Bearer ' + req.user.accessToken};
+
+    var options = {
+      url: url,
+      headers: headers
+    };
+
+    request.put(options, function(error, response, body){
+      if(error){
+        console.log('error in putting like: ' + error);
+        res.status(500).end();
+      } else {
+        parseString(body, function(err, result){
+          fs.writeFile("Response.txt", JSON.stringify(result));
+          res.send(200).end();
+        });
+      }
+    });
   }
 })
 
