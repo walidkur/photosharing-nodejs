@@ -262,6 +262,7 @@ router.get('/comments', function(req, res, next){
           // get the main data from the json
           var entries = result.feed.entry;
 
+          // catch if there are no comments on the photo
           if(isEmpty(entries)){
             res.send(comments).end();
           }
