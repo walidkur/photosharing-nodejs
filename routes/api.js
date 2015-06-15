@@ -77,7 +77,7 @@ router.get('/feed', function(req, res, next){
           // the photo id which is used to reference the photo internally for
           // ibm connection cloud, this will need to be stored to quickly
           // get the photo and information on the photo later
-          photo.id = entry['td:uuid'][0];
+          photo.pid = entry['td:uuid'][0];
 
           // iterate through the tags in the entry and build an object that has
           // all the tags, starting at 1 because the first category describes
@@ -135,11 +135,11 @@ router.get('/photo', function(req, res, next){
     res.status(403).end();
 
   //if no id was passed, return an error code
-  if(isEmpty(req.query.id) || isEmpty(req.query.lid)){
+  if(isEmpty(req.query.pid) || isEmpty(req.query.lid)){
     console.log('query not found');
     res.status(412).end();
   } else {
-      var url = 'https://' + config.server.domain + '/files/oauth/api/library/' + req.query.lid + '/document/' + req.query.id + '/entry?includeTags=true';
+      var url = 'https://' + config.server.domain + '/files/oauth/api/library/' + req.query.lid + '/document/' + req.query.pid + '/entry?includeTags=true';
       // we must attach the key we got through passportto the header as
       // Authorization: Bearer + key. Passport gives us access to the user profile
       // we saved through the request user object
@@ -159,7 +159,7 @@ router.get('/photo', function(req, res, next){
           parseString(body, function(err, result){
             var photo = {};
             var entry = result.entry;
-            photo.id = entry['td:uuid'][0];
+            photo.pid = entry['td:uuid'][0];
             var tags = [];
             for(var j = 1; j < entry.category.length; j ++){
               var category = entry.category[j];
@@ -200,11 +200,11 @@ router.put('/like', function(req, res, next){
   if(!req.user)
     res.status(403).end();
 
-  if(isEmpty(req.query.id) || isEmpty(req.query.lid) || isEmpty(req.query.r)){
+  if(isEmpty(req.query.pid) || isEmpty(req.query.lid) || isEmpty(req.query.r)){
     console.log('Query not found');
     req.status(412).end();
   } else {
-    var url = 'https://' + config.server.domain + '/files/oauth/api/library/' + req.query.lid + '/document/' + req.query.id + '/media?recommendation=' + req.query.r;
+    var url = 'https://' + config.server.domain + '/files/oauth/api/library/' + req.query.lid + '/document/' + req.query.pid + '/media?recommendation=' + req.query.r;
 
     var headers = {'Authorization': 'Bearer ' + req.user.accessToken};
 
@@ -232,13 +232,13 @@ router.get('/comments', function(req, res, next){
     res.status(403).end();
 
   //if no id was passed
-  if(isEmpty(req.query.id)){
+  if(isEmpty(req.query.pid)){
     console.log("query not found");
     res.status(412).end();
   } else if(isEmpty(req.query.uid)){
     res.status(412).end();
   } else {
-    var url = 'https://' + config.server.domain + '/files/oauth/api/userlibrary/' + req.query.uid + '/document/' + req.query.id + '/feed?category=comment';
+    var url = 'https://' + config.server.domain + '/files/oauth/api/userlibrary/' + req.query.uid + '/document/' + req.query.pid + '/feed?category=comment';
 
     var headers = {'Authorization': 'Bearer ' + req.user.accessToken};
 
@@ -300,7 +300,7 @@ router.post('/comments', function(req, res, next){
   if(!req.user)
     res.status(403).end();
 
-  if(isEmpty(req.query.id)){
+  if(isEmpty(req.query.pid)){
     console.log("query not found");
     res.status(412).end();
   } else if(isEmpty(req.query.uid)){
@@ -321,7 +321,7 @@ router.post('/comments', function(req, res, next){
 
       var body = '<?xml version="1.0" encoding="UTF-8"?><entry xmlns="http://www.w3.org/2005/Atom" xmlns:app="http://www.w3.org/2007/app" xmlns:snx="http://www.ibm.com/xmlns/prod/sn"><category scheme="tag:ibm.com,2006:td/type" term="comment" label="comment"/><content type="text">' + req.body.comment + '</content></entry>';
 
-      var url = 'https://' config.server.domain + '/files/oauth/api/userlibrary/' + req.query.uid + '/document/' + req.query.id + '/feed';
+      var url = 'https://' config.server.domain + '/files/oauth/api/userlibrary/' + req.query.uid + '/document/' + req.query.pid + '/feed';
 
       var headers = {
         'Authorization': 'Bearer ' + req.user.accessToken,
