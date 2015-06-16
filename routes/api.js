@@ -62,6 +62,8 @@ router.get('/feed', function(req, res, next){
       // JSON to make parsing easier using the xml2js module for nodejs
       parseString(body, function(err, result){
 
+        fs.writeFile("response.txt", JSON.stringify(result));
+
         // initialize the array of photos we will be sending back
         var photos = [];
 
@@ -105,7 +107,19 @@ router.get('/feed', function(req, res, next){
             var link = entry.link[j];
             var type = link.$.type;
             if(!(type === undefined) && (type.indexOf('image') > -1)){
-              photo.link = link.$.href;
+              photo.image = link.$.href;
+              break;
+            }
+          }
+
+          // the link object contains many links related to the document,
+          // however we want the link to the thumbnail, therefore we will
+          // look for the object with the rel of thumbnail
+          for(var j = 0; j < entry.link.length; j++){
+            var link = entry.link[j];
+            var rel = link.$.rel;
+            if(!(rel === undefined) && (type.indexOf('thumbnail') > -1)){
+              photo.thumbnail = link.$.href;
               break;
             }
           }
@@ -125,6 +139,42 @@ router.get('/feed', function(req, res, next){
       });
     }
   });
+});
+
+router.put('/photo', function(req, res, next){
+  if(!req.user)
+    return res.status(403).end();
+
+  if(isEmpty(req.query.pid) || isEmpty(req.query.title)) {
+    console.log("Query not found");
+    return res.status(412).end();
+  } else {
+    var data = '<title type="text">' + req.query.title + '</title>';
+    if(!isEmpty(req.query.tags)){
+      var array = req.query.tags.split(',');
+      for(var i = 0; i < array.length; i++){
+        data = data + '<category term="' + array[i] + '"/>';
+      }
+    }
+    var body =  '<?xml version="1.0" encoding="UTF-8"?><entry xmlns="http://www.w3.org/2005/Atom" xmlns:app="http://www.w3.org/2007/app" xmlns:snx="http://www.ibm.com/xmlns/prod/sn">' + data + '</entry>';
+    var url = 'https://' + config.server.domain + '/files/oauth/api/myuserlibrary/document/' + req.query.pid + '/entry';
+
+    var headers = {'Authorization' : 'Bearer ' + req.user.accessToken};
+
+    var options = {
+      url: url,
+      headers: headers
+    };
+
+    request.put(options, function(error, response, body){
+      if(error){
+        console.log('Error while updating photo: ' + error);
+        return res.status(500).end();
+      }
+
+      return res.status(200).end();
+    });
+  }
 });
 
 //get photo for retrieving a photo by id
@@ -148,7 +198,7 @@ router.get('/photo', function(req, res, next){
         url: url,
         headers: headers
       };
-      
+
 
       request.get(options, function(error, response, body){
         if(error){
@@ -324,7 +374,7 @@ router.post('/comments', function(req, res, next){
       // we must format the comment into an atom document for the server
       // most of this can just be hardcoded, however in the content tag is
       // where we put our comment
-      var body = '<?xml version="1.0" encoding="UTF-8"?><entry xmlns="http://www.w3.org/2005/Atom" xmlns:app="http://www.w3.org/2007/app" xmlns:snx="http://www.ibm.com/xmlns/prod/sn"><category scheme="tag:ibm.com,2006:td/type" term="comment" label="comment"/><content type="text">' + req.body.comment + '</content></entry>';
+      var body = '<?xml version="1.0" encoding="UTF-8"?><entry xmlns="http://www.w3.org/2005/Atom" xmlns:app="http://www.w3.org/2007/app" xmlns:snx="http://www.ibm.com/xmlns/prod/sn"><category scheme="tag:ibm.com,2006:td/type" term="comment" label="comment"/><content type="text">' + req.body + '</content></entry>';
 
       var url = 'https://' + config.server.domain + '/files/oauth/api/userlibrary/' + req.query.uid + '/document/' + req.query.pid + '/feed';
 
