@@ -148,6 +148,7 @@ router.get('/photo', function(req, res, next){
         url: url,
         headers: headers
       };
+      
 
       request.get(options, function(error, response, body){
         if(error){
