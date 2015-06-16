@@ -22,12 +22,14 @@ a {
 
 .profileButton {
   font-size: 16px;
+  font-weight: bold;
   margin-top: 5px;
   margin-left: 50px;
 }
 
 .uploadButton {
   font-size: 16px;
+  font-weight: bold;
   margin-top: 5px;
   padding-right: 100px;
 }
@@ -59,27 +61,6 @@ a {
   background:transparent;
 }
 
-.row.no-gutter [class*='col-']:not(:first-child):not(:last-child) {
-  padding-right:0;
-  padding-left:0;
-}
-
-.row.no-gutter [class*='col-']:first-child {
-  padding-right:0;
-}
-
-.row.no-gutter [class*='col-']:last-child {
-  padding-left:0;
-}
-
-.imageInfo {
-  height: inherit;
-  width: auto;
-}
-
-.welcome {
-  font-size: 24px;
-}
 
 /* ANIMATIONS
 ============================================================================= */
