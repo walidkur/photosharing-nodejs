@@ -12,21 +12,74 @@ a {
   color: white;
 }
 
-#photoJumbotron{
-
+.navbar-brand{
+  font-size: 36px;
+  position: absolute;
+  left: 50%;
+  margin-left: -150px !important;
+  display:block;
 }
 
-#photoSquare{
-  position:relative;
-  overflow:hidden;
-  padding-bottom:100%;
+.profileButton {
+  font-size: 16px;
+  margin-top: 5px;
+  margin-left: 50px;
 }
 
-#photoPhoto{
-  position:absolute;
+.uploadButton {
+  font-size: 16px;
+  margin-top: 5px;
+  padding-right: 100px;
 }
 
+.glyphicon-upload {
+  padding-right: 6px;
+}
 
+.searchBar {
+  font-size: 14px;
+  padding-top: 10px;
+  padding-left: 0px;
+  padding-right: 50px;
+  width: 300px;
+}
+
+.stylish-input-group .input-group-addon {
+  background: white !important;
+}
+
+.stylish-input-group .form-control {
+  border-right:0;
+  box-shadow:0 0 0;
+  border-color:#ccc;
+}
+
+.stylish-input-group button {
+  border: 0;
+  background:transparent;
+}
+
+.row.no-gutter [class*='col-']:not(:first-child):not(:last-child) {
+  padding-right:0;
+  padding-left:0;
+}
+
+.row.no-gutter [class*='col-']:first-child {
+  padding-right:0;
+}
+
+.row.no-gutter [class*='col-']:last-child {
+  padding-left:0;
+}
+
+.imageInfo {
+  height: inherit;
+  width: auto;
+}
+
+.welcome {
+  font-size: 24px;
+}
 
 /* ANIMATIONS
 ============================================================================= */
