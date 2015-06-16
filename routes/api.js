@@ -17,8 +17,7 @@ var request = require('request');
 var Busboy = require('busboy');
 var fs = require('fs');
 
-
-/* GET home page. */
+// redirect to homepage
 router.get('/', function(req, res, next) {
   res.redirect('/');
 });
@@ -26,7 +25,7 @@ router.get('/', function(req, res, next) {
 //getfeed for home page content
 router.get('/feed', function(req, res, next){
   if(!req.user)
-    res.status(403).end();
+    return res.status(403).end();
 
   //config.server.domain is the domain name of the server (without the https or the directoy i.e example.com)
 
@@ -56,7 +55,7 @@ router.get('/feed', function(req, res, next){
     // of our app so it can be handled
     if(error){
       console.log('Error occured while getting feed from Connections Cloud: ' + error);
-      res.status(500).end();
+      return res.status(500).end();
     } else {
 
       // otherwise, the api returns an xml which can be easily converted to a
@@ -132,12 +131,12 @@ router.get('/feed', function(req, res, next){
 router.get('/photo', function(req, res, next){
 
   if(!req.user)
-    res.status(403).end();
+    return res.status(403).end();
 
   //if no id was passed, return an error code
   if(isEmpty(req.query.pid) || isEmpty(req.query.lid)){
     console.log('query not found');
-    res.status(412).end();
+    return res.status(412).end();
   } else {
       var url = 'https://' + config.server.domain + '/files/oauth/api/library/' + req.query.lid + '/document/' + req.query.pid + '/entry?includeTags=true';
       // we must attach the key we got through passportto the header as
@@ -155,7 +154,7 @@ router.get('/photo', function(req, res, next){
           console.log('photo error: ' + error);
           res.status(500).end();
         } else {
-          //see get feed for more details
+          // see get feed for more details
           parseString(body, function(err, result){
             var photo = {};
             var entry = result.entry;
@@ -198,14 +197,17 @@ router.get('/photo', function(req, res, next){
 
 router.put('/like', function(req, res, next){
   if(!req.user)
-    res.status(403).end();
+    return res.status(403).end();
 
+  // check to ensure the necessary queries are included
   if(isEmpty(req.query.pid) || isEmpty(req.query.lid) || isEmpty(req.query.r)){
     console.log('Query not found');
-    req.status(412).end();
+    return req.status(412).end();
   } else {
+    // we add the recommendation that was passed to the url
     var url = 'https://' + config.server.domain + '/files/oauth/api/library/' + req.query.lid + '/document/' + req.query.pid + '/media?recommendation=' + req.query.r;
 
+    // Oauth header
     var headers = {'Authorization': 'Bearer ' + req.user.accessToken};
 
     var options = {
@@ -216,12 +218,10 @@ router.put('/like', function(req, res, next){
     request.put(options, function(error, response, body){
       if(error){
         console.log('error in putting like: ' + error);
-        res.status(500).end();
+        return res.status(500).end();
       } else {
-        parseString(body, function(err, result){
-          fs.writeFile("Response.txt", JSON.stringify(result));
-          res.send(200).end();
-        });
+        // send back success
+        return res.status(200).end();
       }
     });
   }
@@ -229,15 +229,16 @@ router.put('/like', function(req, res, next){
 
 router.get('/comments', function(req, res, next){
   if(!req.user)
-    res.status(403).end();
+    return res.status(403).end();
 
-  //if no id was passed
-  if(isEmpty(req.query.pid)){
+  //if no id or uid was passed
+  if(isEmpty(req.query.pid) || isEmpty(req.query.uid)){
     console.log("query not found");
-    res.status(412).end();
-  } else if(isEmpty(req.query.uid)){
-    res.status(412).end();
+    return res.status(412).end();
   } else {
+
+    // we need to add category=comment to the end of the url to tell the api
+    // we want the comments on the document back
     var url = 'https://' + config.server.domain + '/files/oauth/api/userlibrary/' + req.query.uid + '/document/' + req.query.pid + '/feed?category=comment';
 
     var headers = {'Authorization': 'Bearer ' + req.user.accessToken};
@@ -250,7 +251,7 @@ router.get('/comments', function(req, res, next){
     request.get(options, function(error, response, body){
       if(error){
         console.log('error in get comment: ' + error);
-        res.status(500).end();
+        return res.status(500).end();
       } else {
         parseString(body, function(err, result){
 
@@ -298,15 +299,15 @@ router.get('/comments', function(req, res, next){
 
 router.post('/comments', function(req, res, next){
   if(!req.user)
-    res.status(403).end();
+    return res.status(403).end();
 
-  if(isEmpty(req.query.pid)){
+  if(isEmpty(req.query.pid) || isEmpty(req.query.uid)){
     console.log("query not found");
-    res.status(412).end();
-  } else if(isEmpty(req.query.uid)){
-    res.status(412).end();
+    return res.status(412).end();
   } else {
 
+    // we must get a nonce from the api server in order to post a comment
+    // see upload for more info
     var url = 'https://' + config.server.domain + '/files/oauth/api/nonce';
 
     var headers = {'Authorization': 'Bearer ' + req.user.accessToken}
@@ -319,10 +320,15 @@ router.post('/comments', function(req, res, next){
     request.get(options, function(error, response, body){
       var nonce = body;
 
+      // we must format the comment into an atom document for the server
+      // most of this can just be hardcoded, however in the content tag is
+      // where we put our comment
       var body = '<?xml version="1.0" encoding="UTF-8"?><entry xmlns="http://www.w3.org/2005/Atom" xmlns:app="http://www.w3.org/2007/app" xmlns:snx="http://www.ibm.com/xmlns/prod/sn"><category scheme="tag:ibm.com,2006:td/type" term="comment" label="comment"/><content type="text">' + req.body.comment + '</content></entry>';
 
       var url = 'https://' + config.server.domain + '/files/oauth/api/userlibrary/' + req.query.uid + '/document/' + req.query.pid + '/feed';
 
+      // we then need to added headers in order to tell the api how to handle
+      // the request
       var headers = {
         'Authorization': 'Bearer ' + req.user.accessToken,
         'Content-Type': 'application/atom+xml',
@@ -330,6 +336,7 @@ router.post('/comments', function(req, res, next){
         'X-Update-Nonce': nonce
       };
 
+      // we then add our atom document to the body of the request
       var options = {
         url: url,
         headers: headers,
@@ -339,10 +346,10 @@ router.post('/comments', function(req, res, next){
       request.post(options, function(error, response, body){
         if(error){
           console.log('error posting comment: ' + error);
-          res.status(500).end();
+          return res.status(500).end();
         }
 
-        res.status(200).end();
+        return res.status(200).end();
       });
     });
 
@@ -353,7 +360,7 @@ router.post('/comments', function(req, res, next){
 router.post('/upload', function(req, res, next){
   // if the user does not exist, send back forbidden
   if(!req.user)
-    res.status(403).end()
+    return res.status(403).end()
 
   // before uploading, we must obtain a nonce, which is a handshake between
   // the api and our server to allow us to post to the server
@@ -372,7 +379,7 @@ router.post('/upload', function(req, res, next){
     // if there was an error log the error and send back an error
     if(error){
       console.log('nonce failed: ' + error);
-      res.status(500).end()
+      return res.status(500).end()
     } else {
 
       // the nonce is returned in the body of the response
@@ -410,7 +417,7 @@ router.post('/upload', function(req, res, next){
           // client
           if(error){
             console.log('upload failed: ' + error);
-            res.status(500).end();
+            return res.status(500).end();
           }
         }));
 
@@ -419,7 +426,7 @@ router.post('/upload', function(req, res, next){
       // when the busboy finishes processing the file, send back an OK status
       // and close the connection
       busboy.on('finish', function(){
-        res.status(200).end();
+        return res.status(200).end();
       });
     }
   });
@@ -427,12 +434,12 @@ router.post('/upload', function(req, res, next){
 
 router.get('/profile', function(req, res, next){
   if(!req.user){
-    res.status(403).end();
+    return res.status(403).end();
   }
 
   if(isEmpty(req.query.uid)){
     console.log('query not found');
-    req.status(412).end()
+    return req.status(412).end()
   } else {
 
     var url = 'https://' + config.server.domain + '/profiles/atom/profile.do?userid=' + req.query.uid;
@@ -444,12 +451,10 @@ router.get('/profile', function(req, res, next){
       headers : headers
     };
 
-    fs.writeFile("Request.txt", JSON.stringify(options));
-
     request.get(options, function(error, response, body){
       if(error){
         console.log('error: ' + error);
-        res.status(500).end();
+        return res.status(500).end();
       }
 
       parseString(body, function(err, result){
