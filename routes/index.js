@@ -21,9 +21,14 @@ var passport = require('passport');
 
 /* GET home page. */
 router.get('/', function(req, res, next) {
-  if(req.user)
+  if(req.user){
+    var cookie = {
+      'displayName' : req.user.displayName,
+      'uid' : req.user.userid
+    };
+    res.cookie('user', JSON.stringify(cookie));
     res.render('index');
-  else
+  } else
     next();
 }, passport.authenticate('ibm-connections-cloud'));
 
