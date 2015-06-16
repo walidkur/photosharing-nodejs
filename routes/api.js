@@ -62,6 +62,8 @@ router.get('/feed', function(req, res, next){
       // JSON to make parsing easier using the xml2js module for nodejs
       parseString(body, function(err, result){
 
+        fs.writeFile("response.txt", JSON.stringify(result));
+
         // initialize the array of photos we will be sending back
         var photos = [];
 
@@ -105,7 +107,19 @@ router.get('/feed', function(req, res, next){
             var link = entry.link[j];
             var type = link.$.type;
             if(!(type === undefined) && (type.indexOf('image') > -1)){
-              photo.link = link.$.href;
+              photo.image = link.$.href;
+              break;
+            }
+          }
+
+          // the link object contains many links related to the document,
+          // however we want the link to the thumbnail, therefore we will
+          // look for the object with the rel of thumbnail
+          for(var j = 0; j < entry.link.length; j++){
+            var link = entry.link[j];
+            var rel = link.$.rel;
+            if(!(rel === undefined) && (type.indexOf('thumbnail') > -1)){
+              photo.thumbnail = link.$.href;
               break;
             }
           }
@@ -184,7 +198,7 @@ router.get('/photo', function(req, res, next){
         url: url,
         headers: headers
       };
-      
+
 
       request.get(options, function(error, response, body){
         if(error){
