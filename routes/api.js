@@ -127,6 +127,34 @@ router.get('/feed', function(req, res, next){
   });
 });
 
+router.put('/photo', function(req, res, next){
+  if(!req.user)
+    return res.status(403).end();
+
+  if(isEmpty(req.query.lid) || isEmpty(req.query.pid)) {
+    console.log("Query not found");
+    return res.status(412).end();
+  } else {
+    var url = 'https://' + config.server.domain + '/files/oauth/api/library/' + req.query.lid + '/document/' + req.query.pid + '/media?recommendation=' + req.query.r;
+
+    var headers = {'Authorization' : 'Bearer ' + req.user.accessToken};
+
+    var options = {
+      url: url,
+      headers: headers
+    };
+
+    request.put(options, function(error, response, body){
+      if(error){
+        console.log('Error while updating photo: ' + error);
+        return res.status(500).end();
+      }
+
+      return res.status(200).end();
+    });
+  }
+});
+
 //get photo for retrieving a photo by id
 router.get('/photo', function(req, res, next){
 
@@ -323,7 +351,7 @@ router.post('/comments', function(req, res, next){
       // we must format the comment into an atom document for the server
       // most of this can just be hardcoded, however in the content tag is
       // where we put our comment
-      var body = '<?xml version="1.0" encoding="UTF-8"?><entry xmlns="http://www.w3.org/2005/Atom" xmlns:app="http://www.w3.org/2007/app" xmlns:snx="http://www.ibm.com/xmlns/prod/sn"><category scheme="tag:ibm.com,2006:td/type" term="comment" label="comment"/><content type="text">' + req.body.comment + '</content></entry>';
+      var body = '<?xml version="1.0" encoding="UTF-8"?><entry xmlns="http://www.w3.org/2005/Atom" xmlns:app="http://www.w3.org/2007/app" xmlns:snx="http://www.ibm.com/xmlns/prod/sn"><category scheme="tag:ibm.com,2006:td/type" term="comment" label="comment"/><content type="text">' + req.body + '</content></entry>';
 
       var url = 'https://' + config.server.domain + '/files/oauth/api/userlibrary/' + req.query.uid + '/document/' + req.query.pid + '/feed';
 
