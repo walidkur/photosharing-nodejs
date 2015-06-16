@@ -1,15 +1,20 @@
-<h1>Welcome to the Home page!</h1>
-<h2>Home</h2>
+<body  ng-app="photoApp">
 
-<a href="#profile" class="btn btn-success btn-lg">Profile</a>
-<a href="#photo" class="btn btn-success btn-lg">Photo</a>
+<h1></h1>
 
+<div class="container-fluid">
+  <div class="row no-gutter">
 
+    <div ng-repeat="entry in data" class="col-xs-8 col-s-4 col-md-2"><img class="imageInfo img-responsive" src={{entry.link}}></img></div>
 
-<div class="row" ng-repeat="entry in data">
+    <!-- <div ng-repeat="entry in data">
+      <h1>{{entry.id}}</h1>
+      <h1>{{entry.photographer}}</h1>
+      <h1>{{entry.tags}}</h1>
+      <h1>{{entry.title}}</h1>
+      <h1>{{entry.published}}</h1>
+    </div> -->
 
-  <div class="col-sm-2">
-  <a href="#/photo/{{entry.libraryid}}/{{entry.id}}"><img src={{entry.link}}></img></a>
   </div>
-
 </div>
+</body>

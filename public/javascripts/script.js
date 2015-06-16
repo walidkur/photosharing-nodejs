@@ -11,13 +11,13 @@ photoApp.config(function($routeProvider) {
   })
 
   // route for the about page
-  .when('/photo/:libraryid/:id', {
+  .when('/photo/:lid/:pid', {
     templateUrl : 'pages/page-photo.html',
     controller  : 'photoController'
   })
 
   // route for the contact page
-  .when('/profile', {
+  .when('/profile/:uid', {
     templateUrl : 'pages/page-profile.html',
     controller  : 'profileController'
   });
@@ -48,16 +48,14 @@ photoApp.controller('homeController', function($scope, $http, $route, $routePara
 
     $scope.pageClass = 'page-photo';
 
-    console.log("photo is working!");
-
     var getPhoto = function(){
 
       $http({
         method:'GET',
-        url:'/api/photo?lid=' + $routeParams.libraryid + '&id=' + $routeParams.id
+        url:'/api/photo?lid=' + $routeParams.lid + '&pid=' + $routeParams.pid
       }).success(function(data, status){
         $scope.photo = data;
-        $scope.getComments(data.userid);
+        $scope.getComments(data.uid);
       });
 
     }
@@ -66,11 +64,28 @@ photoApp.controller('homeController', function($scope, $http, $route, $routePara
 
       $http({
         method:'GET',
-        url:'/api/comments?lid=' + userid + '&id=' + $routeParams.id
+        url:'/api/comments?uid=' + userid + '&pid=' + $routeParams.pid
       }).success(function(data, status){
+
+        for(var i = 0; i < data.length; i++){
+          data[i].date = new Date(data[i].date);
+          data[i].date = (data[i].date.getMonth() + 1) + '/' + data[i].date.getDate() + '/' + data[i].date.getFullYear();
+        }
+
         $scope.comments = data;
+
       });
 
+    }
+
+    $scope.addComment = function(){
+      $http({
+        method: 'POST',
+        url: '/api/comments?uid=' + $scope.photo.uid + '&pid=' + $routeParams.pid,
+        data: {comment: $scope.content},
+      }).success(function(data, status){
+        $scope.getComments($scope.photo.uid);
+      });
     }
 
     getPhoto();
@@ -78,6 +93,19 @@ photoApp.controller('homeController', function($scope, $http, $route, $routePara
   });
 
   photoApp.controller('profileController', function($scope) {
+
     $scope.pageClass = 'page-profile';
-    $scope.message = 'Contact us! JK. This is just a demo.';
+
+    var getProfile = function(){
+
+      $http({
+        method:'GET',
+        url:'/api/profile?uid=' + $routeParams.uid,
+      }).success(function(data, status){
+        $scope.profile = data;
+      });
+    }
+
+    getProfile();
+
   });
