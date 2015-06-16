@@ -1,4 +1,4 @@
-var photoApp = angular.module('photoApp', ['ngRoute', 'ngAnimate']);
+var photoApp = angular.module('photoApp', ['ngRoute', 'ngAnimate', 'ngCookies']);
 
 // configure our routes
 photoApp.config(function($routeProvider) {
@@ -30,16 +30,7 @@ photoApp.controller('homeController', function($scope, $http, $route, $routePara
   var imgPixels = 0;
   var screenHeight = window.screen.height;
 
-  imgPixels = screenHeight * .35;
-
-  // $(window).resize(function () {
-  //   var screenHeight = window.screen.height;
-  //   imgPixels = screenHeight * .25;
-  //   $("#mygallery").justifiedGallery({
-  //     rowHeight : imgPixels,
-  //     margins: 10
-  //   });
-  // });
+  imgPixels = screenHeight * .25;
 
   var getFeed = function(){
 
@@ -127,5 +118,11 @@ photoApp.controller('homeController', function($scope, $http, $route, $routePara
     }
 
     getProfile();
+
+  });
+
+  photoApp.controller('navbarController', function($scope, $http, $route, $routeParams, $cookies){
+
+      console.log($cookies.get('user'));
 
   });
