@@ -2,10 +2,18 @@
 
 <h1></h1>
 
-<div class="container-fluid">
+
+<div id="mygallery">
+  <div ng-repeat="entry in data">
+    <img src="{{entry.link}}"/>
+  </div>
+</div>
+
+
+<!-- <div class="container-fluid">
   <div class="row no-gutter">
 
-    <div ng-repeat="entry in data" class="col-xs-8 col-s-4 col-md-2"><img class="imageInfo img-responsive" src={{entry.link}}></img></div>
+    <div ng-repeat="entry in data" class="col-xs-8 col-s-4 col-md-2"><img class="imageInfo img-responsive" src={{entry.link}}></img></div> -->
 
     <!-- <div ng-repeat="entry in data">
       <h1>{{entry.id}}</h1>
@@ -15,6 +23,6 @@
       <h1>{{entry.published}}</h1>
     </div> -->
 
-  </div>
-</div>
+  <!-- </div>
+</div> -->
 </body>

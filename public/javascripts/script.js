@@ -27,7 +27,19 @@ photoApp.config(function($routeProvider) {
 photoApp.controller('homeController', function($scope, $http, $route, $routeParams) {
 
   $scope.pageClass = 'page-home';
+  var imgPixels = 0;
+  var screenHeight = window.screen.height;
 
+  imgPixels = screenHeight * .35;
+
+  // $(window).resize(function () {
+  //   var screenHeight = window.screen.height;
+  //   imgPixels = screenHeight * .25;
+  //   $("#mygallery").justifiedGallery({
+  //     rowHeight : imgPixels,
+  //     margins: 10
+  //   });
+  // });
 
   var getFeed = function(){
 
@@ -36,11 +48,19 @@ photoApp.controller('homeController', function($scope, $http, $route, $routePara
       url:'/api/feed'
     }).success(function(data, status){
       $scope.data = data;
+      angular.element(document).ready(function() {
+        $("#mygallery").justifiedGallery({
+          rowHeight : imgPixels,
+          margins: 10
+        });
+      });
+
     });
 
   }
 
   getFeed();
+
 
   });
 
