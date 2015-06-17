@@ -28,7 +28,7 @@ router.get('/feed', function(req, res, next){
 
   //config.server.domain is the domain name of the server (without the https or the directoy i.e example.com)
 
-  var url = 'https://' + config.server.domain + '/files/oauth/api/documents/feed?visibility=public&includeTags=true';
+  var url = 'https://' + config.server.domain + '/files/oauth/api/documents/feed?visibility=public&includeTags=true&ps=25';
 
   //if query parameters exist, append them onto the url
   if(!isEmpty(req.query.q)){
