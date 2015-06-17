@@ -123,6 +123,8 @@ photoApp.controller('homeController', function($scope, $http, $route, $routePara
 
   photoApp.controller('navbarController', function($scope, $http, $route, $routeParams, $cookies){
 
-      console.log($cookies.get('user'));
+      $scope.cookie = JSON.parse($cookies.get('user'));
+      $scope.displayName = $scope.cookie.displayName;
+      $scope.uid = $scope.cookie.uid;
 
   });
