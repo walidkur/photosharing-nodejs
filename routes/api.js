@@ -24,7 +24,7 @@ router.get('/', function(req, res, next) {
 //getfeed for home page content
 router.get('/feed', function(req, res, next){
   if(!req.user)
-    return res.status(403).end();
+    return res.status(401).end();
 
   //config.server.domain is the domain name of the server (without the https or the directoy i.e example.com)
 
@@ -140,7 +140,7 @@ router.get('/feed', function(req, res, next){
 
 router.put('/photo', function(req, res, next){
   if(!req.user)
-    return res.status(403).end();
+    return res.status(401).end();
 
   if(isEmpty(req.query.pid) || isEmpty(req.query.title)) {
     console.log("Query not found");
@@ -178,7 +178,7 @@ router.put('/photo', function(req, res, next){
 router.get('/photo', function(req, res, next){
 
   if(!req.user)
-    return res.status(403).end();
+    return res.status(401).end();
 
   //if no id was passed, return an error code
   if(isEmpty(req.query.pid) || isEmpty(req.query.lid)){
@@ -245,7 +245,7 @@ router.get('/photo', function(req, res, next){
 
 router.put('/like', function(req, res, next){
   if(!req.user)
-    return res.status(403).end();
+    return res.status(401).end();
 
   // check to ensure the necessary queries are included
   if(isEmpty(req.query.pid) || isEmpty(req.query.lid) || isEmpty(req.query.r)){
@@ -277,7 +277,7 @@ router.put('/like', function(req, res, next){
 
 router.get('/comments', function(req, res, next){
   if(!req.user)
-    return res.status(403).end();
+    return res.status(401).end();
 
   //if no id or uid was passed
   if(isEmpty(req.query.pid) || isEmpty(req.query.uid)){
@@ -347,7 +347,7 @@ router.get('/comments', function(req, res, next){
 
 router.post('/comments', function(req, res, next){
   if(!req.user)
-    return res.status(403).end();
+    return res.status(401).end();
 
   if(isEmpty(req.query.pid) || isEmpty(req.query.uid)){
     console.log("query not found");
@@ -408,7 +408,7 @@ router.post('/comments', function(req, res, next){
 router.post('/upload', function(req, res, next){
   // if the user does not exist, send back forbidden
   if(!req.user)
-    return res.status(403).end()
+    return res.status(401).end()
 
   // before uploading, we must obtain a nonce, which is a handshake between
   // the api and our server to allow us to post to the server
@@ -482,7 +482,7 @@ router.post('/upload', function(req, res, next){
 
 router.get('/profile', function(req, res, next){
   if(!req.user){
-    return res.status(403).end();
+    return res.status(401).end();
   }
 
   if(isEmpty(req.query.uid)){
