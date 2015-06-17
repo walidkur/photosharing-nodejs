@@ -10,7 +10,7 @@
   <nav ng-controller="navbarController" style="background-color:#1D3261" class="navbar navbar-default navbar-fixed-top">
 
     <div class="row"> -->
-<nav class="navbar navbar-inverse navbar-fixed-top" role="navigation">
+<nav ng-controller="navbarController" class="navbar navbar-inverse navbar-fixed-top" role="navigation">
   <div class="container-fluid">
     <div class="navbar-header">
       <button type="button" class="navbar-toggle" data toggle="collapse" data-target=".navbar-collapse">
@@ -21,9 +21,9 @@
     </div>
     <div class="navbar-collapse collapse">
       <ul class="nav navbar-nav navbar-left">
-        <li class="profileButton"><a href="#">Profile</a></li>
+        <li class="profileButton"><a href="#/profile/{{uid}}">{{displayName}}</a></li>
       </ul>
-      <a class="navbar-brand" href="#">PhotoNode</a>
+      <a class="navbar-brand" href="/#/">PhotoNode</a>
       <ul class="nav navbar-nav navbar-right">
         <li class="uploadButton"><a href="#"><span class="glyphicon glyphicon-upload"></span>Upload</a></li>
         <li class="searchBar">

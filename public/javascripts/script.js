@@ -103,7 +103,7 @@ photoApp.controller('homeController', function($scope, $http, $route, $routePara
 
   });
 
-  photoApp.controller('profileController', function($scope) {
+  photoApp.controller('profileController', function($scope, $http, $routeParams) {
 
     $scope.pageClass = 'page-profile';
 
@@ -114,6 +114,7 @@ photoApp.controller('homeController', function($scope, $http, $route, $routePara
         url:'/api/profile?uid=' + $routeParams.uid,
       }).success(function(data, status){
         $scope.profile = data;
+        console.log(data);
       });
     }
 
@@ -123,6 +124,9 @@ photoApp.controller('homeController', function($scope, $http, $route, $routePara
 
   photoApp.controller('navbarController', function($scope, $http, $route, $routeParams, $cookies){
 
-      console.log($cookies.get('user'));
+      $scope.cookie = JSON.parse($cookies.get('user'));
+      $scope.displayName = $scope.cookie.displayName;
+      $scope.uid = $scope.cookie.uid;
+
 
   });

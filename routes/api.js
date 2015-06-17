@@ -530,7 +530,7 @@ router.get('/profile', function(req, res, next){
         // iterate through the links to find the image that represents the
         // profile picture
         for(var i = 0; i < entry.link.length; i++){
-          if(entry.link[i].$.type.indexOf(image) > -1){
+          if(entry.link[i].$.type.indexOf('image') > -1){
             profile.img = entry.link[i].$.href;
             break;
           }
