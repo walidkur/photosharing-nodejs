@@ -34,5 +34,6 @@ router.get('/', function(req, res, next) {
 
 router.get('/callback', passport.authenticate('ibm-connections-cloud', {successReturnToOrRedirect:'/', failureRedirect: '/'}));
 
+router.post('/login', passport.authenticate('local'));
 
 module.exports = router;

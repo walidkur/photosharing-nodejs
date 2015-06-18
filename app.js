@@ -43,8 +43,13 @@ app.use(express.static(path.join(__dirname, 'public')));
 app.use(session({secret: 'ibmsecret'}));
 app.use(passport.initialize());
 app.use(passport.session());
+
+//used for testing
+require('./config/mock-passport.js')(passport);
+
+//used for production
 //reference our passport config file
-require ('./config/passport.js')(passport);
+// require ('./config/passport.js')(passport);
 
 app.use('/', index);
 app.use('/api', api);
