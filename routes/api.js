@@ -15,7 +15,6 @@ var config = require('../config/server');
 var parseString = require('xml2js').parseString;
 var request = require('request');
 var Busboy = require('busboy');
-var fs = require('fs');
 
 // redirect to homepage
 router.get('/', function(req, res, next) {
@@ -61,7 +60,6 @@ router.get('/feed', function(req, res, next){
       // otherwise, the api returns an xml which can be easily converted to a
       // JSON to make parsing easier using the xml2js module for nodejs
       parseString(body, function(err, result){
-        fs.writeFile("Response.txt", JSON.stringify(result));
 
         // initialize the array of photos we will be sending back
         var photos = [];
@@ -119,6 +117,7 @@ router.get('/feed', function(req, res, next){
             var rel = link.$.rel;
             if(!(rel === undefined) && (rel.indexOf('thumbnail') > -1)){
               photo.thumbnail = link.$.href;
+              photo.thumbnail = photo.thumbnail.replace(/medium/i, 'large');
               break;
             }
           }
