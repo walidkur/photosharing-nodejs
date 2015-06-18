@@ -32,6 +32,7 @@ router.get('/', function(req, res, next) {
     next();
 }, passport.authenticate('ibm-connections-cloud'));
 
+
 router.get('/callback', passport.authenticate('ibm-connections-cloud', {successReturnToOrRedirect:'/', failureRedirect: '/'}));
 
 
