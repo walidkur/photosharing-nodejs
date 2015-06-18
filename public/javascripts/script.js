@@ -114,11 +114,20 @@ photoApp.controller('homeController', function($scope, $http, $route, $routePara
         url:'/api/profile?uid=' + $routeParams.uid,
       }).success(function(data, status){
         $scope.profile = data;
-        console.log(data);
+      });
+    }
+
+    var getUploadFeed = function(){
+      $http({
+        method:'GET',
+        url:'/api/feed?uid=' + $routeParams.uid,
+      }).success(function(data, status){
+        $scope.uploadFeed = data;
       });
     }
 
     getProfile();
+    getUploadFeed();
 
   });
 
@@ -127,6 +136,8 @@ photoApp.controller('homeController', function($scope, $http, $route, $routePara
       $scope.cookie = JSON.parse($cookies.get('user'));
       $scope.displayName = $scope.cookie.displayName;
       $scope.uid = $scope.cookie.uid;
+
+
 
 
   });
