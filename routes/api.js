@@ -117,6 +117,7 @@ router.get('/feed', function(req, res, next){
             var rel = link.$.rel;
             if(!(rel === undefined) && (rel.indexOf('thumbnail') > -1)){
               photo.thumbnail = link.$.href;
+              photo.thumbnail = photo.thumbnail.replace(/medium/i, 'large');
               break;
             }
           }
