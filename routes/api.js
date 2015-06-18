@@ -26,13 +26,20 @@ router.get('/feed', function(req, res, next){
   if(!req.user)
     return res.status(401).end();
 
-  //config.server.domain is the domain name of the server (without the https or the directoy i.e example.com)
+  var url;
 
-  var url = 'https://' + config.server.domain + '/files/oauth/api/documents/feed?visibility=public&includeTags=true&ps=20';
+  if(isEmpty(req.query.uid)){
 
-  //if query parameters exist, append them onto the url
-  if(!isEmpty(req.query.q)){
-    url = url + '?tag=' + req.query.q;
+    //config.server.domain is the domain name of the server (without the https or the directoy i.e example.com)
+    url = 'https://' + config.server.domain + '/files/oauth/api/documents/feed?visibility=public&includeTags=true&ps=20';
+
+    //if query parameters exist, append them onto the url
+    if(!isEmpty(req.query.q)){
+      url = url + '?tag=' + req.query.q;
+    }
+
+  } else {
+    url = 'https://' + config.server.domain + '/files/oauth/api/userlibrary/' + req.query.uid + '/feed';
   }
 
   var headers = {};
