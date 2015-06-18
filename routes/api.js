@@ -68,9 +68,16 @@ router.get('/feed', isAuth, function(req, res, next){
       return res.status(500).end();
     } else {
 
+      console.log('Response: ' + JSON.stringify(body));
+
       // otherwise, the api returns an xml which can be easily converted to a
       // JSON to make parsing easier using the xml2js module for nodejs
       parseString(body, function(err, result){
+
+        if(err)
+          return console.log('Error: ' + err);
+
+        console.log('Parsed result: ' + result);
 
         // initialize the array of photos we will be sending back
         var photos = [];

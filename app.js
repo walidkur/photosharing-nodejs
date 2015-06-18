@@ -54,6 +54,20 @@ require('./config/mock-passport.js')(passport);
 app.use('/', index);
 app.use('/api', api);
 
+//used for testing
+var fs = require('fs');
+var response = {};
+response.feed = fs.readFileSync('./test/responses/feed.xml', 'utf8')
+
+var nock = require('nock'),
+    config = require('./config/server.js');
+
+console.log(response.feed);
+
+var connectionsapi = nock('https://' + config.server.domain)
+                      .get('/files/oauth/api/documents/feed?visibility=public&includeTags=true&ps=20')
+                      .reply(200, response.feed);
+
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
   var err = new Error('Not Found');
