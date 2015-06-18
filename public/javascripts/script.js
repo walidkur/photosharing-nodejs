@@ -101,7 +101,7 @@ photoApp.controller('homeController', function($scope, $http, $route, $routePara
 
         for(var i = 0; i < data.length; i++){
           data[i].date = new Date(data[i].date);
-          data[i].date = (data[i].date.getMonth() + 1) + '/' + data[i].date.getDate() + '/' + data[i].date.getFullYear();
+          data[i].date = data[i].date.toLocaleDateString();
         }
 
         $scope.comments = data;
