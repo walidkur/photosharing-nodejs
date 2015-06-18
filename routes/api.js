@@ -15,7 +15,6 @@ var config = require('../config/server');
 var parseString = require('xml2js').parseString;
 var request = require('request');
 var Busboy = require('busboy');
-var fs = require('fs');
 
 function isAuth(req, res, next){
   if(!req.user)
@@ -36,7 +35,7 @@ router.get('/feed', isAuth, function(req, res, next){
   if(isEmpty(req.query.uid)){
 
     //config.server.domain is the domain name of the server (without the https or the directoy i.e example.com)
-    url = 'https://' + config.server.domain + '/files/oauth/api/documents/feed?visibility=public&includeTags=true&ps=20';
+    url = 'https://' + config.server.domain + '/files/oauth/api/documents/feed?visibility=public&includeTags=true&ps=5';
 
     //if query parameters exist, append them onto the url
     if(!isEmpty(req.query.q)){
@@ -68,8 +67,6 @@ router.get('/feed', isAuth, function(req, res, next){
       console.log('Error occured while getting feed from Connections Cloud: ' + error);
       return res.status(500).end();
     } else {
-
-      fs.writeFile("Response.txt", body);
 
       // otherwise, the api returns an xml which can be easily converted to a
       // JSON to make parsing easier using the xml2js module for nodejs
@@ -164,15 +161,17 @@ router.put('/photo', isAuth, function(req, res, next){
     console.log("Query not found");
     return res.status(412).end();
   } else {
+    var url = 'https://' + config.server.domain + '/files/oauth/api/myuserlibrary/document/' + req.query.pid + '/entry';
+
     var data = '<title type="text">' + req.query.title + '</title>';
     if(!isEmpty(req.query.tags)){
-      var array = req.query.tags.split(',');
-      for(var i = 0; i < array.length; i++){
-        data = data + '<category term="' + array[i] + '"/>';
-      }
+      url = url + '?tag=' + req.query.tags;
+      // var array = req.query.tags.split(',');
+      // for(var i = 0; i < array.length; i++){
+      //   data = data + '<category term="' + array[i] + '"/>';
+      // }
     }
     var body =  '<?xml version="1.0" encoding="UTF-8"?><entry xmlns="http://www.w3.org/2005/Atom" xmlns:app="http://www.w3.org/2007/app" xmlns:snx="http://www.ibm.com/xmlns/prod/sn">' + data + '</entry>';
-    var url = 'https://' + config.server.domain + '/files/oauth/api/myuserlibrary/document/' + req.query.pid + '/entry';
 
     var headers = {'Authorization' : 'Bearer ' + req.user.accessToken};
 
