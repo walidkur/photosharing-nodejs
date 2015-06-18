@@ -1,17 +1,63 @@
 # About
 
-This project provides a sample application that leverages the [IBM Connections Cloud APIs](https://developer.ibm.com/social/) to create a social photo sharing experience. The application can be easily deployed to IBM Bluemix or it can be deployed on it's own.
+This project provides a sample application that leverages the [IBM Connections Cloud APIs](https://developer.ibm.com/social/) to create a social photo sharing experience. The application can be easily deployed to IBM Bluemix or it can be deployed on its own.
 
 # Dependencies
 
 A listing of the major components used in the application. Note that a number of these libraries require additional dependencies please refer to package.json and bower.json for a more comprehensive list.
 
-[Request](https://github.com/request/request)
-[Passport](https://github.com/jaredhanson/passport)
-[Passport-IBM-Connect](https://github.com/benkroeger/passport-ibm-connections-cloud)
-[Bootstrap](https://github.com/twbs/bootstrap)
-[Bower](https://github.com/bower/bower)
-[Angular](https://github.com/angular/angular.js)
+###### Server and Package Management
+* [Node / npm](https://nodejs.org)
+* [Bower](http://bower.io/)
+
+###### Javascript and CSS Libraries
+* [Angular](https://github.com/angular/angular.js)
+* [Bootstrap](https://github.com/twbs/bootstrap)
+
+###### Node Modules
+* [Express](https://github.com/https://github.com/strongloop/express)
+* [Passport](https://github.com/jaredhanson/passport)
+* [Passport-IBM-Connect](https://github.com/benkroeger/passport-ibm-connections-cloud)
+* [Request](https://github.com/request/request)
+* [xml2js](https://github.com/Leonidas-from-XIV/node-xml2js)
+
+# Installation
+
+*Prerequisite*: Ensure you have [Node](https://nodejs.org) and [Bower](http://bower.io/) installed on your machine.
+
+1. In terminal clone github repository.  
+`git clone https://github.com/ibmcnxdev/photosharing-nodejs.git`  
+
+2. Move into the cloned directory.    
+`cd photosharing-nodejs`  
+
+3. Install Node modules via Node Package Manager.    
+`npm install`  
+
+4. Install Bower componenets.  
+`bower install`  
+
+5. Create new file named `server.js` for server credentials.  
+`touch server.js config/` 
+
+6. In `server.js` add the following code and pass your credentials into the appropriate fields.
+```
+var server = {
+
+callback: '',
+clientSecret: '',
+clientID: '',
+domain: '',
+
+};
+
+exports.server = server;`
+```
+*If running locally*:  
+
+7. Start app with Node.  
+`node bin/www`  
+8. App is now running! Direct browser to `localhost.com:3000`.  
 
 # License
 
