@@ -446,7 +446,7 @@ router.post('/upload', isAuth, function(req, res, next){
       // obtains from the page) it will then pip the file to a request to the
       // api server
       busboy.on('file', function(fieldname, file, filename, encoding, mimetype){
-        var url = 'https://' + server.domain + '/files/oauth/api/myuserlibrary/feed';
+        var url = 'https://' + server.domain + '/files/oauth/api/myuserlibrary/feed?visibility=public';
 
         // the slug is used to tell the api what it should call the file
         var slug = filename;
