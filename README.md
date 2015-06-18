@@ -38,7 +38,7 @@ A listing of the major components used in the application. Note that a number of
 `bower install`  
 
 5. Create new file named `server.js` for server credentials.  
-`touch server.js config/` 
+`touch config/server.js` 
 
 6. In `server.js` add the following code and pass your credentials into the appropriate fields.
 ```
