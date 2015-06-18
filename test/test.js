@@ -20,8 +20,7 @@ describe('Get feed', function(){
          .expect(200)
          .end(function(err, res){
            if (err) return done(err);
-           console.log('Test Response Body: ' + res.body);
-           done();
+           return done();
          })
   })
 })

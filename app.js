@@ -62,8 +62,6 @@ response.feed = fs.readFileSync('./test/responses/feed.txt', 'utf8')
 var nock = require('nock'),
     config = require('./config/server.js');
 
-console.log(response.feed);
-
 var connectionsapi = nock('https://' + config.server.domain)
                       .get('/files/oauth/api/documents/feed?visibility=public&includeTags=true&ps=20')
                       .reply(200, response.feed);
