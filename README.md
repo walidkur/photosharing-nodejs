@@ -4,7 +4,7 @@ This project provides a sample application that leverages the [IBM Connections C
 
 # Dependencies
 
-A listing of the major components used in the application. Note that a number of these libraries require additional dependencies please refer to package.json and bower.json for a more comprehensive list.
+A listing of the major components used in the application. Note that a number of these libraries require additional dependencies please refer to [package.json](https://github.com/ibmcnxdev/photosharing-nodejs/blob/master/package.json) and [bower.json](https://github.com/ibmcnxdev/photosharing-nodejs/blob/master/bower.json) for a more comprehensive list.
 
 ###### Server and Package Management
 * [Node / npm](https://nodejs.org)
@@ -13,13 +13,13 @@ A listing of the major components used in the application. Note that a number of
 ###### Javascript and CSS Libraries
 * [Angular](https://github.com/angular/angular.js)
 * [Bootstrap](https://github.com/twbs/bootstrap)
+* [Justified-Gallery](https://github.com/miromannino/Justified-Gallery)
 
 ###### Node Modules
 * [Express](https://github.com/https://github.com/strongloop/express)
 * [Passport](https://github.com/jaredhanson/passport)
 * [Passport-IBM-Connect](https://github.com/benkroeger/passport-ibm-connections-cloud)
 * [Request](https://github.com/request/request)
-* [xml2js](https://github.com/Leonidas-from-XIV/node-xml2js)
 
 # Installation
 
@@ -57,6 +57,7 @@ exports.server = server;`
 
 7. Start app with Node.  
 `node bin/www`  
+
 8. App is now running! Direct browser to `localhost.com:3000`.  
 
 # License
