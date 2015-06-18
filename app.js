@@ -43,11 +43,28 @@ app.use(express.static(path.join(__dirname, 'public')));
 app.use(session({secret: 'ibmsecret'}));
 app.use(passport.initialize());
 app.use(passport.session());
+
+
+//used for production
 //reference our passport config file
 require ('./config/passport.js')(passport);
 
 app.use('/', index);
 app.use('/api', api);
+
+//used for testing
+/* require('./config/mock-passport.js')(passport);
+var fs = require('fs');
+var response = {};
+response.feed = fs.readFileSync('./test/responses/feed.txt', 'utf8')
+
+var nock = require('nock'),
+    config = require('./config/server.js');
+
+var connectionsapi = nock('https://' + config.server.domain)
+                      .get('/files/oauth/api/documents/feed?visibility=public&includeTags=true&ps=20')
+                      .reply(200, response.feed);
+*/
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
