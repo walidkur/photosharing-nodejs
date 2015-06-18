@@ -57,7 +57,7 @@ app.use('/api', api);
 //used for testing
 var fs = require('fs');
 var response = {};
-response.feed = fs.readFileSync('./test/responses/feed.xml', 'utf8')
+response.feed = fs.readFileSync('./test/responses/feed.txt', 'utf8')
 
 var nock = require('nock'),
     config = require('./config/server.js');

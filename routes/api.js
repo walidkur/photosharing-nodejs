@@ -15,6 +15,7 @@ var config = require('../config/server');
 var parseString = require('xml2js').parseString;
 var request = require('request');
 var Busboy = require('busboy');
+var fs = require('fs');
 
 function isAuth(req, res, next){
   if(!req.user)
@@ -68,7 +69,7 @@ router.get('/feed', isAuth, function(req, res, next){
       return res.status(500).end();
     } else {
 
-      console.log('Response: ' + JSON.stringify(body));
+      fs.writeFile("Response.txt", body);
 
       // otherwise, the api returns an xml which can be easily converted to a
       // JSON to make parsing easier using the xml2js module for nodejs
