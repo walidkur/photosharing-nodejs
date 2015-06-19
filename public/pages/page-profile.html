@@ -3,3 +3,5 @@
 <h1>Welcome to your profile {{profile.name}}!</h1>
 
 <img src={{profile.img}}></img>
+
+<img ng-repeat="img in uploadFeed" src="{{img.thumbnail}}"/>

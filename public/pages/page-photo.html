@@ -1,24 +1,27 @@
-<h1>Welcome to the Photo page!</h1>
-<h2>Photo</h2>
+<div class="container" align="middle">
 
-<div class="jumbotron">
-  <div align="center">
+  <h3>{{photo.title}}</h3>
+  <img src="{{photo.link}}"/>
 
-    <img src="{{photo.link}}">
-    </img>
 
-    <div ng-repeat="comment in comments">
-      {{comment.author}}
-      {{comment.content}}
-      {{comment.date}}
-    </div>
+  <ul class="media-list">
+    <li class="media" ng-repeat="comment in comments">
+      <div class="media-left">
+        <a href="#">
+          <img class="media-object" src="http://brandonmathis.com/projects/fancy-avatars/demo/images/avatar_male_dark_on_clear_200x200.png">
+        </a>
+      </div>
+      <div class="media-body">
+        <h4 class="media-heading">{{comment.date}}</h4>
+        {{comment.content}}
+      </div>
+    </li>
+  </ul>
 
-  </div>
 
   <form>
 
     <div class="form-group">
-
 
       <input type="text" class="form-control" ng-model="content" placeholder="Add comment">
       <button type="submit" class="btn btn-default" ng-click="addComment()">Submit</button>
@@ -26,4 +29,6 @@
     </div>
 
   </form>
+
+
 </div>
