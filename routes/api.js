@@ -83,6 +83,9 @@ router.get('/feed', isAuth, function(req, res, next){
         // get the actual entries object in the response
         var entries = result.feed.entry;
 
+        if(isEmpty(entries))
+          return photos;
+
         // iterate over the entries to send back each photo that was returned
         for(var i = 0; i < entries.length; i++){
           var photo = {};
