@@ -35,7 +35,7 @@ router.get('/feed', isAuth, function(req, res, next){
   if(isEmpty(req.query.uid)){
 
     //config.server.domain is the domain name of the server (without the https or the directoy i.e example.com)
-    url = 'https://' + config.server.domain + '/files/oauth/api/documents/feed?visibility=public&includeTags=true&ps=5';
+    url = 'https://' + config.server.domain + '/files/oauth/api/documents/feed?visibility=public&includeTags=true&ps=20';
 
     //if query parameters exist, append them onto the url
     if(!isEmpty(req.query.q)){

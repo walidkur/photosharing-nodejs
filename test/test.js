@@ -13,10 +13,31 @@ describe('Get feed', function(){
          .end(function(err, res){
            if (err) return done(err);
            return done();
-         });
-  });
+         })
+  })
   it('get feed', function(done){
     user1.get('/api/feed')
+         .expect(200)
+         .end(function(err, res){
+           if (err) return done(err);
+           return done();
+         })
+  })
+})
+
+describe('Get photo', function(){
+  it('login', function(done){
+    user1.post('/login')
+         .send({username: 'Bob', password: '123'})
+         .expect(302)
+         .expect('Location', '/')
+         .end(function(err, res){
+           if (err) return done(err);
+           return done();
+         })
+  })
+  it('get photo', function(done){
+    user1.get('/api/photo')
          .expect(200)
          .end(function(err, res){
            if (err) return done(err);
