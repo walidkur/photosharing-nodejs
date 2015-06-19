@@ -23,7 +23,7 @@ A listing of the major components used in the application. Note that a number of
 
 # Installation
 
-*Prerequisite*: Ensure you have [Node](https://nodejs.org) and [Bower](http://bower.io/) installed on your machine.
+*Prerequisite*: Ensure you have the latest version of [Node](https://nodejs.org) and [Bower](http://bower.io/) installed on your machine.
 
 1. In terminal clone github repository.  
 `git clone https://github.com/ibmcnxdev/photosharing-nodejs.git`  
