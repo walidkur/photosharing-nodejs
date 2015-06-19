@@ -334,6 +334,9 @@ router.get('/comments', isAuth, function(req, res, next){
             // create the comment we will add to the array
             var comment = {};
 
+            // grab the userid of the author of the comment
+            comment.uid = entry.author[0]['snx:userid'][0];
+
             // grab the author name
             comment.author = entry.author[0].name[0];
 
