@@ -20,6 +20,7 @@
     "bootstrap": "~3.3.4",
     "angular": "~1.4.0",
     "Justified-Gallery": "~3.5.4",
-    "angular-cookies": "~1.4.1"
+    "angular-cookies": "~1.4.1",
+    "webcomponentsjs": "~0.7.5"
   }
 }
