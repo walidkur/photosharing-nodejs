@@ -15,7 +15,13 @@ var config = require('../config/server');
 var parseString = require('xml2js').parseString;
 var request = require('request');
 var Busboy = require('busboy');
-var fs = require('fs');
+
+function isAuth(req, res, next){
+  if(!req.user)
+    return res.status(401).end();
+  else
+    next();
+}
 
 // redirect to homepage
 router.get('/', function(req, res, next) {
@@ -23,17 +29,21 @@ router.get('/', function(req, res, next) {
 });
 
 //getfeed for home page content
-router.get('/feed', function(req, res, next){
-  if(!req.user)
-    return res.status(401).end();
+router.get('/feed', isAuth, function(req, res, next){
+  var url;
 
-  //config.server.domain is the domain name of the server (without the https or the directoy i.e example.com)
+  if(isEmpty(req.query.uid)){
 
-  var url = 'https://' + config.server.domain + '/files/oauth/api/documents/feed?visibility=public&includeTags=true&ps=20';
+    //config.server.domain is the domain name of the server (without the https or the directoy i.e example.com)
+    url = 'https://' + config.server.domain + '/files/oauth/api/documents/feed?visibility=public&includeTags=true&ps=20';
 
-  //if query parameters exist, append them onto the url
-  if(!isEmpty(req.query.q)){
-    url = url + '?tag=' + req.query.q;
+    //if query parameters exist, append them onto the url
+    if(!isEmpty(req.query.q)){
+      url = url + '?tag=' + req.query.q;
+    }
+
+  } else {
+    url = 'https://' + config.server.domain + '/files/oauth/api/userlibrary/' + req.query.uid + '/feed';
   }
 
   var headers = {};
@@ -61,13 +71,20 @@ router.get('/feed', function(req, res, next){
       // otherwise, the api returns an xml which can be easily converted to a
       // JSON to make parsing easier using the xml2js module for nodejs
       parseString(body, function(err, result){
-        fs.writeFile("Response.txt", JSON.stringify(result));
+
+        if(err)
+          return console.log('Error: ' + err);
+
+        console.log('Parsed result: ' + result);
 
         // initialize the array of photos we will be sending back
         var photos = [];
 
         // get the actual entries object in the response
         var entries = result.feed.entry;
+
+        if(isEmpty(entries))
+          return photos;
 
         // iterate over the entries to send back each photo that was returned
         for(var i = 0; i < entries.length; i++){
@@ -119,6 +136,7 @@ router.get('/feed', function(req, res, next){
             var rel = link.$.rel;
             if(!(rel === undefined) && (rel.indexOf('thumbnail') > -1)){
               photo.thumbnail = link.$.href;
+              photo.thumbnail = photo.thumbnail.replace(/medium/i, 'large');
               break;
             }
           }
@@ -140,23 +158,23 @@ router.get('/feed', function(req, res, next){
   });
 });
 
-router.put('/photo', function(req, res, next){
-  if(!req.user)
-    return res.status(401).end();
+router.put('/photo', isAuth, function(req, res, next){
 
   if(isEmpty(req.query.pid) || isEmpty(req.query.title)) {
     console.log("Query not found");
     return res.status(412).end();
   } else {
+    var url = 'https://' + config.server.domain + '/files/oauth/api/myuserlibrary/document/' + req.query.pid + '/entry';
+
     var data = '<title type="text">' + req.query.title + '</title>';
     if(!isEmpty(req.query.tags)){
-      var array = req.query.tags.split(',');
-      for(var i = 0; i < array.length; i++){
-        data = data + '<category term="' + array[i] + '"/>';
-      }
+      url = url + '?tag=' + req.query.tags;
+      // var array = req.query.tags.split(',');
+      // for(var i = 0; i < array.length; i++){
+      //   data = data + '<category term="' + array[i] + '"/>';
+      // }
     }
     var body =  '<?xml version="1.0" encoding="UTF-8"?><entry xmlns="http://www.w3.org/2005/Atom" xmlns:app="http://www.w3.org/2007/app" xmlns:snx="http://www.ibm.com/xmlns/prod/sn">' + data + '</entry>';
-    var url = 'https://' + config.server.domain + '/files/oauth/api/myuserlibrary/document/' + req.query.pid + '/entry';
 
     var headers = {'Authorization' : 'Bearer ' + req.user.accessToken};
 
@@ -177,10 +195,7 @@ router.put('/photo', function(req, res, next){
 });
 
 //get photo for retrieving a photo by id
-router.get('/photo', function(req, res, next){
-
-  if(!req.user)
-    return res.status(401).end();
+router.get('/photo', isAuth, function(req, res, next){
 
   //if no id was passed, return an error code
   if(isEmpty(req.query.pid) || isEmpty(req.query.lid)){
@@ -245,9 +260,7 @@ router.get('/photo', function(req, res, next){
   }
 });
 
-router.put('/like', function(req, res, next){
-  if(!req.user)
-    return res.status(401).end();
+router.put('/like', isAuth, function(req, res, next){
 
   // check to ensure the necessary queries are included
   if(isEmpty(req.query.pid) || isEmpty(req.query.lid) || isEmpty(req.query.r)){
@@ -277,9 +290,7 @@ router.put('/like', function(req, res, next){
   }
 })
 
-router.get('/comments', function(req, res, next){
-  if(!req.user)
-    return res.status(401).end();
+router.get('/comments', isAuth, function(req, res, next){
 
   //if no id or uid was passed
   if(isEmpty(req.query.pid) || isEmpty(req.query.uid)){
@@ -326,6 +337,9 @@ router.get('/comments', function(req, res, next){
             // create the comment we will add to the array
             var comment = {};
 
+            // grab the userid of the author of the comment
+            comment.uid = entry.author[0]['snx:userid'][0];
+
             // grab the author name
             comment.author = entry.author[0].name[0];
 
@@ -347,9 +361,7 @@ router.get('/comments', function(req, res, next){
   }
 });
 
-router.post('/comments', function(req, res, next){
-  if(!req.user)
-    return res.status(401).end();
+router.post('/comments', isAuth, function(req, res, next){
 
   if(isEmpty(req.query.pid) || isEmpty(req.query.uid)){
     console.log("query not found");
@@ -407,10 +419,7 @@ router.post('/comments', function(req, res, next){
 });
 
 //upload a file
-router.post('/upload', function(req, res, next){
-  // if the user does not exist, send back forbidden
-  if(!req.user)
-    return res.status(401).end()
+router.post('/upload', isAuth, function(req, res, next){
 
   // before uploading, we must obtain a nonce, which is a handshake between
   // the api and our server to allow us to post to the server
@@ -443,7 +452,7 @@ router.post('/upload', function(req, res, next){
       // obtains from the page) it will then pip the file to a request to the
       // api server
       busboy.on('file', function(fieldname, file, filename, encoding, mimetype){
-        var url = 'https://' + server.domain + '/files/oauth/api/myuserlibrary/feed';
+        var url = 'https://' + server.domain + '/files/oauth/api/myuserlibrary/feed?visibility=public';
 
         // the slug is used to tell the api what it should call the file
         var slug = filename;
@@ -482,10 +491,7 @@ router.post('/upload', function(req, res, next){
   });
 });
 
-router.get('/profile', function(req, res, next){
-  if(!req.user){
-    return res.status(401).end();
-  }
+router.get('/profile', isAuth, function(req, res, next){
 
   if(isEmpty(req.query.uid)){
     console.log('query not found');
