@@ -104,16 +104,25 @@ a {
     display: block;
 }
 
-#profileCol {
-  border-right: 1px solid grey;
+#profileImg {
+  margin-top: 10px;
+}
+
+.col-centered {
+  float: none;
+  margin: 0 auto;
+}
+
+/*.profileImg {
+  border-left: 1px solid grey;
 }
 
 @media (max-width: 991px) {
-  #profileCol {
-    border-right: 0;
-    border-bottom: 1px solid grey;
+  .profileImg {
+    border-left: 0;
+    border-top: 1px solid grey;
   }
-}
+}*/
 
 
 /* ANIMATIONS
