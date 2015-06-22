@@ -189,7 +189,7 @@ photoApp.controller('homeController', function($scope, $http, $route, $routePara
 
   });
 
-  photoApp.controller('navbarController', function($scope, $http, $route, $routeParams, $cookies, $modal, $log){
+  photoApp.controller('navbarController', function($scope, $http, $route, $routeParams, $cookies, $modal, $log, $window){
 
       $scope.cookie = JSON.parse($cookies.get('user'));
       $scope.displayName = $scope.cookie.displayName;
@@ -223,6 +223,27 @@ photoApp.controller('homeController', function($scope, $http, $route, $routePara
       $scope.toggleAnimation = function () {
         $scope.animationsEnabled = !$scope.animationsEnabled;
       };
+
+      var getAvatar = function () {
+        $http({
+
+          method: 'GET',
+          url: '/api/profile?uid=' + $scope.uid
+
+        }).success(function(data, status){
+
+            $scope.avatar = data.img;
+
+        }).error(function(data, status){
+
+          if(status === 401){
+            $window.location.assign('/');
+          }
+
+        });
+      }
+
+      getAvatar();
 
   });
 
