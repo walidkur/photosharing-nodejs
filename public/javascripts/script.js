@@ -112,6 +112,8 @@ photoApp.controller('homeController', function($scope, $rootScope, $http, $route
 
         $scope.comments = data;
 
+        $scope.getProfiles();
+
       }).error(function(data, status){
 
         if(status === 401){
@@ -119,6 +121,17 @@ photoApp.controller('homeController', function($scope, $rootScope, $http, $route
         }
 
       });
+    }
+
+    $scope.getProfiles = function(){
+      $scope.comments.forEach(function(comment){
+          $http({
+            method:'GET',
+            url:'/api/profile?uid=' + comment.uid
+          }).success(function(data, status){
+            comment.profileImg = data.img;
+          });
+      })
     }
 
     $scope.addComment = function(){
