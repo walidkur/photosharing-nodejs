@@ -144,6 +144,11 @@ photoApp.controller('homeController', function($scope, $http, $route, $routePara
 
     $scope.pageClass = 'page-profile';
 
+    var imgPixels = 0;
+    var screenHeight = window.screen.height;
+
+    imgPixels = screenHeight * .25;
+
     var getProfile = function(){
 
       $http({
@@ -154,6 +159,13 @@ photoApp.controller('homeController', function($scope, $http, $route, $routePara
       }).success(function(data, status){
 
         $scope.profile = data;
+
+        angular.element(document).ready(function() {
+          $("#profileGallery").justifiedGallery({
+            rowHeight : imgPixels,
+            margins: 10
+          });
+        });
 
       }).error(function(data, status){
 
@@ -169,7 +181,7 @@ photoApp.controller('homeController', function($scope, $http, $route, $routePara
       $http({
 
         method:'GET',
-        url:'/api/feed?uid=' + $routeParams.uid,
+        url:'/api/feed?type=user&uid=' + $routeParams.uid,
 
       }).success(function(data, status){
 

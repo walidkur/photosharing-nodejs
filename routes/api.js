@@ -56,7 +56,10 @@ router.get('/feed', isAuth, function(req, res, next){
 
   // if query parameters exist, append them onto the url
   if(!isEmpty(req.query.q)){
-    url = url + '&tag=' + req.query.q;
+    var array = req.query.q.split(",");
+    for(var i = 0; i < array.length; i++){
+      url = url + '&tag=' + array[i];
+    }
   }
 
   var headers = {};
