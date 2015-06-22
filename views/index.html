@@ -21,7 +21,16 @@
       <ul class="nav navbar-nav navbar-left">
         <li class="profileButton"><a href="#/profile/{{uid}}">{{displayName}}</a></li>
       </ul>
-
+      <ul class="nav navbar-nav navbar-left">
+        <li class="uploadButton">
+          <button class="uploadBut" ng-click="open()"><span class="glyphicon glyphicon-upload"></span>Upload</button>
+        </li>
+      </ul>
+      <ul class="nav navbar-nav navbar-right">
+        <li class="logoutButton">
+          <button class="logoutBut" href="/logout" type="submit"><span class="glyphicon glyphicon-log-out"></span>Logout</button>
+        </li>
+      </ul>
       <ul class="nav navbar-nav navbar-right">
         <li class="searchBar">
           <div class="input-group stylish-input-group">
@@ -35,11 +44,7 @@
         </li>
 
       </ul>
-      <ul class="nav navbar-nav navbar-right">
-        <li class="uploadButton">
-          <button class="uploadBut" ng-click="open()"><span class="glyphicon glyphicon-upload"></span>Upload</button>
-        </li>
-      </ul>
+
 
     </div>
   </div>
