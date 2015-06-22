@@ -24,7 +24,7 @@ photoApp.config(function($routeProvider) {
 });
 
 // create the controller and inject Angular's $scope
-photoApp.controller('homeController', function($scope, $http, $route, $routeParams, $window) {
+photoApp.controller('homeController', function($scope, $rootScope, $http, $route, $routeParams, $window) {
 
   $scope.pageClass = 'page-home';
   var imgPixels = 0;
@@ -32,12 +32,19 @@ photoApp.controller('homeController', function($scope, $http, $route, $routePara
 
   imgPixels = screenHeight * .25;
 
+
   var getFeed = function(){
+
+  var tags = '';
+  if($routeParams.tags){
+    tags = '&q=' + $routeParams.tags;
+  }
+
 
     $http({
 
       method:'GET',
-      url:'/api/feed?type=public'
+      url:'/api/feed?type=public' + tags,
 
     }).success(function(data, status){
 
@@ -61,7 +68,6 @@ photoApp.controller('homeController', function($scope, $http, $route, $routePara
   }
 
   getFeed();
-
 
   });
 
@@ -138,6 +144,7 @@ photoApp.controller('homeController', function($scope, $http, $route, $routePara
 
       }).success(function(data, status){
 
+        $scope.content = '';
         $scope.getComments($scope.photo.uid);
 
       }).error(function(data, status){
@@ -157,11 +164,6 @@ photoApp.controller('homeController', function($scope, $http, $route, $routePara
 
     $scope.pageClass = 'page-profile';
 
-    var imgPixels = 0;
-    var screenHeight = window.screen.height;
-
-    imgPixels = screenHeight * .25;
-
     var getProfile = function(){
 
       $http({
@@ -172,13 +174,6 @@ photoApp.controller('homeController', function($scope, $http, $route, $routePara
       }).success(function(data, status){
 
         $scope.profile = data;
-
-        angular.element(document).ready(function() {
-          $("#profileGallery").justifiedGallery({
-            rowHeight : imgPixels,
-            margins: 10
-          });
-        });
 
       }).error(function(data, status){
 
@@ -194,7 +189,7 @@ photoApp.controller('homeController', function($scope, $http, $route, $routePara
       $http({
 
         method:'GET',
-        url:'/api/feed?type=user&uid=' + $routeParams.uid,
+        url:'/api/feed?uid=' + $routeParams.uid,
 
       }).success(function(data, status){
 
@@ -214,11 +209,13 @@ photoApp.controller('homeController', function($scope, $http, $route, $routePara
 
   });
 
-  photoApp.controller('navbarController', function($scope, $http, $route, $routeParams, $cookies, $modal, $log, $window){
+  photoApp.controller('navbarController', function($scope, $rootScope, $http, $route, $routeParams, $cookies, $modal, $log, $window){
 
       $scope.cookie = JSON.parse($cookies.get('user'));
       $scope.displayName = $scope.cookie.displayName;
       $scope.uid = $scope.cookie.uid;
+
+      $scope.searchQuery = '';
 
       $scope.items = ['item1', 'item2', 'item3'];
 
@@ -249,7 +246,20 @@ photoApp.controller('homeController', function($scope, $http, $route, $routePara
         $scope.animationsEnabled = !$scope.animationsEnabled;
       };
 
+      $scope.search = function () {
+
+        if($scope.searchQuery){
+
+        $scope.searchTags = $scope.searchQuery.split(" ");
+
+        $window.location.assign('/#/?tags=' + $scope.searchTags.join());
+
+        }
+
+      }
+
       var getAvatar = function () {
+
         $http({
 
           method: 'GET',
