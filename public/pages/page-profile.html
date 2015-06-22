@@ -1,12 +1,11 @@
 
 <div class="container-fluid">
   <div class="row">
-    <div class="col-md-2" id="profileCol">
-      <h1>{{profile.name}}</h1>
-      <img class="img-responsive" src={{profile.img}}></img>
+    <div class="col-md-2">
+      <img class="img-responsive img-circle col-centered" src={{profile.img}} id="profileImg"></img>
       <p>{{profile.email}}</p>
     </div>
-    <div class="col-md-10">
+    <div class="col-md-10 profileImg">
       <div id="profileGallery">
         <div ng-repeat="img in uploadFeed">
           <a href="#/photo/{{img.lid}}/{{img.pid}}"><img src="{{img.thumbnail}}"/></a>
