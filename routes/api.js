@@ -32,18 +32,30 @@ router.get('/', function(req, res, next) {
 router.get('/feed', isAuth, function(req, res, next){
   var url;
 
-  if(isEmpty(req.query.uid)){
+  if(isEmpty(req.query.type))
+    return res.status(412).end();
 
-    //config.server.domain is the domain name of the server (without the https or the directoy i.e example.com)
-    url = 'https://' + config.server.domain + '/files/oauth/api/documents/feed?visibility=public&includeTags=true&ps=20';
+  switch(req.query.type) {
+    case 'public':
+      //config.server.domain is the domain name of the server (without the https or the directoy i.e example.com)
+      url = 'https://' + config.server.domain + '/files/oauth/api/documents/feed?visibility=public&includeTags=true&ps=20';
+      break;
+    case 'user':
+      if(isEmpty(req.query.uid))
+        return res.status(412).end();
+      url = 'https://' + config.server.domain + '/files/oauth/api/userlibrary/' + req.query.uid + '/feed?visibility=public&includeTags=true&ps=20';
+      break;
+    case 'private':
+      url = 'https:// ' + config.server.domain + '/files/oauth/api/documents/shared/feed?direction=inbound&ps=20'
+      break;
+    default:
+      return res.status(412).end()
+      break;
+  }
 
-    //if query parameters exist, append them onto the url
-    if(!isEmpty(req.query.q)){
-      url = url + '?tag=' + req.query.q;
-    }
-
-  } else {
-    url = 'https://' + config.server.domain + '/files/oauth/api/userlibrary/' + req.query.uid + '/feed';
+  //if query parameters exist, append them onto the url
+  if(!isEmpty(req.query.q)){
+    url = url + '&tag=' + req.query.q;
   }
 
   var headers = {};
