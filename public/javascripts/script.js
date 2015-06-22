@@ -1,4 +1,4 @@
-var photoApp = angular.module('photoApp', ['ngRoute', 'ngAnimate', 'ngCookies']);
+var photoApp = angular.module('photoApp', ['ngRoute', 'ngAnimate', 'ngCookies', 'ui.bootstrap']);
 
 // configure our routes
 photoApp.config(function($routeProvider) {
@@ -189,10 +189,55 @@ photoApp.controller('homeController', function($scope, $http, $route, $routePara
 
   });
 
-  photoApp.controller('navbarController', function($scope, $http, $route, $routeParams, $cookies){
+  photoApp.controller('navbarController', function($scope, $http, $route, $routeParams, $cookies, $modal, $log){
 
       $scope.cookie = JSON.parse($cookies.get('user'));
       $scope.displayName = $scope.cookie.displayName;
       $scope.uid = $scope.cookie.uid;
 
+      $scope.items = ['item1', 'item2', 'item3'];
+
+      $scope.animationsEnabled = false;
+
+      $scope.open = function (size) {
+
+        var modalInstance = $modal.open({
+          animation: $scope.animationsEnabled,
+          templateUrl: 'myModalContent.html',
+          controller: 'ModalInstanceController',
+          size: size,
+          resolve: {
+            items: function () {
+              return $scope.items;
+            }
+          }
+        });
+
+        modalInstance.result.then(function (selectedItem) {
+          $scope.selected = selectedItem;
+        }, function () {
+          $log.info('Modal dismissed at: ' + new Date());
+        });
+      };
+
+      $scope.toggleAnimation = function () {
+        $scope.animationsEnabled = !$scope.animationsEnabled;
+      };
+
+  });
+
+  photoApp.controller('ModalInstanceController', function($scope, $modalInstance, items) {
+
+    $scope.items = items;
+    $scope.selected = {
+      item: $scope.items[0]
+    };
+
+    $scope.ok = function () {
+      $modalInstance.close($scope.selected.item);
+    };
+
+    $scope.cancel = function () {
+      $modalInstance.dismiss('cancel');
+    };
   });
