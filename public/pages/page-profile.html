@@ -1,7 +1,16 @@
 
+<div class="container-fluid">
+  <div class="row">
+    <div class="col-md-2">
+      <img class="img-responsive img-circle col-centered" src={{profile.img}} id="profileImg"></img>
+      <p>{{profile.email}}</p>
+    </div>
+    <div class="col-md-10 profileImg">
+      <div id="profileGallery">
+        <div ng-repeat="img in uploadFeed">
+          <a href="#/photo/{{img.lid}}/{{img.pid}}"><img src="{{img.thumbnail}}"/></a>
+        </div>
+      </div>
+    </div>
 
-<h1>Welcome to your profile {{profile.name}}!</h1>
-
-<img src={{profile.img}}></img>
-
-<img ng-repeat="img in uploadFeed" src="{{img.thumbnail}}"/>
+</div>

@@ -56,7 +56,10 @@ router.get('/feed', isAuth, function(req, res, next){
 
   // if query parameters exist, append them onto the url
   if(!isEmpty(req.query.q)){
-    url = url + '&tag=' + req.query.q;
+    var array = req.query.q.split(",");
+    for(var i = 0; i < array.length; i++){
+      url = url + '&tag=' + array[i];
+    }
   }
 
   var headers = {};
@@ -72,6 +75,8 @@ router.get('/feed', isAuth, function(req, res, next){
     headers: headers
   };
 
+  console.log('options: ' + JSON.stringify(options));
+
   request.get(options, function(error, response, body){
 
     // if there is an error lets log it to the console and inform the angular
@@ -80,6 +85,8 @@ router.get('/feed', isAuth, function(req, res, next){
       console.log('Error occured while getting feed from Connections Cloud: ' + error);
       return res.status(500).end();
     } else {
+
+      console.log('response: ' + JSON.stringify(response));
 
       // otherwise, the api returns an xml which can be easily converted to a
       // JSON to make parsing easier using the xml2js module for nodejs
