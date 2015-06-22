@@ -108,6 +108,17 @@ a {
     display: block;
 }
 
+#profileCol {
+  border-right: 1px solid grey;
+}
+
+@media (max-width: 991px) {
+  #profileCol {
+    border-right: 0;
+    border-bottom: 1px solid grey;
+  }
+}
+
 
 /* ANIMATIONS
 ============================================================================= */
