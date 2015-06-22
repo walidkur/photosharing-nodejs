@@ -188,8 +188,8 @@ router.put('/photo', isAuth, function(req, res, next){
     var data = '<title type="text">' + req.query.title + '</title>';
 
     // if the request passed tags, then add them to the api call body
-    if(!isEmpty(req.query.tags)){
-      url = url + '?tag=' + req.query.tags;
+    if(!isEmpty(req.query.q)){
+      url = url + '?tag=' + req.query.q;
       // var array = req.query.tags.split(',');
       // for(var i = 0; i < array.length; i++){
       //   data = data + '<category term="' + array[i] + '"/>';
@@ -444,6 +444,10 @@ router.post('/comments', isAuth, function(req, res, next){
 // upload a file
 router.post('/upload', isAuth, function(req, res, next){
 
+  // check for queries before we start
+  if(isEmpty(req.query.visibility))
+    return res.status(412).end();
+
   // before uploading, we must obtain a nonce, which is a handshake between
   // the api and our server to allow us to post to the server
   var url = 'https://' + config.server.domain + '/files/oauth/api/nonce';
@@ -475,7 +479,15 @@ router.post('/upload', isAuth, function(req, res, next){
       // obtains from the page) it will then pip the file to a request to the
       // api server
       busboy.on('file', function(fieldname, file, filename, encoding, mimetype){
-        var url = 'https://' + server.domain + '/files/oauth/api/myuserlibrary/feed?visibility=public';
+        var url = 'https://' + server.domain + '/files/oauth/api/myuserlibrary/feed?visibility=' + req.query.visibility;
+
+        // add tags
+        if(!isEmpty(req.query.q))
+          url = url + '&tag=' + req.query.q;
+
+        // add shares
+        if(!isEmpty(req.query.share))
+          url = url + '&shareWith=' + req.query.share;
 
         // the slug is used to tell the api what it should call the file
         var slug = filename;
