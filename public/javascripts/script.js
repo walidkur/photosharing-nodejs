@@ -131,6 +131,7 @@ photoApp.controller('homeController', function($scope, $rootScope, $http, $route
 
       }).success(function(data, status){
 
+        $scope.content = '';
         $scope.getComments($scope.photo.uid);
 
       }).error(function(data, status){
