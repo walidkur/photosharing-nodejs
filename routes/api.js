@@ -158,15 +158,23 @@ router.get('/feed', isAuth, function(req, res, next){
   });
 });
 
+// update a photo
 router.put('/photo', isAuth, function(req, res, next){
 
+  // if the request did not provide the right queries
   if(isEmpty(req.query.pid) || isEmpty(req.query.title)) {
     console.log("Query not found");
     return res.status(412).end();
   } else {
+
+    // the url for putting to a photo on the Connections Cloud
     var url = 'https://' + config.server.domain + '/files/oauth/api/myuserlibrary/document/' + req.query.pid + '/entry';
 
+    // the api requires you to pass the title of the photo even if you aren't
+    // changing it. You must place it in a title tag with type text.
     var data = '<title type="text">' + req.query.title + '</title>';
+
+    // if the request passed tags, then add them to the api call body
     if(!isEmpty(req.query.tags)){
       url = url + '?tag=' + req.query.tags;
       // var array = req.query.tags.split(',');
@@ -174,6 +182,8 @@ router.put('/photo', isAuth, function(req, res, next){
       //   data = data + '<category term="' + array[i] + '"/>';
       // }
     }
+
+    // format the request so that the api can handle the request properly
     var body =  '<?xml version="1.0" encoding="UTF-8"?><entry xmlns="http://www.w3.org/2005/Atom" xmlns:app="http://www.w3.org/2007/app" xmlns:snx="http://www.ibm.com/xmlns/prod/sn">' + data + '</entry>';
 
     var headers = {'Authorization' : 'Bearer ' + req.user.accessToken};

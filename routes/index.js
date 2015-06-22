@@ -21,17 +21,25 @@ var passport = require('passport');
 
 /* GET home page. */
 router.get('/', function(req, res, next) {
+
+  // store a cookie on the client so they can obtain their user information
   if(req.user){
     var cookie = {
       'displayName' : req.user.displayName,
       'uid' : req.user.userid
     };
     res.cookie('user', JSON.stringify(cookie));
+
+    // render the index to the page
     res.render('index');
   } else
     next();
+
+// if the user was not found in the request, authenticate the user using oauth2
 }, passport.authenticate('ibm-connections-cloud'));
 
+
+// logout route
 router.get('/logout', function(req, res, next){
   req.logout();
   res.redirect('/');
