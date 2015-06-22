@@ -28,7 +28,7 @@ router.get('/', function(req, res, next) {
   res.redirect('/');
 });
 
-//getfeed for home page content
+// getfeed for home page content
 router.get('/feed', isAuth, function(req, res, next){
   var url;
 
@@ -37,7 +37,8 @@ router.get('/feed', isAuth, function(req, res, next){
 
   switch(req.query.type) {
     case 'public':
-      //config.server.domain is the domain name of the server (without the https or the directoy i.e example.com)
+      // config.server.domain is the domain name of the server (without the
+      //https or the directoy i.e example.com)
       url = 'https://' + config.server.domain + '/files/oauth/api/documents/feed?visibility=public&includeTags=true&ps=20';
       break;
     case 'user':
@@ -53,7 +54,7 @@ router.get('/feed', isAuth, function(req, res, next){
       break;
   }
 
-  //if query parameters exist, append them onto the url
+  // if query parameters exist, append them onto the url
   if(!isEmpty(req.query.q)){
     url = url + '&tag=' + req.query.q;
   }
@@ -162,7 +163,7 @@ router.get('/feed', isAuth, function(req, res, next){
           photos.push(photo);
         }
 
-        //return our photos array
+        // return our photos array
         console.log('sending response');
         res.send(photos);
       });
@@ -187,8 +188,8 @@ router.put('/photo', isAuth, function(req, res, next){
     var data = '<title type="text">' + req.query.title + '</title>';
 
     // if the request passed tags, then add them to the api call body
-    if(!isEmpty(req.query.tags)){
-      url = url + '?tag=' + req.query.tags;
+    if(!isEmpty(req.query.q)){
+      url = url + '?tag=' + req.query.q;
       // var array = req.query.tags.split(',');
       // for(var i = 0; i < array.length; i++){
       //   data = data + '<category term="' + array[i] + '"/>';
@@ -216,10 +217,10 @@ router.put('/photo', isAuth, function(req, res, next){
   }
 });
 
-//get photo for retrieving a photo by id
+// get photo for retrieving a photo by id
 router.get('/photo', isAuth, function(req, res, next){
 
-  //if no id was passed, return an error code
+  // if no id was passed, return an error code
   if(isEmpty(req.query.pid) || isEmpty(req.query.lid)){
     console.log('query not found');
     return res.status(412).end();
@@ -314,7 +315,7 @@ router.put('/like', isAuth, function(req, res, next){
 
 router.get('/comments', isAuth, function(req, res, next){
 
-  //if no id or uid was passed
+  // if no id or uid was passed
   if(isEmpty(req.query.pid) || isEmpty(req.query.uid)){
     console.log("query not found");
     return res.status(412).end();
@@ -440,8 +441,12 @@ router.post('/comments', isAuth, function(req, res, next){
   }
 });
 
-//upload a file
+// upload a file
 router.post('/upload', isAuth, function(req, res, next){
+
+  // check for queries before we start
+  if(isEmpty(req.query.visibility))
+    return res.status(412).end();
 
   // before uploading, we must obtain a nonce, which is a handshake between
   // the api and our server to allow us to post to the server
@@ -474,7 +479,15 @@ router.post('/upload', isAuth, function(req, res, next){
       // obtains from the page) it will then pip the file to a request to the
       // api server
       busboy.on('file', function(fieldname, file, filename, encoding, mimetype){
-        var url = 'https://' + server.domain + '/files/oauth/api/myuserlibrary/feed?visibility=public';
+        var url = 'https://' + server.domain + '/files/oauth/api/myuserlibrary/feed?visibility=' + req.query.visibility;
+
+        // add tags
+        if(!isEmpty(req.query.q))
+          url = url + '&tag=' + req.query.q;
+
+        // add shares
+        if(!isEmpty(req.query.share))
+          url = url + '&shareWith=' + req.query.share;
 
         // the slug is used to tell the api what it should call the file
         var slug = filename;
