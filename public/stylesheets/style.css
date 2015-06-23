@@ -146,12 +146,13 @@ a {
     display: block;
 }
 
-#profileImg {
-  margin-top: 10px;
+#profile {
+  margin-top: 5px;
+  padding-bottom: 10px;
 }
 
-#profileGallery {
-  background-color: grey;
+#profileImg {
+  margin-top: 10px;
 }
 
 .col-centered {
