@@ -17,9 +17,10 @@
       <a class="navbar-brand" href="/#/">PhotoNode</a>
     </div>
     <div class="navbar-collapse collapse" id="navbar-collapse">
-      <a class="profilePic" href="#"><img src="{{avatar}}" height=40px></a>
       <ul class="nav navbar-nav navbar-left">
-        <li class="profileButton"><a href="#/profile/{{uid}}">{{displayName}}</a></li>
+        <li>
+          <a class="profileButton" href="#/profile/{{uid}}"><img id="profilePic" src="{{avatar}}" height=40px>{{displayName}}</a>
+        </li>
       </ul>
       <ul class="nav navbar-nav navbar-left">
         <li class="uploadButton">
