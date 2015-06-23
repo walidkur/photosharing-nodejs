@@ -112,6 +112,8 @@ photoApp.controller('homeController', function($scope, $rootScope, $http, $route
 
         $scope.comments = data;
 
+        $scope.getProfiles();
+
       }).error(function(data, status){
 
         if(status === 401){
@@ -119,6 +121,17 @@ photoApp.controller('homeController', function($scope, $rootScope, $http, $route
         }
 
       });
+    }
+
+    $scope.getProfiles = function(){
+      $scope.comments.forEach(function(comment){
+          $http({
+            method:'GET',
+            url:'/api/profile?uid=' + comment.uid
+          }).success(function(data, status){
+            comment.profileImg = data.img;
+          });
+      })
     }
 
     $scope.addComment = function(){
@@ -150,6 +163,11 @@ photoApp.controller('homeController', function($scope, $rootScope, $http, $route
   photoApp.controller('profileController', function($scope, $http, $routeParams, $window) {
 
     $scope.pageClass = 'page-profile';
+    var imgPixels = 0;
+    var screenHeight = window.screen.height;
+
+    imgPixels = screenHeight * .25;
+
 
     var getProfile = function(){
 
@@ -176,11 +194,18 @@ photoApp.controller('homeController', function($scope, $rootScope, $http, $route
       $http({
 
         method:'GET',
-        url:'/api/feed?uid=' + $routeParams.uid,
+        url:'/api/feed?type=user&uid=' + $routeParams.uid,
 
       }).success(function(data, status){
 
         $scope.uploadFeed = data;
+
+        angular.element(document).ready(function() {
+          $("#profileGallery").justifiedGallery({
+            rowHeight : imgPixels,
+            margins: 10
+          });
+        });
 
       }).error(function(data, status){
 

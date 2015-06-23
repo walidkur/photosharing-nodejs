@@ -1,4 +1,4 @@
-<div class="container" align="middle">
+<div class="container-fluid" align="middle">
 
   <h3>{{photo.title}}</h3>
   <img src="{{photo.link}}"/>
@@ -8,7 +8,7 @@
     <li class="media" ng-repeat="comment in comments">
       <div class="media-left">
         <a href="#">
-          <img class="media-object" src="http://brandonmathis.com/projects/fancy-avatars/demo/images/avatar_male_dark_on_clear_200x200.png">
+          <img class="media-object" src="{{comment.profileImg}}">
         </a>
       </div>
       <div class="media-body">

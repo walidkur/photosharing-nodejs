@@ -1,0 +1,5 @@
+---
+  applications:
+    - name: photonode
+      memory: 512m
+      host: photonode

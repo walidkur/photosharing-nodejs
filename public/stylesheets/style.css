@@ -156,22 +156,21 @@ a {
     display: block;
 }
 
+<<<<<<< HEAD
+=======
+#profileImg {
+  margin-top: 10px;
+}
+
+#profileGallery {
+  background-color: grey;
+}
+
+>>>>>>> 3b490c090ac031df26df3b53ae11ede9e26d19d6
 .col-centered {
   float: none;
   margin: 0 auto;
 }
-
-/*.profileImg {
-  border-left: 1px solid grey;
-}
-
-@media (max-width: 991px) {
-  .profileImg {
-    border-left: 0;
-    border-top: 1px solid grey;
-  }
-}*/
-
 
 /* ANIMATIONS
 ============================================================================= */

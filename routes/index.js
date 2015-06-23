@@ -41,7 +41,9 @@ router.get('/', function(req, res, next) {
 
 // logout route
 router.post('/logout', function(req, res, next){
+  res.clearCookie('user');
   req.logout();
+  req.session.destroy();
   res.redirect('/');
 })
 
