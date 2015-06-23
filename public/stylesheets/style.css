@@ -38,11 +38,15 @@ a {
 
 .uploadButton {
   color: #9d9d9d;
-  float: right;
+  float: left;
   font-size: 16px;
   font-weight: bold;
   margin-top: 5px;
   padding-right: 50px;
+}
+
+.navbar .in .uploadButton {
+  padding-top: 0px;
 }
 
 .uploadButton:hover {
@@ -60,17 +64,51 @@ a {
   padding-left: 10px;
 }
 
-.modal-body, .btn-primary {
+.modal-body .btn-primary {
   margin-bottom: 20px;
 }
 
 .searchBar {
-  float: left;
+  float: right;
   font-size: 14px;
-  padding-top: 10px;
+  margin-top: 10px;
   padding-left: 20px;
   padding-right: 50px;
   width: 300px;
+}
+
+.navbar .in .searchBar {
+  float: left;
+  padding-top: 0px;
+}
+
+.logoutButton {
+  color: #9d9d9d;
+  font-size: 16px;
+  font-weight: bold;
+  float: left;
+  margin-top: 13px;
+  padding-right: 10px;
+  padding-left: 10px;
+}
+
+.navbar .in .logoutButton {
+  padding-top: 0px;
+  padding-bottom: 0px;
+}
+
+.glyphicon-log-out {
+  padding-right: 6px;
+  padding-left: 0px;
+}
+
+.logoutButton:hover{
+  color: white;
+}
+
+.logoutBut {
+  background-color: transparent;
+  border-color: transparent;
 }
 
 .stylish-input-group .input-group-addon {
