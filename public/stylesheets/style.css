@@ -12,6 +12,10 @@ a {
   color: white;
 }
 
+.navbar {
+  height: 65px;
+}
+
 .navbar-brand{
   font-size: 36px;
   position: absolute;
@@ -156,8 +160,6 @@ a {
     display: block;
 }
 
-<<<<<<< HEAD
-=======
 #profileImg {
   margin-top: 10px;
 }
@@ -166,7 +168,6 @@ a {
   background-color: grey;
 }
 
->>>>>>> 3b490c090ac031df26df3b53ae11ede9e26d19d6
 .col-centered {
   float: none;
   margin: 0 auto;
