@@ -38,7 +38,7 @@ router.get('/feed', isAuth, function(req, res, next){
   switch(req.query.type) {
     case 'public':
       // config.server.domain is the domain name of the server (without the
-      //https or the directoy i.e example.com)
+      // https or the directory i.e example.com)
       url = 'https://' + config.server.domain + '/files/oauth/api/documents/feed?visibility=public&includeTags=true&ps=20';
       break;
     case 'user':
@@ -144,6 +144,19 @@ router.get('/feed', isAuth, function(req, res, next){
             var type = link.$.type;
             if(!(type === undefined) && (type.indexOf('image') > -1)){
               photo.image = link.$.href;
+              for(var x = 0; x < entry.link.length; x++){
+                var link = entry.link[x];
+                var rel = link.$.rel;
+                if(!(rel === undefined) && (rel.indexOf('thumbnail') > -1)){
+                  photo.thumbnail = link.$.href;
+                  // by default the api returns a medium sized thumbnail, however
+                  // we want a large one. Luckily the urls for medium and large
+                  // thumbnails are very similar, we simply replace the word medium
+                  // with large
+                  photo.thumbnail = photo.thumbnail.replace(/medium/i, 'large');
+                  break;
+                }
+              }
               break;
             }
           }
@@ -151,15 +164,19 @@ router.get('/feed', isAuth, function(req, res, next){
           // the link object contains many links related to the document,
           // however we want the link to the thumbnail, therefore we will
           // look for the object with the rel of thumbnail
-          for(var j = 0; j < entry.link.length; j++){
-            var link = entry.link[j];
-            var rel = link.$.rel;
-            if(!(rel === undefined) && (rel.indexOf('thumbnail') > -1)){
-              photo.thumbnail = link.$.href;
-              photo.thumbnail = photo.thumbnail.replace(/medium/i, 'large');
-              break;
-            }
-          }
+          // for(var j = 0; j < entry.link.length; j++){
+          //   var link = entry.link[j];
+          //   var rel = link.$.rel;
+          //   if(!(rel === undefined) && (rel.indexOf('thumbnail') > -1)){
+          //     photo.thumbnail = link.$.href;
+          //     // by default the api returns a medium sized thumbnail, however
+          //     // we want a large one. Luckily the urls for medium and large
+          //     // thumbnails are very similar, we simply replace the word medium
+          //     // with large
+          //     photo.thumbnail = photo.thumbnail.replace(/medium/i, 'large');
+          //     break;
+          //   }
+          // }
 
           // in addition we need to pass the library id of the entry, for later
           // calls in which we will have to pass the library id to the api
