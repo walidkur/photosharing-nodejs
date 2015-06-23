@@ -35,12 +35,19 @@
       <ul class="nav navbar-nav navbar-right">
         <li class="searchBar">
           <div class="input-group stylish-input-group">
-            <input type="text" ng-model="searchQuery" class="form-control" placeholder="Search">
+            <input type="text" id="searchText" ng-model="searchQuery" class="form-control" placeholder="Search">
               <span class="input-group-addon">
-                <button type="submit" ng-click="search()">
+                <button type="submit" id="searchButton" ng-click="search()">
                   <span class="glyphicon glyphicon-search"></span>
                 </button>
               </span>
+              <script>
+              $("#searchText").keyup(function(event){
+                if(event.keyCode == 13){
+                  $("#searchButton").click();
+                }
+              });
+              </script>
           </div>
         </li>
 
