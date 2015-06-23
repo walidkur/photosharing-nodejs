@@ -44,7 +44,7 @@ router.post('/logout', function(req, res, next){
   res.clearCookie('user');
   req.logout();
   req.session.destroy();
-  res.redirect('/');
+  res.redirect('https://apps.na.collabserv.com/manage/account/logoutSSO');
 })
 
 router.get('/callback', passport.authenticate('ibm-connections-cloud', {successReturnToOrRedirect:'/', failureRedirect: '/'}));
