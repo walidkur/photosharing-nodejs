@@ -17,9 +17,10 @@
       <a class="navbar-brand" href="/#/">PhotoNode</a>
     </div>
     <div class="navbar-collapse collapse" id="navbar-collapse">
-      <a class="profilePic" href="#"><img src="{{avatar}}" height=40px></a>
       <ul class="nav navbar-nav navbar-left">
-        <li class="profileButton"><a href="#/profile/{{uid}}">{{displayName}}</a></li>
+        <li>
+          <a class="profileButton" href="#/profile/{{uid}}"><img id="profilePic" src="{{avatar}}" height=40px>{{displayName}}</a>
+        </li>
       </ul>
       <ul class="nav navbar-nav navbar-left">
         <li class="uploadButton">
@@ -28,18 +29,27 @@
       </ul>
       <ul class="nav navbar-nav navbar-right">
         <li class="logoutButton">
+          <form action="/logout" method="post">
           <button class="logoutBut" href="/logout" type="submit"><span class="glyphicon glyphicon-log-out"></span>Logout</button>
+          </form>
         </li>
       </ul>
       <ul class="nav navbar-nav navbar-right">
         <li class="searchBar">
           <div class="input-group stylish-input-group">
-            <input type="text" ng-model="searchQuery" class="form-control" placeholder="Search">
+            <input type="text" id="searchText" ng-model="searchQuery" class="form-control" placeholder="Search">
               <span class="input-group-addon">
-                <button type="submit" ng-click="search()">
+                <button type="submit" id="searchButton" ng-click="search()">
                   <span class="glyphicon glyphicon-search"></span>
                 </button>
               </span>
+              <script>
+              $("#searchText").keyup(function(event){
+                if(event.keyCode == 13){
+                  $("#searchButton").click();
+                }
+              });
+              </script>
           </div>
         </li>
 
