@@ -150,22 +150,14 @@ a {
   margin-top: 10px;
 }
 
+#profileGallery {
+  background-color: grey;
+}
+
 .col-centered {
   float: none;
   margin: 0 auto;
 }
-
-/*.profileImg {
-  border-left: 1px solid grey;
-}
-
-@media (max-width: 991px) {
-  .profileImg {
-    border-left: 0;
-    border-top: 1px solid grey;
-  }
-}*/
-
 
 /* ANIMATIONS
 ============================================================================= */
