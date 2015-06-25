@@ -9,7 +9,8 @@
   </center>
 </div>
 
-<div id="mygallery">
+<div style="height:500px">
+<div infinite-scroll="loadMore()" infinite-scroll-distance="1" id="mygallery">
   <div ng-repeat="entry in data">
     <a href="#/photo/{{entry.lid}}/{{entry.pid}}">
       <img src="{{entry.thumbnail}}"/>
@@ -19,6 +20,7 @@
       <div id="author"><a href="#/profile/{{entry.uid}}">{{entry.photographer}}</a></div>
     </div>
   </div>
+</div>
 </div>
 
 
