@@ -1,31 +1,47 @@
 <div id="photoPage" class="container-fluid">
 
-
+<!--Adds necessary spacing/padding-->
 </br>
+
   <div class="row">
+
+    <!--Displays the photo to the right of the screen-->
     <div class="col-md-8">
       <img id="clickedPhoto" src="{{photo.link}}"/>
-
     </div>
+
+    <!--Displays what is left of the screen-->
     <div id="commentColumn" class="col-md-4">
 
+
+      <!--Displays the photo's information-->
       <div class="photoInfo">
         <h4 class="photographer">{{photo.photographer}}</h4>
         <h5 class="date">{{photo.published}}</h5>
         <h5>{{photo.title}}</h5>
         <h5><span ng-if="photo.tags.length > 0" class="glyphicon glyphicon-tag"></span>{{photo.tags.join(", ")}}</h5>
       </div>
+
+      <!--Displays the like button and number of likes-->
       <div id="photoBar">
         <button class="likeButton" ng-click="open()"><span class="glyphicon glyphicon-thumbs-up"></span></button>{{photo.likes}} people
       </div>
+
+      <!--Creates a divider before somments-->
       <hr id="divider">
+
+      <!--Creates the comment box-->
       <ul id="commentBox" class="media-list">
         <li class="media" id="comment" ng-repeat="comment in comments">
+
+          <!--Displays the avatar of the user who commented-->
           <div class="media-left media-top">
             <a href="#">
               <img id="userPhoto" class="media-object" src="{{comment.profileImg}}" height=60px>
             </a>
           </div>
+
+          <!--Displays the comments-->
           <div class="media-body">
             <h4 class="media-heading">{{comment.author}}</h4>
             <h5>{{comment.content}}</h5>
@@ -35,7 +51,11 @@
       </ul>
 
       <ul>
+
+        <!--This form allows user to hit enter to submit comment-->
         <form ng-submit="submit()">
+
+          <!--Displays the "Add comment" box-->
           <li class="addCommentBox">
             <div class="input-group stylish-input-group">
                 <input type="text" id="addComment" class="form-control" ng-model="content" placeholder="Add comment">
