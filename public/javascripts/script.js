@@ -23,55 +23,49 @@ photoApp.config(function($routeProvider) {
   });
 });
 
-// create the controller and inject Angular's $scope
-photoApp.controller('homeController', function($scope, $rootScope, $http, $route, $routeParams, $window) {
 
+photoApp.controller('homeController', function($scope, $routeParams, $window, apiService) {
+
+  //Class for ng-view in index.html
   $scope.pageClass = 'page-home';
-  var imgPixels = 0;
-  var screenHeight = window.screen.height;
 
-  imgPixels = screenHeight * .25;
+  //Configuration for image gallery
+  var galleryConfig = { rowHeight: window.screen.height * .25,  margins: 10 };
 
+  //Request parameters
+  //If search query: add tags to request
+  var params = '?type=public';
 
-  var getFeed = function(){
-
-  var tags = '';
   if($routeParams.tags){
-    tags = '&q=' + $routeParams.tags;
+    params += '&q=' + $routeParams.tags;
   }
 
+  //Request to Node server
+  apiService.getFeed(params).then(
 
-    $http({
+  //On success: bind data to scope, render image gallery
+  function(data, status){
 
-      method:'GET',
-      url:'/api/feed?type=public' + tags,
+    $scope.data = data.data;
 
-    }).success(function(data, status){
-
-      $scope.data = data;
-
-      angular.element(document).ready(function() {
-        $("#mygallery").justifiedGallery({
-          rowHeight : imgPixels,
-          margins: 10
-        });
-      });
-
-    }).error(function(data, status){
-
-      if(status === 401){
-        $window.location.assign('/');
-      }
-
+    angular.element(document).ready(function(){
+      $('#mygallery').justifiedGallery(galleryConfig);
     });
 
-  }
+  },
 
-  getFeed();
+  //On error: if unauthorized redirect to '/' for relogin
+  function(data, status){
+
+    if(status === 401){
+    $window.location.assign('/');
+    }
 
   });
 
-  photoApp.controller('photoController', function($scope, $http, $route, $routeParams, $window) {
+});
+
+  photoApp.controller('photoController', function($scope, $http, $routeParams, $window, apiService) {
 
     $scope.pageClass = 'page-photo';
 
@@ -160,7 +154,7 @@ photoApp.controller('homeController', function($scope, $rootScope, $http, $route
 
   });
 
-  photoApp.controller('profileController', function($scope, $http, $routeParams, $window) {
+  photoApp.controller('profileController', function($scope, $http, $routeParams, $window){
 
     $scope.pageClass = 'page-profile';
     var imgPixels = 0;
@@ -187,6 +181,7 @@ photoApp.controller('homeController', function($scope, $rootScope, $http, $route
         }
 
       });
+
     }
 
     var getUploadFeed = function(){
@@ -293,6 +288,7 @@ photoApp.controller('homeController', function($scope, $rootScope, $http, $route
       getAvatar();
 
   });
+
 
   photoApp.controller('ModalInstanceController', function($scope, $modalInstance, items) {
 
