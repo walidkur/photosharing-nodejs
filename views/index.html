@@ -1,4 +1,6 @@
 <html>
+
+<!--Necessary sources-->
 <script src="components/webcomponentsjs/webcomponents.min.js"></script>
 
 <link rel="import" href="pages/partials/head.html">
@@ -6,35 +8,58 @@
 
 <body  ng-app="photoApp">
 
+<!--Calls back to navbarController, and creates the navbar fixed at the top of the screen-->
 <nav ng-controller="navbarController" class="navbar navbar-inverse navbar-fixed-top" role="navigation">
+
   <div class="container-fluid">
     <div class="navbar-header">
+
+      <!--Creates hamburger icon and functionality of collapsing the navbar-->
       <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#navbar-collapse">
         <span class="icon-bar"></span>
         <span class="icon-bar"></span>
         <span class="icon-bar"></span>
       </button>
+
+      <!--The name of the app/site-->
       <a class="navbar-brand" href="/#/">PhotoNode</a>
+
     </div>
+
+    <!--Defines what will be collapsed into the hamburger when screens are smaller-->
     <div class="navbar-collapse collapse" id="navbar-collapse">
+
+      <!--Places the following to the left of the navbar-->
       <ul class="nav navbar-nav navbar-left">
         <li>
+          <!--Displays the user's profile picture and user idea-->
           <a class="profileButton" href="#/profile/{{uid}}"><img id="profilePic" src="{{avatar}}" height=40px>{{displayName}}</a>
         </li>
       </ul>
+
+      <!--Places the following to the left of the navbar-->
       <ul class="nav navbar-nav navbar-left">
         <li class="uploadButton">
+          <!--Displays the upload button-->
           <button class="uploadBut" ng-click="open()"><span class="glyphicon glyphicon-upload"></span>Upload</button>
         </li>
       </ul>
+
+      <!--Places the following to the right of the navbar-->
       <ul class="nav navbar-nav navbar-right">
         <li class="logoutButton">
+          <!--Creates a form that directs the user to logout-->
           <form action="/logout" method="post">
+            <!--Displays the logout button-->
             <button class="logoutBut" type="submit"><span class="glyphicon glyphicon-log-out"></span>Logout</button>
           </form>
         </li>
       </ul>
+
+      <!--Places the following to the right of the navbar-->
       <ul class="nav navbar-nav navbar-right">
+
+        <!--Displays the search bar and defines its functionality-->
         <li class="searchBar">
           <div class="input-group stylish-input-group">
             <input type="text" id="searchText" ng-model="searchQuery" class="form-control" placeholder="Search">
@@ -43,6 +68,8 @@
                   <span class="glyphicon glyphicon-search"></span>
                 </button>
               </span>
+
+              <!--Allows the user to hit enter and submit search-->
               <script>
               $("#searchText").keyup(function(event){
                 if(event.keyCode == 13 || event.which == 13){
@@ -50,57 +77,64 @@
                 }
               });
               </script>
-          </div>
+
+        </div>
         </li>
 
       </ul>
-
 
     </div>
   </div>
 </nav>
 
-<!-- navbar implementation -->
+<!--Calls navbarController to allow functionality of the upload modal-->
 <div ng-controller="navbarController">
-<script type="text/ng-template" id="myModalContent.html">
-  <div class="modal-header">
-    <h3 class="modal-title">Upload your photos!</h3>
-  </div>
-  <div class="modal-body">
+  <script type="text/ng-template" id="myModalContent.html">
 
-    <form action="/api/upload" method="post" enctype="multipart/form-data">
+    // Upload header/title
+    <div class="modal-header">
+      <h3 class="modal-title">Upload your photos!</h3>
+    </div>
 
-      <div style="position:relative;">
-    		<a class='btn btn-primary' href='javascript:;'>
-    			Choose File...
-    			<input type="file" style='position:absolute;z-index:2;top:0;left:0;filter: alpha(opacity=0);opacity:0;background-color:transparent;color:transparent;' name="file_source" size="40"  onchange='$("#upload-file-info").html($(this).val());'>
-    		</a>
-    		&nbsp;
-    		<span class='label label-info' id="upload-file-info"></span>
-    	</div>
+    // The modal's body
+    <div class="modal-body">
 
-      <div class="form-group">
-        <label for="tag">Tags:</label>
-        <input type="text" class="form-control" id="tag">
-      </div>
+      // Declares the form as a file-uploader
+      <form action="/api/upload" method="post" enctype="multipart/form-data">
+        <div style="position:relative;">
+      		<a class='btn btn-primary' href='javascript:;'>
+      			Choose File...
+      			<input type="file" style='position:absolute;z-index:2;top:0;left:0;filter: alpha(opacity=0);opacity:0;background-color:transparent;color:transparent;' name="file_source" size="40"  onchange='$("#upload-file-info").html($(this).val());'>
+      		</a>
+      		&nbsp;
+      		<span class='label label-info' id="upload-file-info"></span>
+      	</div>
 
-    </form>
+        // Creates ability to make tags for photos
+        <div class="form-group">
+          <label for="tag">Tags:</label>
+          <input type="text" class="form-control" id="tag">
+        </div>
 
-  </div>
-  <div class="modal-footer">
-    <button type="submit" class="btn btn-info" ng-click="ok()">Upload</button>
-    <button class="btn btn-warning" ng-click="cancel()">Close</button>
-  </div>
+      </form>
 
+    </div>
 
-</script>
+    // The modal's footer
+    <div class="modal-footer">
+
+      // Creates the submit/"Upload" and "Close" buttons
+      <button type="submit" class="btn btn-info" ng-click="ok()">Upload</button>
+      <button class="btn btn-warning" ng-click="cancel()">Close</button>
+    </div>
+
+  </script>
 </div>
+
 
 <div id="main">
 
     <div class="page {{pageClass}}" ng-view></div>
-
-</div>
 
 </div>
 

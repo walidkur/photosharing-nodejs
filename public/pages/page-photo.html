@@ -16,7 +16,7 @@
         <h5><span ng-if="photo.tags.length > 0" class="glyphicon glyphicon-tag"></span>{{photo.tags.join(", ")}}</h5>
       </div>
       <div id="photoBar">
-        <span class="glyphicon glyphicon-thumbs-up"></span>{{photo.likes}} people
+        <button class="likeButton" ng-click="open()"><span class="glyphicon glyphicon-thumbs-up"></span></button>{{photo.likes}} people
       </div>
       <hr id="divider">
       <ul id="commentBox" class="media-list">

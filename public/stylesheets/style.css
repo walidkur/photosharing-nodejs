@@ -294,6 +294,11 @@ a {
   float: left;
 }
 
+.likeButton {
+  background-color: inherit;
+  border: none;
+}
+
 /* ANIMATIONS
 ============================================================================= */
 
