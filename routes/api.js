@@ -47,10 +47,10 @@ router.get('/feed', isAuth, function(req, res, next){
       url = 'https://' + config.server.domain + '/files/oauth/api/userlibrary/' + req.query.uid + '/feed?visibility=public&includeTags=true&ps=20';
       break;
     case 'private':
-      url = 'https:// ' + config.server.domain + '/files/oauth/api/documents/shared/feed?direction=inbound&ps=20'
+      url = 'https:// ' + config.server.domain + '/files/oauth/api/documents/shared/feed?includeTags=true&direction=inbound&ps=20'
       break;
     default:
-      return res.status(412).end()
+      return res.status(412).end();
       break;
   }
 
@@ -60,6 +60,14 @@ router.get('/feed', isAuth, function(req, res, next){
     for(var i = 0; i < array.length; i++){
       url = url + '&tag=' + array[i];
     }
+  }
+
+  if(!isEmpty(req.query.ps)){
+    url = url + '&ps=' + req.query.ps;
+  }
+
+  if(!isEmpty(req.query.si)){
+    url = url + '&sI' + req.query.si;
   }
 
   var headers = {};

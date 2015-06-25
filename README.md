@@ -25,7 +25,7 @@ A listing of the major components used in the application. Note that a number of
 
 *Prerequisite*: Ensure you have the latest version of [Node](https://nodejs.org) and [Bower](http://bower.io/) installed on your machine.
 
-1. In terminal clone github repository.  
+1. Clone the github repository.  
 `git clone https://github.com/ibmcnxdev/photosharing-nodejs.git`  
 
 2. Move into the cloned directory.    
@@ -34,13 +34,13 @@ A listing of the major components used in the application. Note that a number of
 3. Install Node modules via Node Package Manager.    
 `npm install`  
 
-4. Install Bower componenets.  
+4. Install Bower components.  
 `bower install`  
 
 5. Create new file named `server.js` for server credentials.  
 `touch config/server.js` 
 
-6. In `server.js` add the following code and pass your credentials into the appropriate fields.
+6. In `server.js` add the following code and pass credentials into the appropriate fields.
 ```
 var server = {
 
