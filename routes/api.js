@@ -62,6 +62,14 @@ router.get('/feed', isAuth, function(req, res, next){
     }
   }
 
+  if(!isEmpty(req.query.ps)){
+    url = url + '&ps=' + req.query.ps;
+  }
+
+  if(!isEmpty(req.query.si)){
+    url = url + '&sI' + req.query.si;
+  }
+
   var headers = {};
 
   // we must attach the key we got through passportto the header as
