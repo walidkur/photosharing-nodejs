@@ -135,6 +135,7 @@ photoApp.controller('homeController', function($scope, $rootScope, $http, $route
     }
 
     $scope.addComment = function(){
+      console.log('Adding a comment');
 
       $http({
 
