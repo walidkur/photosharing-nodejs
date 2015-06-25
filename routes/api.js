@@ -39,7 +39,7 @@ router.get('/feed', isAuth, function(req, res, next){
     case 'public':
       // config.server.domain is the domain name of the server (without the
       // https or the directory i.e example.com)
-      url = 'https://' + config.server.domain + '/files/oauth/api/documents/feed?visibility=public&includeTags=true&ps=20';
+      url = 'https://' + config.server.domain + '/files/oauth/api/documents/feed?visibility=public&includeTags=true';
       break;
     case 'user':
       if(isEmpty(req.query.uid))
@@ -47,10 +47,10 @@ router.get('/feed', isAuth, function(req, res, next){
       url = 'https://' + config.server.domain + '/files/oauth/api/userlibrary/' + req.query.uid + '/feed?visibility=public&includeTags=true&ps=20';
       break;
     case 'private':
-      url = 'https:// ' + config.server.domain + '/files/oauth/api/documents/shared/feed?direction=inbound&ps=20'
+      url = 'https:// ' + config.server.domain + '/files/oauth/api/documents/shared/feed?includeTags=true&direction=inbound&ps=20'
       break;
     default:
-      return res.status(412).end()
+      return res.status(412).end();
       break;
   }
 
@@ -60,6 +60,14 @@ router.get('/feed', isAuth, function(req, res, next){
     for(var i = 0; i < array.length; i++){
       url = url + '&tag=' + array[i];
     }
+  }
+
+  if(!isEmpty(req.query.ps)){
+    url = url + '&ps=' + req.query.ps;
+  }
+
+  if(!isEmpty(req.query.si)){
+    url = url + '&sI=' + req.query.si;
   }
 
   var headers = {};
@@ -86,7 +94,6 @@ router.get('/feed', isAuth, function(req, res, next){
       return res.status(500).end();
     } else {
 
-      console.log('response: ' + JSON.stringify(response));
 
       // otherwise, the api returns an xml which can be easily converted to a
       // JSON to make parsing easier using the xml2js module for nodejs
@@ -95,7 +102,6 @@ router.get('/feed', isAuth, function(req, res, next){
         if(err)
           return console.log('Error: ' + err);
 
-        console.log('Parsed result: ' + result);
 
         // initialize the array of photos we will be sending back
         var photos = [];

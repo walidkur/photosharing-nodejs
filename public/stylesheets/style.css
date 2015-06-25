@@ -7,6 +7,34 @@ a {
   color: #00B7FF;
 }
 
+#mygallery .caption {
+  background-color: black;
+}
+
+#mygallery .caption a {
+  font-size: 16px;
+  text-decoration: none;
+  color: white;
+}
+
+#mygallery .caption a:hover {
+  font-weight: bold;
+  text-decoration: none;
+  color: white;
+}
+
+#mygallery .caption #author a {
+  font-size: 12px;
+  text-decoration: none;
+  color: white;
+}
+
+#mygallery .caption #author a:hover {
+  font-weight: bold;
+  text-decoration: none;
+  color: white;
+}
+
 #logo {
   font-family: 'Sue Ellen Francisco', cursive;
   color: white;
@@ -161,12 +189,13 @@ a {
     display: block;
 }
 
-#profileImg {
-  margin-top: 10px;
+#profile {
+  margin-top: 5px;
+  padding-bottom: 10px;
 }
 
-#profileGallery {
-  background-color: grey;
+#profileImg {
+  margin-top: 10px;
 }
 
 .col-centered {
@@ -184,6 +213,19 @@ a {
   border-radius: 70px;
 }
 
+.glyphicon-tag {
+  margin-right: 5px;
+}
+
+.glyphicon-thumbs-up {
+  margin-right: 5px;
+}
+
+#photoBar {
+  font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+  padding-bottom: 10px;
+}
+
 #public {
   margin-right: 25px;
   font-size: 24px;
@@ -192,6 +234,64 @@ a {
 #private {
   margin-left: 24px;
   font-size: 24px;
+}
+
+#photoPage {
+  margin-top: 40px;
+}
+
+#commentColumn {
+  height: 800px;
+}
+#userPhoto {
+-webkit-border-radius: 30px;
+-moz-border-radius: 30px;
+}
+
+#clickedPhoto {
+  float: right;
+  height: 800px;
+}
+
+.photoInfo {
+  height: 100px;
+}
+
+#commentBox {
+  float: left;
+  overflow: auto;
+  width: 440px;
+  height: 550px;
+}
+
+.addCommentBox {
+  float: left;
+  width: 400px;
+}
+
+.date {
+  color: #9d9d9d;
+}
+
+.media-heading {
+  font-size: 14px;
+  font-weight: bold;
+}
+
+.photographer {
+  font-weight: bold;
+}
+
+#photoBar {
+  margin-top: 50px;
+  margin-bottom: 0px;
+}
+
+#divider {
+  width: 440px;
+  margin-top: 0px;
+  margin-bottom: 10px;
+  float: left;
 }
 
 /* ANIMATIONS

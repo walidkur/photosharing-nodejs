@@ -1,4 +1,4 @@
-var photoApp = angular.module('photoApp', ['ngRoute', 'ngAnimate', 'ngCookies', 'ui.bootstrap']);
+var photoApp = angular.module('photoApp', ['ngRoute', 'ngAnimate', 'ngCookies', 'ui.bootstrap', 'infinite-scroll']);
 
 // configure our routes
 photoApp.config(function($routeProvider) {
@@ -31,6 +31,9 @@ photoApp.controller('homeController', function($scope, $routeParams, $window, ap
 
   //Configuration for image gallery
   var galleryConfig = { rowHeight: window.screen.height * .25,  margins: 10 };
+  var index = 1;
+  var pageSize = 20;
+  $scope.loading = false;
 
   //Request parameters
   //If search query: add tags to request
@@ -40,22 +43,26 @@ photoApp.controller('homeController', function($scope, $routeParams, $window, ap
     params += '&q=' + $routeParams.tags;
   }
 
+  params += '&ps=' + pageSize + '&si=' + index;
+
+
   //Request to Node server
   apiService.getFeed(params).then(
 
   //On success: bind data to scope, render image gallery
   function(data, status){
-
     $scope.data = data.data;
 
     angular.element(document).ready(function(){
       $('#mygallery').justifiedGallery(galleryConfig);
+        $scope.loading = false;
     });
 
   },
 
   //On error: if unauthorized redirect to '/' for relogin
   function(data, status){
+    $scope.loading = false;
 
     if(status === 401){
     $window.location.assign('/');
@@ -63,245 +70,282 @@ photoApp.controller('homeController', function($scope, $routeParams, $window, ap
 
   });
 
+  $scope.loadMore = function(){
+
+    if ($scope.loading) return;
+    $scope.loading = true;
+
+    var params = '?type=public';
+
+    if($routeParams.tags){
+      params += '&q=' + $routeParams.tags;
+    }
+
+    params += '&ps=5&si=' + index;
+
+
+    apiService.getFeed(params).then(
+
+      function(data, status){
+        $scope.data = $scope.data.concat(data);
+        index += 5;
+        angular.element(document).ready(function() {
+          $("#mygallery").justifiedGallery('norewind');
+          $scope.loading = false;
+        });
+
+      },
+      function(data, status){
+        $scope.loading = false;
+        if(status === 401){
+          $window.location.assign('/');
+        }
+      });
+  }
+
+
 });
 
   photoApp.controller('photoController', function($scope, $http, $routeParams, $window, apiService) {
 
-    $scope.pageClass = 'page-photo';
 
-    var getPhoto = function(){
+  $scope.pageClass = 'page-photo';
 
-      $http({
+  var getPhoto = function(){
 
-        method:'GET',
-        url:'/api/photo?lid=' + $routeParams.lid + '&pid=' + $routeParams.pid
+    $http({
 
-      }).success(function(data, status){
+      method:'GET',
+      url:'/api/photo?lid=' + $routeParams.lid + '&pid=' + $routeParams.pid
 
-        $scope.photo = data;
-        $scope.getComments(data.uid);
+    }).success(function(data, status){
 
-      }).error(function(data, status){
+      $scope.photo = data;
+      $scope.getComments(data.uid);
 
-        if(status === 401){
-          $window.location.assign('/');
-        }
+    }).error(function(data, status){
 
-      });
-    }
-
-    $scope.getComments = function(userid){
-
-      $http({
-
-        method:'GET',
-        url:'/api/comments?uid=' + userid + '&pid=' + $routeParams.pid
-
-      }).success(function(data, status){
-
-        for(var i = 0; i < data.length; i++){
-          data[i].date = new Date(data[i].date);
-          data[i].date = data[i].date.toLocaleDateString();
-        }
-
-        $scope.comments = data;
-
-        $scope.getProfiles();
-
-      }).error(function(data, status){
-
-        if(status === 401){
-          $window.location.assign('/');
-        }
-
-      });
-    }
-
-    $scope.getProfiles = function(){
-      $scope.comments.forEach(function(comment){
-          $http({
-            method:'GET',
-            url:'/api/profile?uid=' + comment.uid
-          }).success(function(data, status){
-            comment.profileImg = data.img;
-          });
-      })
-    }
-
-    $scope.addComment = function(){
-
-      $http({
-
-        method: 'POST',
-        url: '/api/comments?uid=' + $scope.photo.uid + '&pid=' + $routeParams.pid,
-        data: {comment: $scope.content},
-
-      }).success(function(data, status){
-
-        $scope.content = '';
-        $scope.getComments($scope.photo.uid);
-
-      }).error(function(data, status){
-
-        if(status === 401){
-          $window.location.assign('/');
-        }
-
-      });
-    }
-
-    getPhoto();
-
-  });
-
-  photoApp.controller('profileController', function($scope, $http, $routeParams, $window){
-
-    $scope.pageClass = 'page-profile';
-    var imgPixels = 0;
-    var screenHeight = window.screen.height;
-
-    imgPixels = screenHeight * .25;
-
-
-    var getProfile = function(){
-
-      $http({
-
-        method:'GET',
-        url:'/api/profile?uid=' + $routeParams.uid,
-
-      }).success(function(data, status){
-
-        $scope.profile = data;
-
-      }).error(function(data, status){
-
-        if(status === 401){
-          $window.location.assign('/');
-        }
-
-      });
-
-    }
-
-    var getUploadFeed = function(){
-
-      $http({
-
-        method:'GET',
-        url:'/api/feed?type=user&uid=' + $routeParams.uid,
-
-      }).success(function(data, status){
-
-        $scope.uploadFeed = data;
-
-        angular.element(document).ready(function() {
-          $("#profileGallery").justifiedGallery({
-            rowHeight : imgPixels,
-            margins: 10
-          });
-        });
-
-      }).error(function(data, status){
-
-        if(status === 401){
-          $window.location.assign('/');
-        }
-
-      });
-    }
-
-    getProfile();
-    getUploadFeed();
-
-  });
-
-  photoApp.controller('navbarController', function($scope, $rootScope, $http, $route, $routeParams, $cookies, $modal, $log, $window){
-
-      $scope.cookie = JSON.parse($cookies.get('user'));
-      $scope.displayName = $scope.cookie.displayName;
-      $scope.uid = $scope.cookie.uid;
-
-      $scope.searchQuery = '';
-
-      $scope.items = ['item1', 'item2', 'item3'];
-
-      $scope.animationsEnabled = false;
-
-      $scope.open = function (size) {
-
-        var modalInstance = $modal.open({
-          animation: $scope.animationsEnabled,
-          templateUrl: 'myModalContent.html',
-          controller: 'ModalInstanceController',
-          size: size,
-          resolve: {
-            items: function () {
-              return $scope.items;
-            }
-          }
-        });
-
-        modalInstance.result.then(function (selectedItem) {
-          $scope.selected = selectedItem;
-        }, function () {
-          $log.info('Modal dismissed at: ' + new Date());
-        });
-      };
-
-      $scope.toggleAnimation = function () {
-        $scope.animationsEnabled = !$scope.animationsEnabled;
-      };
-
-      $scope.search = function () {
-
-        if($scope.searchQuery){
-
-        $scope.searchTags = $scope.searchQuery.split(" ");
-
-        $window.location.assign('/#/?tags=' + $scope.searchTags.join());
-
-        }
-
+      if(status === 401){
+        $window.location.assign('/');
       }
 
-      var getAvatar = function () {
+    });
+  }
 
-        $http({
+  $scope.getComments = function(userid){
 
-          method: 'GET',
-          url: '/api/profile?uid=' + $scope.uid
+    $http({
 
-        }).success(function(data, status){
+      method:'GET',
+      url:'/api/comments?uid=' + userid + '&pid=' + $routeParams.pid
 
-            $scope.avatar = data.img;
+    }).success(function(data, status){
 
-        }).error(function(data, status){
-
-          if(status === 401){
-            $window.location.assign('/');
-          }
-
-        });
+      for(var i = 0; i < data.length; i++){
+        data[i].date = new Date(data[i].date);
+        data[i].date = data[i].date.toLocaleDateString();
       }
 
-      getAvatar();
+      $scope.comments = data;
 
-  });
+      $scope.getProfiles();
+
+    }).error(function(data, status){
+
+      if(status === 401){
+        $window.location.assign('/');
+      }
+
+    });
+  }
+
+  $scope.getProfiles = function(){
+    $scope.comments.forEach(function(comment){
+      $http({
+        method:'GET',
+        url:'/api/profile?uid=' + comment.uid
+      }).success(function(data, status){
+        comment.profileImg = data.img;
+      });
+    })
+  }
+
+  $scope.addComment = function(){
+
+    $http({
+
+      method: 'POST',
+      url: '/api/comments?uid=' + $scope.photo.uid + '&pid=' + $routeParams.pid,
+      data: {comment: $scope.content},
+
+    }).success(function(data, status){
+
+      $scope.content = '';
+      $scope.getComments($scope.photo.uid);
+
+    }).error(function(data, status){
+
+      if(status === 401){
+        $window.location.assign('/');
+      }
+
+    });
+  }
+
+  getPhoto();
+
+});
 
 
-  photoApp.controller('ModalInstanceController', function($scope, $modalInstance, items) {
+photoApp.controller('profileController', function($scope, $http, $routeParams, $window) {
 
-    $scope.items = items;
-    $scope.selected = {
-      item: $scope.items[0]
-    };
 
-    $scope.ok = function () {
-      $modalInstance.close($scope.selected.item);
-    };
+  $scope.pageClass = 'page-profile';
+  var imgPixels = 0;
+  var screenHeight = window.screen.height;
 
-    $scope.cancel = function () {
-      $modalInstance.dismiss('cancel');
-    };
-  });
+  imgPixels = screenHeight * .25;
+
+
+  var getProfile = function(){
+
+    $http({
+
+      method:'GET',
+      url:'/api/profile?uid=' + $routeParams.uid,
+
+    }).success(function(data, status){
+
+      $scope.profile = data;
+
+    }).error(function(data, status){
+
+      if(status === 401){
+        $window.location.assign('/');
+      }
+
+
+    });
+  }
+
+  var getUploadFeed = function(){
+
+    $http({
+
+      method:'GET',
+      url:'/api/feed?type=user&uid=' + $routeParams.uid,
+
+    }).success(function(data, status){
+
+      $scope.uploadFeed = data;
+
+      angular.element(document).ready(function() {
+        $("#profileGallery").justifiedGallery({
+          rowHeight : imgPixels,
+          margins: 10
+        });
+      });
+
+    }).error(function(data, status){
+
+      if(status === 401){
+        $window.location.assign('/');
+      }
+
+    });
+  }
+
+  getProfile();
+  getUploadFeed();
+
+});
+
+photoApp.controller('navbarController', function($scope, $rootScope, $http, $route, $routeParams, $cookies, $modal, $log, $window){
+
+  $scope.cookie = JSON.parse($cookies.get('user'));
+  $scope.displayName = $scope.cookie.displayName;
+  $scope.uid = $scope.cookie.uid;
+
+  $scope.searchQuery = '';
+
+  $scope.items = ['item1', 'item2', 'item3'];
+
+  $scope.animationsEnabled = false;
+
+  $scope.open = function (size) {
+
+    var modalInstance = $modal.open({
+      animation: $scope.animationsEnabled,
+      templateUrl: 'myModalContent.html',
+      controller: 'ModalInstanceController',
+      size: size,
+      resolve: {
+        items: function () {
+          return $scope.items;
+        }
+      }
+    });
+
+    modalInstance.result.then(function (selectedItem) {
+      $scope.selected = selectedItem;
+    }, function () {
+      $log.info('Modal dismissed at: ' + new Date());
+    });
+  };
+
+  $scope.toggleAnimation = function () {
+    $scope.animationsEnabled = !$scope.animationsEnabled;
+  };
+
+  $scope.search = function () {
+
+    if($scope.searchQuery){
+
+      $scope.searchTags = $scope.searchQuery.split(" ");
+
+      $window.location.assign('/#/?tags=' + $scope.searchTags.join());
+
+    }
+
+  }
+
+  var getAvatar = function () {
+
+    $http({
+
+      method: 'GET',
+      url: '/api/profile?uid=' + $scope.uid
+
+    }).success(function(data, status){
+
+      $scope.avatar = data.img;
+
+    }).error(function(data, status){
+
+      if(status === 401){
+        $window.location.assign('/');
+      }
+
+    });
+  }
+
+  getAvatar();
+
+});
+
+
+photoApp.controller('ModalInstanceController', function($scope, $modalInstance, items) {
+
+  $scope.items = items;
+  $scope.selected = {
+    item: $scope.items[0]
+  };
+
+  $scope.ok = function () {
+    $modalInstance.close($scope.selected.item);
+  };
+
+  $scope.cancel = function () {
+    $modalInstance.dismiss('cancel');
+  };
+});
