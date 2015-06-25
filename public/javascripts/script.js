@@ -23,82 +23,91 @@ photoApp.config(function($routeProvider) {
   });
 });
 
-// create the controller and inject Angular's $scope
-photoApp.controller('homeController', function($scope, $rootScope, $http, $route, $routeParams, $window) {
 
-  $scope.loading = false;
-  var index = 1;
+photoApp.controller('homeController', function($scope, $routeParams, $window, apiService) {
+
+  //Class for ng-view in index.html
   $scope.pageClass = 'page-home';
-  var imgPixels = 0;
-  var screenHeight = window.screen.height;
 
-  imgPixels = screenHeight * .25;
+  //Configuration for image gallery
+  var galleryConfig = { rowHeight: window.screen.height * .25,  margins: 10 };
+  var index = 1;
+  var pageSize = 20;
+  $scope.loading = false;
 
-  $scope.loadMore = function(){
-    console.log('Pre-Loading');
-    if ($scope.loading) return;
-    console.log('Loading');
-    $scope.loading = true;
-    $http({
-      method: 'GET',
-      url: '/api/feed?type=public&ps=5&si=' + index
-    }).success(function(data, status){
-      $scope.data = $scope.data.concat(data);
-      index += 5;
-      angular.element(document).ready(function() {
-        $("#mygallery").justifiedGallery('norewind');
-        $scope.loading = false;
-      });
-    }).error(function(data, status){
-      if(status === 401){
-        $window.location.assign('/');
-      }
-    });
+  //Request parameters
+  //If search query: add tags to request
+  var params = '?type=public';
+
+  if($routeParams.tags){
+    params += '&q=' + $routeParams.tags;
   }
 
+  params += '&ps=' + pageSize + '&si=' + index;
 
-  var getFeed = function(){
 
-    $scope.loading = true;
+  //Request to Node server
+  apiService.getFeed(params).then(
 
-    var tags = '';
-    if($routeParams.tags){
-      tags = '&q=' + $routeParams.tags;
+  //On success: bind data to scope, render image gallery
+  function(data, status){
+    $scope.data = data.data;
+
+    angular.element(document).ready(function(){
+      $('#mygallery').justifiedGallery(galleryConfig);
+        $scope.loading = false;
+    });
+
+  },
+
+  //On error: if unauthorized redirect to '/' for relogin
+  function(data, status){
+    $scope.loading = false;
+
+    if(status === 401){
+    $window.location.assign('/');
     }
 
+  });
 
-    $http({
+  $scope.loadMore = function(){
 
-      method:'GET',
-      url:'/api/feed?type=public&ps=20&si='+ index + tags,
+    if ($scope.loading) return;
+    $scope.loading = true;
 
-    }).success(function(data, status){
+    var params = '?type=public';
 
-      $scope.data = data;
+    if($routeParams.tags){
+      params += '&q=' + $routeParams.tags;
+    }
 
-      angular.element(document).ready(function() {
-        $("#mygallery").justifiedGallery({
-          rowHeight : imgPixels,
-          margins: 10
+    params += '&ps=5&si=' + index;
+
+
+    apiService.getFeed(params).then(
+
+      function(data, status){
+        $scope.data = $scope.data.concat(data);
+        index += 5;
+        angular.element(document).ready(function() {
+          $("#mygallery").justifiedGallery('norewind');
+          $scope.loading = false;
         });
-      $scope.loading = false;
+
+      },
+      function(data, status){
+        $scope.loading = false;
+        if(status === 401){
+          $window.location.assign('/');
+        }
       });
-
-    }).error(function(data, status){
-
-      if(status === 401){
-        $window.location.assign('/');
-      }
-
-    });
-
   }
 
-  getFeed();
 
 });
 
-photoApp.controller('photoController', function($scope, $http, $route, $routeParams, $window) {
+  photoApp.controller('photoController', function($scope, $http, $routeParams, $window, apiService) {
+
 
   $scope.pageClass = 'page-photo';
 
@@ -187,7 +196,9 @@ photoApp.controller('photoController', function($scope, $http, $route, $routePar
 
 });
 
+
 photoApp.controller('profileController', function($scope, $http, $routeParams, $window) {
+
 
   $scope.pageClass = 'page-profile';
   var imgPixels = 0;
@@ -212,6 +223,7 @@ photoApp.controller('profileController', function($scope, $http, $routeParams, $
       if(status === 401){
         $window.location.assign('/');
       }
+
 
     });
   }
@@ -320,6 +332,7 @@ photoApp.controller('navbarController', function($scope, $rootScope, $http, $rou
   getAvatar();
 
 });
+
 
 photoApp.controller('ModalInstanceController', function($scope, $modalInstance, items) {
 
