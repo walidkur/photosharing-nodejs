@@ -7,6 +7,34 @@ a {
   color: #00B7FF;
 }
 
+#mygallery .caption {
+  background-color: black;
+}
+
+#mygallery .caption a {
+  font-size: 16px;
+  text-decoration: none;
+  color: white;
+}
+
+#mygallery .caption a:hover {
+  font-weight: bold;
+  text-decoration: none;
+  color: white;
+}
+
+#mygallery .caption #author a {
+  font-size: 12px;
+  text-decoration: none;
+  color: white;
+}
+
+#mygallery .caption #author a:hover {
+  font-weight: bold;
+  text-decoration: none;
+  color: white;
+}
+
 #logo {
   font-family: 'Sue Ellen Francisco', cursive;
   color: white;
@@ -161,12 +189,13 @@ a {
     display: block;
 }
 
-#profileImg {
-  margin-top: 10px;
+#profile {
+  margin-top: 5px;
+  padding-bottom: 10px;
 }
 
-#profileGallery {
-  background-color: grey;
+#profileImg {
+  margin-top: 10px;
 }
 
 .col-centered {
