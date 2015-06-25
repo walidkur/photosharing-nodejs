@@ -17,6 +17,7 @@ var express = require('express');
 
 var router = express.Router();
 var passport = require('passport');
+var config = require('../config/server');
 
 
 /* GET home page. */
@@ -44,7 +45,7 @@ router.post('/logout', function(req, res, next){
   res.clearCookie('user');
   req.logout();
   req.session.destroy();
-  res.redirect('https://apps.na.collabserv.com/manage/account/logoutSSO');
+  res.redirect('https://' + config.server.domain + '/manage/account/logoutSSO');
 })
 
 router.get('/callback', passport.authenticate('ibm-connections-cloud', {successReturnToOrRedirect:'/', failureRedirect: '/'}));
