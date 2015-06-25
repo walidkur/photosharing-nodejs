@@ -15,7 +15,7 @@
 <div id="mygallery">
   <div ng-repeat="entry in data">
     <a href="#/photo/{{entry.lid}}/{{entry.pid}}">
-      <img src="{{entry.thumbnail}}"/>
+      <img ng-src="{{entry.thumbnail}}"/>
     </a>
     <div class="caption">
       <a href="#/photo/{{entry.lid}}/{{entry.pid}}">{{entry.title}}</a>
