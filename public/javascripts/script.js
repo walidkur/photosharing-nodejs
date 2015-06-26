@@ -107,7 +107,7 @@ photoApp.controller('homeController', function($scope, $routeParams, $window, ap
   }
 });
 
-photoApp.controller('photoController', function($scope, $http, $routeParams, $window, $cookies, apiService) {
+photoApp.controller('photoController', function($scope, $rootScope, $http, $routeParams, $window, $cookies, apiService) {
 
   $scope.cookie = JSON.parse($cookies.get('user'));
   $scope.uid = $scope.cookie.uid;
@@ -151,6 +151,7 @@ photoApp.controller('photoController', function($scope, $http, $routeParams, $wi
 
       $scope.photo = data;
       $scope.getComments(data.uid);
+      getProfile();
 
     }).error(function(data, status){
 
@@ -220,19 +221,24 @@ photoApp.controller('photoController', function($scope, $http, $routeParams, $wi
 
     });
   }
+  var getProfile = function () {
 
-  $scope.deleteComment = function(cid) {
-    var params = '?cid=' + cid + '&pid=' + $routeParams.pid + '&uid=' + $scope.photo.uid;
-    apiService.deleteComment(params).then(
-      function(data, status){
-        $scope.getComments($scope.photo.uid);
-      },
-      function(data, status){
-        if(status === 401){
-          $window.location.assign('/');
-        }
+    $http({
+
+      method: 'GET',
+      url: '/api/profile?uid=' + $scope.photo.uid
+
+    }).success(function(data, status){
+
+      $scope.photo.profile = data;
+
+    }).error(function(data, status){
+
+      if(status === 401){
+        $window.location.assign('/');
       }
-    )
+
+    });
   }
 
   getPhoto();
@@ -307,7 +313,7 @@ photoApp.controller('navbarController', function($scope, $rootScope, $http, $rou
 
   $scope.cookie = JSON.parse($cookies.get('user'));
   $scope.displayName = $scope.cookie.displayName;
-  $scope.uid = $scope.cookie.uid;
+  $rootScope.uid = $scope.cookie.uid;
 
   $scope.searchQuery = '';
 
@@ -357,11 +363,11 @@ photoApp.controller('navbarController', function($scope, $rootScope, $http, $rou
     $http({
 
       method: 'GET',
-      url: '/api/profile?uid=' + $scope.uid
+      url: '/api/profile?uid=' + $rootScope.uid
 
     }).success(function(data, status){
 
-      $scope.avatar = data.img;
+      $rootScope.avatar = data.img;
 
     }).error(function(data, status){
 

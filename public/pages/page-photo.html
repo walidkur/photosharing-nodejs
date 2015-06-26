@@ -16,9 +16,18 @@
 
       <!--Displays the photo's information-->
       <div class="photoInfo">
-        <h4 class="photographer">{{photo.photographer}}</h4>
-        <h5 class="date">{{photo.published}}</h5>
-        <h5>{{photo.title}}</h5>
+        <div class="media">
+          <div class="media-left media-middle">
+            <a href="#">
+              <img id="userPhoto" class="media-object" src="{{photo.profile.img}}" height=60px>
+            </a>
+          </div>
+          <div class="media-body">
+            <h4 class="photographer">{{photo.photographer}}</h4>
+            <h5 class="date">{{photo.published}}</h5>
+            <h5>{{photo.title}}</h5>
+          </div>
+        </div>
         <h5><span ng-if="photo.tags.length > 0" class="glyphicon glyphicon-tag"></span>{{photo.tags.join(", ")}}</h5>
       </div>
 
