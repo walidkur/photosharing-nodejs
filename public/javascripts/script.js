@@ -107,10 +107,38 @@ photoApp.controller('homeController', function($scope, $routeParams, $window, ap
   }
 });
 
-photoApp.controller('photoController', function($scope, $http, $routeParams, $window, apiService) {
+photoApp.controller('photoController', function($scope, $http, $routeParams, $window, $cookies, apiService) {
 
-
+  $scope.cookie = JSON.parse($cookies.get('user'));
+  $scope.uid = $scope.cookie.uid;
   $scope.pageClass = 'page-photo';
+  $scope.liked = false;
+
+  $scope.like = function(){
+    var params = '?lid=' + $routeParams.lid + '&pid=' + $routeParams.pid;
+    if($scope.liked){
+      params += '&r=off';
+    } else {
+      params =+ '&r=on';
+    }
+    apiService.putLike(params).then(
+      function(data, status){
+        console.log("Liked")
+        if($scope.liked){
+          $scope.liked = false;
+          $scope.photo.likes -= 1;
+        } else {
+          $scope.liked = true;
+          $scope.photo.likes += 1;
+        }
+      },
+      function(data, status){
+        if(status === 401){
+          $window.location.assign('/');
+        }
+      }
+    )
+  }
 
   var getPhoto = function(){
 

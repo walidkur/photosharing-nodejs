@@ -15,7 +15,6 @@ var config = require('../config/server');
 var parseString = require('xml2js').parseString;
 var request = require('request');
 var Busboy = require('busboy');
-var fs = require('fs');
 
 function isAuth(req, res, next){
   if(!req.user)
@@ -83,8 +82,6 @@ router.get('/feed', isAuth, function(req, res, next){
     url: url,
     headers: headers
   };
-
-  console.log('options: ' + JSON.stringify(options));
 
   request.get(options, function(error, response, body){
 
@@ -168,34 +165,15 @@ router.get('/feed', isAuth, function(req, res, next){
             }
           }
 
-          // the link object contains many links related to the document,
-          // however we want the link to the thumbnail, therefore we will
-          // look for the object with the rel of thumbnail
-          // for(var j = 0; j < entry.link.length; j++){
-          //   var link = entry.link[j];
-          //   var rel = link.$.rel;
-          //   if(!(rel === undefined) && (rel.indexOf('thumbnail') > -1)){
-          //     photo.thumbnail = link.$.href;
-          //     // by default the api returns a medium sized thumbnail, however
-          //     // we want a large one. Luckily the urls for medium and large
-          //     // thumbnails are very similar, we simply replace the word medium
-          //     // with large
-          //     photo.thumbnail = photo.thumbnail.replace(/medium/i, 'large');
-          //     break;
-          //   }
-          // }
-
           // in addition we need to pass the library id of the entry, for later
           // calls in which we will have to pass the library id to the api
           photo.lid = entry['td:libraryId'][0];
 
           // push the photo to our photos array
-          console.log('pushing :' + JSON.stringify(photo));
           photos.push(photo);
         }
 
         // return our photos array
-        console.log('sending response');
         res.send(photos);
       });
     }
@@ -267,7 +245,6 @@ router.get('/photo', isAuth, function(req, res, next){
       headers: headers
     };
 
-
     request.get(options, function(error, response, body){
       if(error){
         console.log('photo error: ' + error);
@@ -306,7 +283,6 @@ router.get('/photo', isAuth, function(req, res, next){
             }
           }
           photo.lid = entry['td:libraryId'][0];
-          console.log('Sending response');
           res.send(photo);
         });
       }
@@ -407,7 +383,6 @@ router.get('/comments', isAuth, function(req, res, next){
       headers: headers
     };
 
-    console.log('Options: ' + JSON.stringify(options));
 
     request.get(options, function(error, response, body){
       if(error){
