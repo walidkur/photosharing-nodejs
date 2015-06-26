@@ -38,6 +38,14 @@ photoApp.factory('apiService', function($http){
         url: '/api/like' + params
       });
       return promise;
+    },
+
+    deleteComment: function(params){
+      var promise = $http({
+        method:'DELETE',
+        url: '/api/comments' + params
+      });
+      return promise;
     }
 
 
