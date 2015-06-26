@@ -91,15 +91,11 @@
 <div ng-controller="navbarController">
   <script type="text/ng-template" id="myModalContent.html">
 
-    // Upload header/title
     <div class="modal-header">
       <h3 class="modal-title">Upload your photos!</h3>
     </div>
 
-    // The modal's body
     <div class="modal-body">
-
-      // Declares the form as a file-uploader
       <form action="/api/upload" method="post" enctype="multipart/form-data">
         <div style="position:relative;">
       		<a class='btn btn-primary' href='javascript:;'>
@@ -109,21 +105,13 @@
       		&nbsp;
       		<span class='label label-info' id="upload-file-info"></span>
       	</div>
-
-        // Creates ability to make tags for photos
         <div class="form-group">
           <label for="tag">Tags:</label>
           <input type="text" class="form-control" id="tag">
         </div>
-
       </form>
-
     </div>
-
-    // The modal's footer
     <div class="modal-footer">
-
-      // Creates the submit/"Upload" and "Close" buttons
       <button type="submit" class="btn btn-info" ng-click="ok()">Upload</button>
       <button class="btn btn-warning" ng-click="cancel()">Close</button>
     </div>
