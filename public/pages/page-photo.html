@@ -49,6 +49,10 @@
             <h5>{{comment.content}}</h5>
             <h5 class="date">{{comment.date}}</h5>
           </div>
+
+          <div ng-show="uid == comment.uid" class="media-right media-top deleteComment">
+            <button class="deleteCommentButton" ng-click="deleteComment(comment.cid)"><span style="color: grey" class="glyphicon glyphicon-remove"></span></button>
+          </div>
         </li>
       </ul>
 

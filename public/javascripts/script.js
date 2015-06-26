@@ -221,6 +221,20 @@ photoApp.controller('photoController', function($scope, $http, $routeParams, $wi
     });
   }
 
+  $scope.deleteComment = function(cid) {
+    var params = '?cid=' + cid + '&pid=' + $routeParams.pid + '&uid=' + $scope.photo.uid;
+    apiService.deleteComment(params).then(
+      function(data, status){
+        $scope.getComments($scope.photo.uid);
+      },
+      function(data, status){
+        if(status === 401){
+          $window.location.assign('/');
+        }
+      }
+    )
+  }
+
   getPhoto();
 
 });

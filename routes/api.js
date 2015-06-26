@@ -325,7 +325,7 @@ router.delete('/photo', isAuth, function(req, res, next){
       headers: headers
     }
 
-    request.delete(options, function(error, response, body){
+    request.del(options, function(error, response, body){
       if(error){
         return res.status(500).end();
       }
@@ -504,7 +504,7 @@ router.delete('/comments', isAuth, function(req, res, next){
   if(isEmpty(req.query.pid))
   return res.status(412).end();
 
-  if(isEmpty(req.query.pid))
+  if(isEmpty(req.query.uid))
   return res.status(412).end();
 
 
@@ -537,7 +537,7 @@ router.delete('/comments', isAuth, function(req, res, next){
         headers: headers
       };
 
-      request.delete(options, function(error, response, body){
+      request.del(options, function(error, response, body){
         if(error){
           return res.status(500).end()
         } else {
