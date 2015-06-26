@@ -4,4 +4,4 @@
       memory: 512m
       host: photonode
       command: node bin/www
-      buildpack: https://github.com/jthomas/nodejs-buildpack.git
+      buildpack: nodejs_buildpack
