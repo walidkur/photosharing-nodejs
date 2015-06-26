@@ -16,15 +16,26 @@
 
       <!--Displays the photo's information-->
       <div class="photoInfo">
-        <h4 class="photographer">{{photo.photographer}}</h4>
-        <h5 class="date">{{photo.published}}</h5>
-        <h5>{{photo.title}}</h5>
+        <div class="media">
+          <div class="media-left media-middle">
+            <a href="#">
+              <img id="userPhoto" class="media-object" src="{{photo.profile.img}}" height=60px>
+            </a>
+          </div>
+          <div class="media-body">
+            <h4 class="photographer">{{photo.photographer}}</h4>
+            <h5 class="date">{{photo.published}}</h5>
+            <h5>{{photo.title}}</h5>
+          </div>
+        </div>
         <h5><span ng-if="photo.tags.length > 0" class="glyphicon glyphicon-tag"></span>{{photo.tags.join(", ")}}</h5>
       </div>
 
       <!--Displays the like button and number of likes-->
       <div id="photoBar">
-        <button class="likeButton" ng-click="open()"><span class="glyphicon glyphicon-thumbs-up"></span></button>{{photo.likes}} people
+        <button ng-show="liked" class="likeButton" ng-click="like()"><span style="color: blue" class="glyphicon glyphicon-thumbs-up"></span></button>
+        <button ng-show="!liked" class="likeButton" ng-click="like()"><span class="glyphicon glyphicon-thumbs-up"></span></button>
+        {{photo.likes}} people
       </div>
 
       <!--Creates a divider before somments-->
@@ -46,6 +57,10 @@
             <h4 class="media-heading">{{comment.author}}</h4>
             <h5>{{comment.content}}</h5>
             <h5 class="date">{{comment.date}}</h5>
+          </div>
+
+          <div ng-show="uid == comment.uid" class="media-right media-top deleteComment">
+            <button class="deleteCommentButton" ng-click="deleteComment(comment.cid)"><span style="color: grey" class="glyphicon glyphicon-remove"></span></button>
           </div>
         </li>
       </ul>

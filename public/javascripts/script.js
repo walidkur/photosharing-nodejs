@@ -43,34 +43,37 @@ photoApp.controller('homeController', function($scope, $routeParams, $window, ap
     params += '&q=' + $routeParams.tags;
   }
 
-  params += '&ps=' + pageSize + '&si=' + index;
+  params += '&ps=20' + '&si=' + index;
 
-
+  $scope.loading = true;
   //Request to Node server
   apiService.getFeed(params).then(
 
-  //On success: bind data to scope, render image gallery
-  function(data, status){
-    $scope.data = data.data;
+    //On success: bind data to scope, render image gallery
+    function(data, status){
+      $scope.data = data.data;
 
-    angular.element(document).ready(function(){
-      $('#mygallery').justifiedGallery(galleryConfig);
+      angular.element(document).ready(function(){
+        index = 21;
+        $('#mygallery').justifiedGallery(galleryConfig);
         $scope.loading = false;
-    });
+      });
 
-  },
+    },
 
-  //On error: if unauthorized redirect to '/' for relogin
-  function(data, status){
-    $scope.loading = false;
+    //On error: if unauthorized redirect to '/' for relogin
+    function(data, status){
+      $scope.loading = false;
 
-    if(status === 401){
-    $window.location.assign('/');
+      if(status === 401){
+        $window.location.assign('/');
+      }
+
     }
-
-  });
+  );
 
   $scope.loadMore = function(){
+    console.log('Loading more');
 
     if ($scope.loading) return;
     $scope.loading = true;
@@ -87,29 +90,55 @@ photoApp.controller('homeController', function($scope, $routeParams, $window, ap
     apiService.getFeed(params).then(
 
       function(data, status){
-        $scope.data = $scope.data.concat(data);
+        $scope.data = $scope.data.concat(data.data);
         index += 5;
         angular.element(document).ready(function() {
           $("#mygallery").justifiedGallery('norewind');
           $scope.loading = false;
         });
-
       },
       function(data, status){
         $scope.loading = false;
         if(status === 401){
           $window.location.assign('/');
         }
-      });
+      }
+    );
   }
-
-
 });
 
-  photoApp.controller('photoController', function($scope, $http, $routeParams, $window, apiService) {
+photoApp.controller('photoController', function($scope, $rootScope, $http, $routeParams, $window, $cookies, apiService) {
 
-
+  $scope.cookie = JSON.parse($cookies.get('user'));
+  $scope.uid = $scope.cookie.uid;
   $scope.pageClass = 'page-photo';
+  $scope.liked = false;
+
+  $scope.like = function(){
+    var params = '?lid=' + $routeParams.lid + '&pid=' + $routeParams.pid;
+    if($scope.liked){
+      params += '&r=off';
+    } else {
+      params =+ '&r=on';
+    }
+    apiService.putLike(params).then(
+      function(data, status){
+        console.log("Liked")
+        if($scope.liked){
+          $scope.liked = false;
+          $scope.photo.likes -= 1;
+        } else {
+          $scope.liked = true;
+          $scope.photo.likes += 1;
+        }
+      },
+      function(data, status){
+        if(status === 401){
+          $window.location.assign('/');
+        }
+      }
+    )
+  }
 
   var getPhoto = function(){
 
@@ -122,6 +151,7 @@ photoApp.controller('homeController', function($scope, $routeParams, $window, ap
 
       $scope.photo = data;
       $scope.getComments(data.uid);
+      getProfile();
 
     }).error(function(data, status){
 
@@ -182,6 +212,25 @@ photoApp.controller('homeController', function($scope, $routeParams, $window, ap
 
       $scope.content = '';
       $scope.getComments($scope.photo.uid);
+
+    }).error(function(data, status){
+
+      if(status === 401){
+        $window.location.assign('/');
+      }
+
+    });
+  }
+  var getProfile = function () {
+
+    $http({
+
+      method: 'GET',
+      url: '/api/profile?uid=' + $scope.photo.uid
+
+    }).success(function(data, status){
+
+      $scope.photo.profile = data;
 
     }).error(function(data, status){
 
@@ -264,7 +313,7 @@ photoApp.controller('navbarController', function($scope, $rootScope, $http, $rou
 
   $scope.cookie = JSON.parse($cookies.get('user'));
   $scope.displayName = $scope.cookie.displayName;
-  $scope.uid = $scope.cookie.uid;
+  $rootScope.uid = $scope.cookie.uid;
 
   $scope.searchQuery = '';
 
@@ -314,11 +363,11 @@ photoApp.controller('navbarController', function($scope, $rootScope, $http, $rou
     $http({
 
       method: 'GET',
-      url: '/api/profile?uid=' + $scope.uid
+      url: '/api/profile?uid=' + $rootScope.uid
 
     }).success(function(data, status){
 
-      $scope.avatar = data.img;
+      $rootScope.avatar = data.img;
 
     }).error(function(data, status){
 

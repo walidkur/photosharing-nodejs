@@ -32,6 +32,22 @@ photoApp.factory('apiService', function($http){
 
     },
 
+    putLike: function(params){
+      var promise = $http({
+        method:'PUT',
+        url: '/api/like' + params
+      });
+      return promise;
+    },
+
+    deleteComment: function(params){
+      var promise = $http({
+        method:'DELETE',
+        url: '/api/comments' + params
+      });
+      return promise;
+    }
+
 
 
   };

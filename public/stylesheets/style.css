@@ -317,6 +317,19 @@ a {
   border: none;
 }
 
+.deleteCommentButton {
+  background-color: inherit;
+  border: none;
+}
+
+.deleteComment {
+  display: none;
+}
+
+#comment:hover > .deleteComment {
+  display: table-cell;
+}
+
 /* ANIMATIONS
 ============================================================================= */
 
