@@ -3,5 +3,5 @@
     - name: photonode
       memory: 512m
       host: photonode
-      command: node bin/www
+      command: bower install; node bin/www
       buildpack: nodejs_buildpack
