@@ -24,7 +24,9 @@
 
       <!--Displays the like button and number of likes-->
       <div id="photoBar">
-        <button class="likeButton" ng-click="open()"><span class="glyphicon glyphicon-thumbs-up"></span></button>{{photo.likes}} people
+        <button ng-show="liked" class="likeButton" ng-click="like()"><span style="color: blue" class="glyphicon glyphicon-thumbs-up"></span></button>
+        <button ng-show="!liked" class="likeButton" ng-click="like()"><span class="glyphicon glyphicon-thumbs-up"></span></button>
+        {{photo.likes}} people
       </div>
 
       <!--Creates a divider before somments-->

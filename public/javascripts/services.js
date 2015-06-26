@@ -32,6 +32,14 @@ photoApp.factory('apiService', function($http){
 
     },
 
+    putLike: function(params){
+      var promise = $http({
+        method:'PUT',
+        url: '/api/like' + params
+      });
+      return promise;
+    }
+
 
 
   };
