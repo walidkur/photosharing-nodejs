@@ -45,10 +45,10 @@ router.get('/feed', isAuth, function(req, res, next){
     case 'user':
     if(isEmpty(req.query.uid))
     return res.status(412).end();
-    url = 'https://' + config.server.domain + '/files/oauth/api/userlibrary/' + req.query.uid + '/feed?visibility=public&includeTags=true&ps=20';
+    url = 'https://' + config.server.domain + '/files/oauth/api/userlibrary/' + req.query.uid + '/feed?visibility=public&includeTags=true';
     break;
     case 'private':
-    url = 'https:// ' + config.server.domain + '/files/oauth/api/documents/shared/feed?includeTags=true&direction=inbound&ps=20'
+    url = 'https:// ' + config.server.domain + '/files/oauth/api/documents/shared/feed?includeTags=true&direction=inbound'
     break;
     default:
     return res.status(412).end();
