@@ -199,6 +199,9 @@ photoApp.controller('photoController', function($scope, $rootScope, $http, $rout
 
     }).success(function(data, status){
 
+      data.published = new Date(data.published);
+      data.published = data.published.toLocaleDateString();
+      
       $scope.photo = data;
       $scope.getComments(data.uid);
       getProfile();
