@@ -43,34 +43,37 @@ photoApp.controller('homeController', function($scope, $routeParams, $window, ap
     params += '&q=' + $routeParams.tags;
   }
 
-  params += '&ps=' + pageSize + '&si=' + index;
+  params += '&ps=20' + '&si=' + index;
 
-
+  $scope.loading = true;
   //Request to Node server
   apiService.getFeed(params).then(
 
-  //On success: bind data to scope, render image gallery
-  function(data, status){
-    $scope.data = data.data;
+    //On success: bind data to scope, render image gallery
+    function(data, status){
+      $scope.data = data.data;
 
-    angular.element(document).ready(function(){
-      $('#mygallery').justifiedGallery(galleryConfig);
+      angular.element(document).ready(function(){
+        index = 21;
+        $('#mygallery').justifiedGallery(galleryConfig);
         $scope.loading = false;
-    });
+      });
 
-  },
+    },
 
-  //On error: if unauthorized redirect to '/' for relogin
-  function(data, status){
-    $scope.loading = false;
+    //On error: if unauthorized redirect to '/' for relogin
+    function(data, status){
+      $scope.loading = false;
 
-    if(status === 401){
-    $window.location.assign('/');
+      if(status === 401){
+        $window.location.assign('/');
+      }
+
     }
-
-  });
+  );
 
   $scope.loadMore = function(){
+    console.log('Loading more');
 
     if ($scope.loading) return;
     $scope.loading = true;
@@ -87,26 +90,24 @@ photoApp.controller('homeController', function($scope, $routeParams, $window, ap
     apiService.getFeed(params).then(
 
       function(data, status){
-        $scope.data = $scope.data.concat(data);
+        $scope.data = $scope.data.concat(data.data);
         index += 5;
         angular.element(document).ready(function() {
           $("#mygallery").justifiedGallery('norewind');
           $scope.loading = false;
         });
-
       },
       function(data, status){
         $scope.loading = false;
         if(status === 401){
           $window.location.assign('/');
         }
-      });
+      }
+    );
   }
-
-
 });
 
-  photoApp.controller('photoController', function($scope, $http, $routeParams, $window, apiService) {
+photoApp.controller('photoController', function($scope, $http, $routeParams, $window, apiService) {
 
 
   $scope.pageClass = 'page-photo';

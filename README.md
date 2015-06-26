@@ -1,6 +1,10 @@
-# About
+# Photonode
 
 This project provides a sample application that leverages the [IBM Connections Cloud APIs](https://developer.ibm.com/social/) to create a social photo sharing experience. The application can be easily deployed to IBM Bluemix or it can be deployed on its own.
+
+See it live here: photonode.mybluemix.next
+
+[![Deploy to Bluemix](https://bluemix.net/deploy/button.png)](https://bluemix.net/deploy?repository=https://github.com/ibmcnxdev/photosharing-nodejs.git)
 
 # Dependencies
 
@@ -28,17 +32,17 @@ A listing of the major components used in the application. Note that a number of
 1. Clone the github repository.  
 `git clone https://github.com/ibmcnxdev/photosharing-nodejs.git`  
 
-2. Move into the cloned directory.    
+2. Move into the cloned directory.
 `cd photosharing-nodejs`  
 
-3. Install Node modules via Node Package Manager.    
+3. Install Node modules via Node Package Manager.
 `npm install`  
 
 4. Install Bower components.  
 `bower install`  
 
 5. Create new file named `server.js` for server credentials.  
-`touch config/server.js` 
+`touch config/server.js`
 
 6. In `server.js` add the following code and pass credentials into the appropriate fields.
 ```
@@ -63,5 +67,3 @@ exports.server = server;`
 # License
 
 This code is licensed under Apache License v2.0. See the License.txt file in the root directory of this repository for more details.
-
-

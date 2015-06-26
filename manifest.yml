@@ -3,3 +3,5 @@
     - name: photonode
       memory: 512m
       host: photonode
+      command: node bin/www
+      buildpack: nodejs_buildpack
