@@ -316,46 +316,46 @@ router.get('/photo', isAuth, function(req, res, next){
 
 router.delete('/photo', isAuth, function(req, res, next){
   if(isEmpty(req.query.pid))
-    return res.status(412).end();
+  return res.status(412).end();
 
-    // we must get a nonce from the api server in order to post a comment
-    // see upload for more info
-    var url = 'https://' + config.server.domain + '/files/oauth/api/nonce';
+  // we must get a nonce from the api server in order to post a comment
+  // see upload for more info
+  var url = 'https://' + config.server.domain + '/files/oauth/api/nonce';
 
-    var headers = {'Authorization': 'Bearer ' + req.user.accessToken}
+  var headers = {'Authorization': 'Bearer ' + req.user.accessToken}
+
+  var options = {
+    url: url,
+    headers: headers
+  }
+
+  request.get(options, function(error, response, body){
+    if(error){
+      console.log('Failed getting nonce')
+      return res.status(412).end();
+    }
+
+    var nonce = body;
+
+    var url = 'https://' + config.server.domain + '/files/oauth/api/myuserlibrary/document/' + req.query.pid + '/entry';
+
+    var headers = {
+      'Authorization': 'Bearer ' + req.user.accessToken,
+      'X-Update-Nonce': nonce
+    }
 
     var options = {
       url: url,
       headers: headers
     }
 
-    request.get(options, function(error, response, body){
+    request.delete(options, function(error, response, body){
       if(error){
-        console.log('Failed getting nonce')
-        return res.status(412).end();
+        return res.status(500).end();
       }
-
-      var nonce = body;
-
-      var url = 'https://' + config.server.domain + '/files/oauth/api/myuserlibrary/document/' + req.query.pid + '/entry';
-
-      var headers = {
-        'Authorization': 'Bearer ' + req.user.accessToken,
-        'X-Update-Nonce': nonce
-      }
-
-      var options = {
-        url: url,
-        headers: headers
-      }
-
-      request.delete(options, function(error, responsem body){
-        if(error){
-          return res.status(500).end();
-        }
-        return res.status(200).end();
-      });
+      return res.status(200).end();
     });
+  });
 });
 
 router.put('/like', isAuth, function(req, res, next){
@@ -450,7 +450,7 @@ router.get('/comments', isAuth, function(req, res, next){
             comment.content = entry.content[0]['_'];
 
             // grab the comment id
-            comment.cid = entry.['td:uuid'][0];
+            comment.cid = entry['td:uuid'][0];
 
             // push the comment to the array
             comments.push(comment);
