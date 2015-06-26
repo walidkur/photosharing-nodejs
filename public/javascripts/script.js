@@ -96,7 +96,6 @@ photoApp.controller('homeController', function($scope, $routeParams, $window, ap
           $("#mygallery").justifiedGallery('norewind');
           $scope.loading = false;
         });
-
       },
       function(data, status){
         $scope.loading = false;
