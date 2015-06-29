@@ -201,7 +201,7 @@ photoApp.controller('photoController', function($scope, $rootScope, $http, $rout
 
       data.published = new Date(data.published);
       data.published = data.published.toLocaleDateString();
-      
+
       $scope.photo = data;
       $scope.getComments(data.uid);
       getProfile();
@@ -436,9 +436,11 @@ photoApp.controller('navbarController', function($scope, $rootScope, $http, $rou
 });
 
 
-photoApp.controller('ModalInstanceController', function($scope, $modalInstance, items) {
+photoApp.controller('ModalInstanceController', function($http, $scope, $modalInstance, items) {
 
   $scope.items = items;
+  $scope.shares = '';
+  $scope.tags = '';
   $scope.selected = {
     item: $scope.items[0]
   };
@@ -450,4 +452,29 @@ photoApp.controller('ModalInstanceController', function($scope, $modalInstance, 
   $scope.cancel = function () {
     $modalInstance.dismiss('cancel');
   };
+
+  $scope.uploadFile = function(){
+    var fd = new FormData();
+    console.log($scope.files);
+    fd.append("file", $scope.files[0]);
+
+    var url = "/api/upload?visibility=private";
+
+    if($scope.shares != ''){
+      var shares = $scope.shares;
+      var shareArray = shares.split(' ');
+      url = url + '&share=' + shareArray.join();
+    }
+
+    if($scope.tags != ''){
+      var tags = $scope.tags;
+      var tagArray = tags.split(' ');
+      url = url + '&q=' + tagArray.join();
+    }
+
+    $http.post(url, fd, {
+      headers: {'Content-Type' : undefined },
+      transformRequest: angular.identity
+    }).success($scope.ok);
+  }
 });
