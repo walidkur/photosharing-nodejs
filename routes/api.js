@@ -17,10 +17,8 @@ var request = require('request');
 var Busboy = require('busboy');
 
 function isAuth(req, res, next){
-  if(!req.user)
-  return res.status(401).end();
-  else
-  next();
+  if(!req.user) return res.status(401).end();
+  else next();
 }
 
 // redirect to homepage
@@ -32,8 +30,7 @@ router.get('/', function(req, res, next) {
 router.get('/feed', isAuth, function(req, res, next){
   var url;
 
-  if(isEmpty(req.query.type))
-  return res.status(412).end();
+  if(isEmpty(req.query.type) return res.status(412).end();
 
   switch(req.query.type) {
     case 'public':
@@ -42,8 +39,7 @@ router.get('/feed', isAuth, function(req, res, next){
     url = 'https://' + config.server.domain + '/files/oauth/api/documents/feed?visibility=public&includeTags=true';
     break;
     case 'user':
-    if(isEmpty(req.query.uid))
-    return res.status(412).end();
+    if(isEmpty(req.query.uid)) return res.status(412).end();
     url = 'https://' + config.server.domain + '/files/oauth/api/userlibrary/' + req.query.uid + '/feed?visibility=public&includeTags=true';
     break;
     case 'private':
@@ -97,8 +93,7 @@ router.get('/feed', isAuth, function(req, res, next){
       // JSON to make parsing easier using the xml2js module for nodejs
       parseString(body, function(err, result){
 
-        if(err)
-        return console.log('Error: ' + err);
+        if(err) return res.status(500).end();
 
 
         // initialize the array of photos we will be sending back
@@ -107,8 +102,7 @@ router.get('/feed', isAuth, function(req, res, next){
         // get the actual entries object in the response
         var entries = result.feed.entry;
 
-        if(isEmpty(entries))
-        return photos;
+        if(isEmpty(entries)) return photos;
 
         // iterate over the entries to send back each photo that was returned
         for(var i = 0; i < entries.length; i++){
@@ -291,8 +285,7 @@ router.get('/photo', isAuth, function(req, res, next){
 });
 
 router.delete('/photo', isAuth, function(req, res, next){
-  if(isEmpty(req.query.pid))
-  return res.status(412).end();
+  if(isEmpty(req.query.pid))  return res.status(412).end();
 
   // we must get a nonce from the api server in order to post a comment
   // see upload for more info
@@ -326,9 +319,7 @@ router.delete('/photo', isAuth, function(req, res, next){
     }
 
     request.del(options, function(error, response, body){
-      if(error){
-        return res.status(500).end();
-      }
+      if(error) return res.status(500).end();
       return res.status(200).end();
     });
   });
@@ -398,9 +389,7 @@ router.get('/comments', isAuth, function(req, res, next){
           var entries = result.feed.entry;
 
           // catch if there are no comments on the photo
-          if(isEmpty(entries)){
-            return res.send(comments);
-          }
+          if(isEmpty(entries))  return res.send(comments);
 
           // iterate through the comments creating new objects and pushing them
           // to the array
@@ -498,14 +487,11 @@ router.post('/comments', isAuth, function(req, res, next){
 
 router.delete('/comments', isAuth, function(req, res, next){
 
-  if(isEmpty(req.query.cid))
-  return res.status(412).end();
+  if(isEmpty(req.query.cid))  return res.status(412).end();
 
-  if(isEmpty(req.query.pid))
-  return res.status(412).end();
+  if(isEmpty(req.query.pid))  return res.status(412).end();
 
-  if(isEmpty(req.query.uid))
-  return res.status(412).end();
+  if(isEmpty(req.query.uid))  return res.status(412).end();
 
 
   // we must get a nonce from the api server in order to post a comment
@@ -551,8 +537,7 @@ router.delete('/comments', isAuth, function(req, res, next){
   router.post('/upload', isAuth, function(req, res, next){
 
     // check for queries before we start
-    if(isEmpty(req.query.visibility))
-    return res.status(412).end();
+    if(isEmpty(req.query.visibility)) return res.status(412).end();
 
     // before uploading, we must obtain a nonce, which is a handshake between
     // the api and our server to allow us to post to the server
