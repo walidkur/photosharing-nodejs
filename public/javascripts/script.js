@@ -28,6 +28,7 @@ photoApp.controller('homeController', function($scope, $routeParams, $window, ap
 
   //Class for ng-view in index.html
   $scope.pageClass = 'page-home';
+  $scope.state = 'public';
 
   //Configuration for image gallery
   var galleryConfig = { rowHeight: window.screen.height * .25,  margins: 10 };
@@ -35,42 +36,89 @@ photoApp.controller('homeController', function($scope, $routeParams, $window, ap
   var pageSize = 20;
   $scope.loading = false;
 
-  //Request parameters
-  //If search query: add tags to request
-  var params = '?type=public';
+  $scope.getPublicFeed = function(){
+    index = 1;
 
-  if($routeParams.tags){
-    params += '&q=' + $routeParams.tags;
+    $scope.state = 'public';
+
+    //Request parameters
+    //If search query: add tags to request
+    var params = '?type=public';
+
+    if($routeParams.tags){
+      params += '&q=' + $routeParams.tags;
+    }
+
+    params += '&ps=20' + '&si=' + index;
+
+    $scope.loading = true;
+    //Request to Node server
+    apiService.getFeed(params).then(
+
+      //On success: bind data to scope, render image gallery
+      function(data, status){
+        $scope.data = data.data;
+
+        angular.element(document).ready(function(){
+          index = 21;
+          $('#mygallery').justifiedGallery(galleryConfig);
+          $scope.loading = false;
+        });
+
+      },
+
+      //On error: if unauthorized redirect to '/' for relogin
+      function(data, status){
+        $scope.loading = false;
+
+        if(status === 401){
+          $window.location.assign('/');
+        }
+
+      }
+    );
   }
 
-  params += '&ps=20' + '&si=' + index;
+  $scope.getPrivateFeed = function(){
+    index = 1;
+    $scope.state = 'private';
+    //Request parameters
+    //If search query: add tags to request
+    var params = '?type=private';
 
-  $scope.loading = true;
-  //Request to Node server
-  apiService.getFeed(params).then(
-
-    //On success: bind data to scope, render image gallery
-    function(data, status){
-      $scope.data = data.data;
-
-      angular.element(document).ready(function(){
-        index = 21;
-        $('#mygallery').justifiedGallery(galleryConfig);
-        $scope.loading = false;
-      });
-
-    },
-
-    //On error: if unauthorized redirect to '/' for relogin
-    function(data, status){
-      $scope.loading = false;
-
-      if(status === 401){
-        $window.location.assign('/');
-      }
-
+    if($routeParams.tags){
+      params += '&q=' + $routeParams.tags;
     }
-  );
+
+    params += '&ps=20' + '&si=' + index;
+
+    $scope.loading = true;
+    //Request to Node server
+    apiService.getFeed(params).then(
+
+      //On success: bind data to scope, render image gallery
+      function(data, status){
+        $scope.data = data.data;
+
+        angular.element(document).ready(function(){
+          index = 21;
+          $('#mygallery').justifiedGallery(galleryConfig);
+          $scope.loading = false;
+        });
+
+      },
+
+      //On error: if unauthorized redirect to '/' for relogin
+      function(data, status){
+        $scope.loading = false;
+
+        if(status === 401){
+          $window.location.assign('/');
+        }
+
+      }
+    );
+  }
 
   $scope.loadMore = function(){
     console.log('Loading more');
@@ -78,7 +126,7 @@ photoApp.controller('homeController', function($scope, $routeParams, $window, ap
     if ($scope.loading) return;
     $scope.loading = true;
 
-    var params = '?type=public';
+    var params = '?type=' + $scope.state;
 
     if($routeParams.tags){
       params += '&q=' + $routeParams.tags;
@@ -105,6 +153,8 @@ photoApp.controller('homeController', function($scope, $routeParams, $window, ap
       }
     );
   }
+
+  $scope.getPublicFeed();
 });
 
 photoApp.controller('photoController', function($scope, $rootScope, $http, $routeParams, $window, $cookies, apiService) {
@@ -149,6 +199,9 @@ photoApp.controller('photoController', function($scope, $rootScope, $http, $rout
 
     }).success(function(data, status){
 
+      data.published = new Date(data.published);
+      data.published = data.published.toLocaleDateString();
+      
       $scope.photo = data;
       $scope.getComments(data.uid);
       getProfile();

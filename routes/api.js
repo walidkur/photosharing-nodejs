@@ -47,7 +47,7 @@ router.get('/feed', isAuth, function(req, res, next){
     url = 'https://' + config.server.domain + '/files/oauth/api/userlibrary/' + req.query.uid + '/feed?visibility=public&includeTags=true';
     break;
     case 'private':
-    url = 'https:// ' + config.server.domain + '/files/oauth/api/documents/shared/feed?includeTags=true&direction=inbound'
+    url = 'https://' + config.server.domain + '/files/oauth/api/documents/shared/feed?includeTags=true&direction=inbound'
     break;
     default:
     return res.status(412).end();
