@@ -18,12 +18,12 @@
       <div class="photoInfo">
         <div class="media">
           <div class="media-left media-middle">
-            <a href="#">
+            <a href="#/profile/{{photo.uid}}">
               <img id="userPhoto" class="media-object" src="{{photo.profile.img}}" height=60px>
             </a>
           </div>
           <div class="media-body">
-            <h4 class="photographer">{{photo.photographer}}</h4>
+            <h4 class="photographer"><a href="#/profile/{{photo.uid}}">{{photo.photographer}}</a></h4>
             <h5 class="date">{{photo.published}}</h5>
             <h5>{{photo.title}}</h5>
           </div>
@@ -47,14 +47,14 @@
 
           <!--Displays the avatar of the user who commented-->
           <div class="media-left media-top">
-            <a href="#">
+            <a href="#/profile/{{comment.uid}}">
               <img id="userPhoto" class="media-object" src="{{comment.profileImg}}" height=60px>
             </a>
           </div>
 
           <!--Displays the comments-->
           <div class="media-body">
-            <h4 class="media-heading">{{comment.author}}</h4>
+            <a href="#/profile/{{comment.uid}}"><h4 class="media-heading">{{comment.author}}</h4></a>
             <h5>{{comment.content}}</h5>
             <h5 class="date">{{comment.date}}</h5>
           </div>

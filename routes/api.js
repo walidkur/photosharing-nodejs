@@ -372,6 +372,8 @@ router.get('/comments', isAuth, function(req, res, next){
       headers: headers
     };
 
+    console.log(JSON.stringify(options));
+
 
     request.get(options, function(error, response, body){
       if(error){
@@ -537,6 +539,10 @@ router.delete('/comments', isAuth, function(req, res, next){
     // check for queries before we start
     if(isEmpty(req.query.visibility)) return res.status(412).end();
 
+    // to obtain the file from the client, we use a module called busboy
+    // that allows us to obtain the file stream from the client
+    var busboy = new Busboy({headers: req.headers});
+
     // before uploading, we must obtain a nonce, which is a handshake between
     // the api and our server to allow us to post to the server
     var url = 'https://' + config.server.domain + '/files/oauth/api/nonce';
@@ -560,21 +566,17 @@ router.delete('/comments', isAuth, function(req, res, next){
         // the nonce is returned in the body of the response
         var nonce = body;
 
-        // to obtain the file from the client, we use a module called busboy
-        // that allows us to obtain the file stream from the client
-        var busboy = new Busboy({headers: req.headers});
-
         // when busboy encounters a file (which should be the only thing it
         // obtains from the page) it will then pip the file to a request to the
         // api server
         busboy.on('file', function(fieldname, file, filename, encoding, mimetype){
-          var url = 'https://' + server.domain + '/files/oauth/api/myuserlibrary/feed?visibility=' + req.query.visibility;
+          var url = 'https://' + config.server.domain + '/files/oauth/api/myuserlibrary/feed?visibility=' + req.query.visibility;
 
           // add tags
           if(!isEmpty(req.query.q)) url = url + '&tag=' + req.query.q;
 
           // add shares
-          if(!isEmpty(req.query.share)) url = url + '&shareWith' + req.query.share;
+          if(!isEmpty(req.query.share)) url = url + '&shareWith=' + req.query.share;
 
           // the slug is used to tell the api what it should call the file
           var slug = filename;
@@ -591,6 +593,8 @@ router.delete('/comments', isAuth, function(req, res, next){
             headers: headers
           };
 
+          console.log('options: ' + JSON.stringify(options));
+
           // we then pipe the file to the request to the api server
           file.pipe(request.post(options, function(error, response, body){
 
@@ -600,6 +604,9 @@ router.delete('/comments', isAuth, function(req, res, next){
               console.log('upload failed: ' + error);
               return res.status(500).end();
             }
+
+            console.log(body);
+
           }));
 
         });
@@ -609,6 +616,8 @@ router.delete('/comments', isAuth, function(req, res, next){
         busboy.on('finish', function(){
           return res.status(200).end();
         });
+
+        req.pipe(busboy);
       }
     });
   });
