@@ -26,7 +26,7 @@ router.get('/', function(req, res, next) {
   res.redirect('/');
 });
 
-// getfeed for home page content
+// get feed of photos
 router.get('/feed', isAuth, function(req, res, next){
   var url;
 
@@ -34,15 +34,22 @@ router.get('/feed', isAuth, function(req, res, next){
 
   switch(req.query.type) {
     case 'public':
+
     // config.server.domain is the domain name of the server (without the
-    // https or the directory i.e example.com)
+    // https or the directory, for example: example.com).
+    // the url for getting a feed of files marked as public
     url = 'https://' + config.server.domain + '/files/oauth/api/documents/feed?visibility=public&includeTags=true';
     break;
     case 'user':
     if(isEmpty(req.query.uid)) return res.status(412).end();
+
+    // the url for getting a feed of files for a specfic user
     url = 'https://' + config.server.domain + '/files/oauth/api/userlibrary/' + req.query.uid + '/feed?visibility=public&includeTags=true';
     break;
     case 'private':
+
+    // the url for getting a feed of files shared with the currently logged in
+    // user
     url = 'https://' + config.server.domain + '/files/oauth/api/documents/shared/feed?includeTags=true&direction=inbound'
     break;
     default:
@@ -50,7 +57,7 @@ router.get('/feed', isAuth, function(req, res, next){
     break;
   }
 
-  // if query parameters exist, append them onto the url
+  // if query parameter exist, append it onto the url
   if(!isEmpty(req.query.q)){
     var array = req.query.q.split(",");
     for(var i = 0; i < array.length; i++){
@@ -58,19 +65,17 @@ router.get('/feed', isAuth, function(req, res, next){
     }
   }
 
-  if(!isEmpty(req.query.ps)){
-    url = url + '&ps=' + req.query.ps;
-  }
+  // if page size parameter exist, append it onto the url
+  if(!isEmpty(req.query.ps))  url = url + '&ps=' + req.query.ps;
 
-  if(!isEmpty(req.query.si)){
-    url = url + '&sI=' + req.query.si;
-  }
+  // if start index parameter exists, append it onto the url
+  if(!isEmpty(req.query.si))  url = url + '&sI=' + req.query.si;
 
   var headers = {};
 
-  // we must attach the key we got through passportto the header as
-  // Authorization: Bearer + key. Passport gives us access to the user profile
-  // we saved through the request user object
+  // passport adds a user object to the request which contains the access token
+  // from the Connection Cloud Server. Add this onto the header of the request
+  // under Authorization, with the value 'Bearer ' + the access token
   headers['Authorization'] = 'Bearer ' + req.user.accessToken;
 
 
@@ -81,62 +86,57 @@ router.get('/feed', isAuth, function(req, res, next){
 
   request.get(options, function(error, response, body){
 
-    // if there is an error lets log it to the console and inform the angular
-    // of our app so it can be handled
-    if(error){
-      console.log('Error occured while getting feed from Connections Cloud: ' + error);
-      return res.status(500).end();
-    } else {
+    // if there is an error, return a error status of 500
+    if(error) return res.status(500).end();
+    else {
 
-
-      // otherwise, the api returns an xml which can be easily converted to a
-      // JSON to make parsing easier using the xml2js module for nodejs
+      // convert the xml that is returned to a JSON for easier parsing
       parseString(body, function(err, result){
 
         if(err) return res.status(500).end();
 
-
-        // initialize the array of photos we will be sending back
+        // initialize the array of photos that will be returned
         var photos = [];
 
-        // get the actual entries object in the response
+        // get the entries from the response
         var entries = result.feed.entry;
 
+        // return the empty array if entries is empty
         if(isEmpty(entries)) return photos;
 
-        // iterate over the entries to send back each photo that was returned
+        // iterate over the entries, building a photo object for each entry
         for(var i = 0; i < entries.length; i++){
           var photo = {};
           var entry = entries[i];
 
-          // the photo id which is used to reference the photo internally for
-          // ibm connection cloud, this will need to be stored to quickly
-          // get the photo and information on the photo later
+          // store the id of the photo for furture requests
           photo.pid = entry['td:uuid'][0];
 
-          // iterate through the tags in the entry and build an object that has
-          // all the tags, starting at 1 because the first category describes
-          // the document and is not a true 'tag'
+          // iterate through the tags in the entry and build an array of these
+          // tags
           var tags = [];
           for(var j = 1; j < entry.category.length; j ++){
             var category = entry.category[j];
             var tag = category.$.label;
             tags.push(tag);
           }
+
+          // add the tag array to the photo
           photo.tags = tags;
 
-          // the author of the file, and in our case the photographer
+          // add the author of the file to the object, but rename it to
+          // photographer
           photo.photographer = entry.author[0].name[0];
 
-          // the title of the document
+          // add the title of the file
           photo.title = entry.title[0]['_'];
 
-          // the upload date of the document
+          // add the publish date of the file
           photo.published = entry.published[0];
 
-          // the link object contains many links related to the document,
-          // however we want the link to the actual image, therefore we will
-          // look for the object with the type of image
+          // iterate over the links provided by the api to obtain the image and
+          // thumbnail of the file. These can be found by using the type and rel
+          // fields respectfully
           for(var j = 0; j < entry.link.length; j++){
             var link = entry.link[j];
             var type = link.$.type;
@@ -147,10 +147,8 @@ router.get('/feed', isAuth, function(req, res, next){
                 var rel = link.$.rel;
                 if(!(rel === undefined) && (rel.indexOf('thumbnail') > -1)){
                   photo.thumbnail = link.$.href;
-                  // by default the api returns a medium sized thumbnail, however
-                  // we want a large one. Luckily the urls for medium and large
-                  // thumbnails are very similar, we simply replace the word medium
-                  // with large
+                  // convert the link stored to a large sized thumbnail by
+                  // replacing medium in the link with large
                   photo.thumbnail = photo.thumbnail.replace(/medium/i, 'large');
                   break;
                 }
@@ -159,8 +157,7 @@ router.get('/feed', isAuth, function(req, res, next){
             }
           }
 
-          // in addition we need to pass the library id of the entry, for later
-          // calls in which we will have to pass the library id to the api
+          // add the library id of the photo for later api calls
           photo.lid = entry['td:libraryId'][0];
 
           // push the photo to our photos array
@@ -177,25 +174,23 @@ router.get('/feed', isAuth, function(req, res, next){
 // update a photo
 router.put('/photo', isAuth, function(req, res, next){
 
-  // if the request did not provide the right queries
+  // return 412 if the necesary queryies were not passed
   if(isEmpty(req.query.pid) || isEmpty(req.query.title)) {
     console.log("Query not found");
     return res.status(412).end();
   } else {
 
-    // the url for putting to a photo on the Connections Cloud
+    // the url for updating a file on the Connections Cloud
     var url = 'https://' + config.server.domain + '/files/oauth/api/myuserlibrary/document/' + req.query.pid + '/entry?';
 
-    // the api requires you to pass the title of the photo even if you aren't
-    // changing it. You must place it in a title tag with type text.
+    // build a string to format the file title as per required by the api
     var data = '<title type="text">' + req.query.title + '</title>';
 
-    // if the request passed tags, then add them to the api call body
+    // add tags to the url if passed
     if(!isEmpty(req.query.q)) url = url + '&tag=' + req.query.q;
 
     // add share with users if passed
     if(!isEmpty(req.query.share)) url = url + '&shareWith' + req.query.share;
-
 
     // format the request so that the api can handle the request properly
     var body =  '<?xml version="1.0" encoding="UTF-8"?><entry xmlns="http://www.w3.org/2005/Atom" xmlns:app="http://www.w3.org/2007/app" xmlns:snx="http://www.ibm.com/xmlns/prod/sn">' + data + '</entry>';
@@ -209,7 +204,6 @@ router.put('/photo', isAuth, function(req, res, next){
 
     request.put(options, function(error, response, body){
       if(error){
-        console.log('Error while updating photo: ' + error);
         return res.status(500).end();
       }
 
@@ -218,18 +212,17 @@ router.put('/photo', isAuth, function(req, res, next){
   }
 });
 
-// get photo for retrieving a photo by id
+// get information for a photo
 router.get('/photo', isAuth, function(req, res, next){
 
-  // if no id was passed, return an error code
+  // return 412 if the necessary queries were not passed
   if(isEmpty(req.query.pid) || isEmpty(req.query.lid)){
-    console.log('query not found');
     return res.status(412).end();
   } else {
+
+    // the url for getting a photo
     var url = 'https://' + config.server.domain + '/files/oauth/api/library/' + req.query.lid + '/document/' + req.query.pid + '/entry?includeTags=true';
-    // we must attach the key we got through passportto the header as
-    // Authorization: Bearer + key. Passport gives us access to the user profile
-    // we saved through the request user object
+
     var headers = {'Authorization': 'Bearer ' + req.user.accessToken};
 
     var options = {
@@ -282,11 +275,13 @@ router.get('/photo', isAuth, function(req, res, next){
   }
 });
 
+// delete a photo
 router.delete('/photo', isAuth, function(req, res, next){
+
+  // retrn 412 if the necessary queries were not passed
   if(isEmpty(req.query.pid))  return res.status(412).end();
 
-  // we must get a nonce from the api server in order to post a comment
-  // see upload for more info
+  // url for obtaining a nonce from the api
   var url = 'https://' + config.server.domain + '/files/oauth/api/nonce';
 
   var headers = {'Authorization': 'Bearer ' + req.user.accessToken}
@@ -296,6 +291,8 @@ router.delete('/photo', isAuth, function(req, res, next){
     headers: headers
   }
 
+  // perform request to get a nonce from the server, which will then be passed
+  // when the deletion if requested.
   request.get(options, function(error, response, body){
     if(error){
       console.log('Failed getting nonce')
@@ -304,6 +301,7 @@ router.delete('/photo', isAuth, function(req, res, next){
 
     var nonce = body;
 
+    // url for deleting a photo
     var url = 'https://' + config.server.domain + '/files/oauth/api/myuserlibrary/document/' + req.query.pid + '/entry';
 
     var headers = {
@@ -323,17 +321,17 @@ router.delete('/photo', isAuth, function(req, res, next){
   });
 });
 
+// updating like status of a photo
 router.put('/like', isAuth, function(req, res, next){
 
-  // check to ensure the necessary queries are included
+  // return 412 is the necessary queries were not passed
   if(isEmpty(req.query.pid) || isEmpty(req.query.lid) || isEmpty(req.query.r)){
-    console.log('Query not found');
     return req.status(412).end();
   } else {
-    // we add the recommendation that was passed to the url
+
+    // url for updating like (recommendation) status of a photo
     var url = 'https://' + config.server.domain + '/files/oauth/api/library/' + req.query.lid + '/document/' + req.query.pid + '/media?recommendation=' + req.query.r;
 
-    // Oauth header
     var headers = {'Authorization': 'Bearer ' + req.user.accessToken};
 
     var options = {
@@ -342,27 +340,20 @@ router.put('/like', isAuth, function(req, res, next){
     };
 
     request.put(options, function(error, response, body){
-      if(error){
-        console.log('error in putting like: ' + error);
-        return res.status(500).end();
-      } else {
-        // send back success
-        return res.status(200).end();
-      }
+      if(error) return res.status(500).end();
+      else return res.status(200).end();
     });
   }
 })
 
+// get the feed of comments for a photo
 router.get('/comments', isAuth, function(req, res, next){
 
-  // if no id or uid was passed
-  if(isEmpty(req.query.pid) || isEmpty(req.query.uid)){
-    console.log("query not found");
-    return res.status(412).end();
-  } else {
+  // return 412 if the necessary queries were not passed
+  if(isEmpty(req.query.pid) || isEmpty(req.query.uid))  return res.status(412).end();
+  else {
 
-    // we need to add category=comment to the end of the url to tell the api
-    // we want the comments on the document back
+    // the url for getting comments on a file; specify category=comment
     var url = 'https://' + config.server.domain + '/files/oauth/api/userlibrary/' + req.query.uid + '/document/' + req.query.pid + '/feed?category=comment';
 
     var headers = {'Authorization': 'Bearer ' + req.user.accessToken};
@@ -372,55 +363,50 @@ router.get('/comments', isAuth, function(req, res, next){
       headers: headers
     };
 
-    console.log(JSON.stringify(options));
-
-
     request.get(options, function(error, response, body){
-      if(error){
-        console.log('error in get comment: ' + error);
-        return res.status(500).end();
-      } else {
+      if(error) return res.status(500).end();
+      else {
         parseString(body, function(err, result){
 
-          // create the comment array that we will return
+          // create the comment array that will be return
           var comments = [];
 
-          // get the main data from the json
+          // get the entries from the response object
           var entries = result.feed.entry;
 
-          // catch if there are no comments on the photo
+          // return the empty comment array if there are no entries
           if(isEmpty(entries))  return res.send(comments);
 
           // iterate through the comments creating new objects and pushing them
           // to the array
           for(var i = 0; i < entries.length; i++){
 
-            // grab the entry we are iterating on
+            // get the current entry
             var entry = entries[i];
 
-            // create the comment we will add to the array
+            // create the comment that will be added to the array
             var comment = {};
 
-            // grab the userid of the author of the comment
+            // add the user id of the author to the comment object
             comment.uid = entry.author[0]['snx:userid'][0];
 
-            // grab the author name
+            // add the author of the comment to the comment object
             comment.author = entry.author[0].name[0];
 
-            // grab the publish date of the comment
+            // add the publish date of the comment
             comment.date = entry.published[0];
 
-            // grab the content of the comment
+            // add the content of the comment
             comment.content = entry.content[0]['_'];
 
-            // grab the comment id
+            // add the id of the comment
             comment.cid = entry['td:uuid'][0];
 
             // push the comment to the array
             comments.push(comment);
           }
 
-          //return the array of comments
+          // return the array of comments
           res.send(comments);
         });
       }
@@ -428,15 +414,14 @@ router.get('/comments', isAuth, function(req, res, next){
   }
 });
 
+// adding a comment
 router.post('/comments', isAuth, function(req, res, next){
 
-  if(isEmpty(req.query.pid) || isEmpty(req.query.uid)){
-    console.log("query not found");
-    return res.status(412).end();
-  } else {
+  // return 412 if the necessary queries were not passed
+  if(isEmpty(req.query.pid) || isEmpty(req.query.uid))  return res.status(412).end();
+  else {
 
-    // we must get a nonce from the api server in order to post a comment
-    // see upload for more info
+    // url for obtaining a nonce
     var url = 'https://' + config.server.domain + '/files/oauth/api/nonce';
 
     var headers = {'Authorization': 'Bearer ' + req.user.accessToken}
@@ -449,15 +434,12 @@ router.post('/comments', isAuth, function(req, res, next){
     request.get(options, function(error, response, body){
       var nonce = body;
 
-      // we must format the comment into an atom document for the server
-      // most of this can just be hardcoded, however in the content tag is
-      // where we put our comment
+      // create the xml string that will wrap the comment
       var body = '<?xml version="1.0" encoding="UTF-8"?><entry xmlns="http://www.w3.org/2005/Atom" xmlns:app="http://www.w3.org/2007/app" xmlns:snx="http://www.ibm.com/xmlns/prod/sn"><category scheme="tag:ibm.com,2006:td/type" term="comment" label="comment"/><content type="text">' + req.body.comment + '</content></entry>';
 
+      // url for posting a comment on a file
       var url = 'https://' + config.server.domain + '/files/oauth/api/userlibrary/' + req.query.uid + '/document/' + req.query.pid + '/feed';
 
-      // we then need to added headers in order to tell the api how to handle
-      // the request
       var headers = {
         'Authorization': 'Bearer ' + req.user.accessToken,
         'Content-Type': 'application/atom+xml',
@@ -465,7 +447,7 @@ router.post('/comments', isAuth, function(req, res, next){
         'X-Update-Nonce': nonce
       };
 
-      // we then add our atom document to the body of the request
+      // add the atom document that was created to the body of the request
       var options = {
         url: url,
         headers: headers,
@@ -473,11 +455,7 @@ router.post('/comments', isAuth, function(req, res, next){
       };
 
       request.post(options, function(error, response, body){
-        if(error){
-          console.log('error posting comment: ' + error);
-          return res.status(500).end();
-        }
-
+        if(error) return res.status(500).end();
         return res.status(200).end();
       });
     });
@@ -485,17 +463,13 @@ router.post('/comments', isAuth, function(req, res, next){
   }
 });
 
+// delete a comment
 router.delete('/comments', isAuth, function(req, res, next){
 
-  if(isEmpty(req.query.cid))  return res.status(412).end();
+  // return 412 if the necessary queries are not passed
+  if(isEmpty(req.query.cid) || isEmpty(req.query.pid) || isEmpty(req.query.uid))  return res.status(412).end();
 
-  if(isEmpty(req.query.pid))  return res.status(412).end();
-
-  if(isEmpty(req.query.uid))  return res.status(412).end();
-
-
-  // we must get a nonce from the api server in order to post a comment
-  // see upload for more info
+  // url for obtaining a nonce
   var url = 'https://' + config.server.domain + '/files/oauth/api/nonce';
 
   var headers = {'Authorization': 'Bearer ' + req.user.accessToken}
@@ -506,12 +480,11 @@ router.delete('/comments', isAuth, function(req, res, next){
   }
 
   request.get(options, function(error, response, body){
-    if(error){
-      console.log('Failed getting nonce')
-      return res.status(412).end();
-    }
+    if(error) return res.status(412).end();
 
     var nonce = body;
+
+    // url for deleting a comment
     var url = 'https://' + config.server.domain + '/files/oauth/api/userlibrary/' + req.query.uid + '/document/' + req.query.pid + '/comment/' + req.query.cid + '/entry';
 
     var headers = {
@@ -524,11 +497,8 @@ router.delete('/comments', isAuth, function(req, res, next){
       };
 
       request.del(options, function(error, response, body){
-        if(error){
-          return res.status(500).end()
-        } else {
-          return res.status(200).end();
-        }
+        if(error) return res.status(500).end()
+        return res.status(200).end();
       });
     })
   });
@@ -536,11 +506,11 @@ router.delete('/comments', isAuth, function(req, res, next){
   // upload a file
   router.post('/upload', isAuth, function(req, res, next){
 
-    // check for queries before we start
+    // return 412 if the necessary queries are not passed
     if(isEmpty(req.query.visibility)) return res.status(412).end();
 
-    // to obtain the file from the client, we use a module called busboy
-    // that allows us to obtain the file stream from the client
+    // create a new Busboy instance which will be used to obtain the stream of
+    // the files
     var busboy = new Busboy({headers: req.headers});
 
     // before uploading, we must obtain a nonce, which is a handshake between
@@ -557,6 +527,7 @@ router.delete('/comments', isAuth, function(req, res, next){
     // making the nonce request
     request.get(options, function(error, response, body){
 
+      //TODO: clarify
       // if there was an error log the error and send back an error
       if(error){
         console.log('nonce failed: ' + error);
@@ -567,16 +538,16 @@ router.delete('/comments', isAuth, function(req, res, next){
         var nonce = body;
 
         // when busboy encounters a file (which should be the only thing it
-        // obtains from the page) it will then pip the file to a request to the
+        // obtains from the page) it will then pipe the file to a request to the
         // api server
         busboy.on('file', function(fieldname, file, filename, encoding, mimetype){
-          var url = 'https://' + config.server.domain + '/files/oauth/api/myuserlibrary/feed?visibility=' + req.query.visibility;
+          var url = 'https://' + config.server.domain + '/files/oauth/api/myuserlibrary/feed';
 
           // add tags
           if(!isEmpty(req.query.q)) url = url + '&tag=' + req.query.q;
 
           // add shares
-          if(!isEmpty(req.query.share)) url = url + '&shareWith=' + req.query.share;
+          if(!isEmpty(req.query.share)) url = url + '&shareWith=' + req.query.share + '&shared=true';
 
           // the slug is used to tell the api what it should call the file
           var slug = filename;
@@ -595,13 +566,14 @@ router.delete('/comments', isAuth, function(req, res, next){
 
           console.log('options: ' + JSON.stringify(options));
 
+          console.log(file);
+
           // we then pipe the file to the request to the api server
           file.pipe(request.post(options, function(error, response, body){
 
-            // if we recieve an error then log it and send and erro back to the
+            // if we recieve an error then log it and send and error back to the
             // client
             if(error){
-              console.log('upload failed: ' + error);
               return res.status(500).end();
             }
 
@@ -609,7 +581,10 @@ router.delete('/comments', isAuth, function(req, res, next){
 
           }));
 
+          console.log(file);
+
         });
+
 
         // when the busboy finishes processing the file, send back an OK status
         // and close the connection
@@ -688,10 +663,11 @@ router.delete('/comments', isAuth, function(req, res, next){
     if (obj == null) return true;
 
     // Assume if it has a length property with a non-zero value
-    // that that property is correct.
+    // that property is correct.
     if (obj.length > 0)    return false;
     if (obj.length === 0)  return true;
 
+    //TODO: rephrase
     // Otherwise, does it have any properties of its own?
     // Note that this doesn't handle
     // toString and valueOf enumeration bugs in IE < 9
