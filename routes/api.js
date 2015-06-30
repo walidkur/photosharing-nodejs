@@ -489,193 +489,187 @@ router.delete('/comments', isAuth, function(req, res, next){
 
     var headers = {
       'Authorization': 'Bearer ' + req.user.accessToken,
-      'X-Update-Nonce': nonce};
-
-      var options = {
-        url: url,
-        headers: headers
-      };
-
-      request.del(options, function(error, response, body){
-        if(error) return res.status(500).end()
-        return res.status(200).end();
-      });
-    })
-  });
-
-  // upload a file
-  router.post('/upload', isAuth, function(req, res, next){
-
-    // return 412 if the necessary queries are not passed
-    if(isEmpty(req.query.visibility)) return res.status(412).end();
-
-    // create a new Busboy instance which will be used to obtain the stream of
-    // the files
-    var busboy = new Busboy({headers: req.headers});
-
-    // before uploading, we must obtain a nonce, which is a handshake between
-    // the api and our server to allow us to post to the server
-    var url = 'https://' + config.server.domain + '/files/oauth/api/nonce';
-
-    var headers = {'Authorization': 'Bearer ' + req.user.accessToken};
+      'X-Update-Nonce': nonce
+    };
 
     var options = {
       url: url,
       headers: headers
     };
 
-    // making the nonce request
-    request.get(options, function(error, response, body){
-
-      //TODO: clarify
-      // if there was an error log the error and send back an error
-      if(error){
-        console.log('nonce failed: ' + error);
-        return res.status(500).end()
-      } else {
-
-        // the nonce is returned in the body of the response
-        var nonce = body;
-
-        // when busboy encounters a file (which should be the only thing it
-        // obtains from the page) it will then pipe the file to a request to the
-        // api server
-        busboy.on('file', function(fieldname, file, filename, encoding, mimetype){
-          var url = 'https://' + config.server.domain + '/files/oauth/api/myuserlibrary/feed';
-
-          // add tags
-          if(!isEmpty(req.query.q)) url = url + '&tag=' + req.query.q;
-
-          // add shares
-          if(!isEmpty(req.query.share)) url = url + '&shareWith=' + req.query.share + '&shared=true';
-
-          // the slug is used to tell the api what it should call the file
-          var slug = filename;
-
-          var headers = {
-            'Authorization': 'Bearer ' + req.user.accessToken,
-            'Slug': slug,
-            //the nonce is the nonce we obtained before
-            'X-Update-Nonce': nonce
-          };
-
-          var options = {
-            url: url,
-            headers: headers
-          };
-
-          console.log('options: ' + JSON.stringify(options));
-
-          console.log(file);
-
-          // we then pipe the file to the request to the api server
-          file.pipe(request.post(options, function(error, response, body){
-
-            // if we recieve an error then log it and send and error back to the
-            // client
-            if(error){
-              return res.status(500).end();
-            }
-
-            console.log(body);
-
-          }));
-
-          console.log(file);
-
-        });
-
-
-        // when the busboy finishes processing the file, send back an OK status
-        // and close the connection
-        busboy.on('finish', function(){
-          return res.status(200).end();
-        });
-
-        req.pipe(busboy);
-      }
+    request.del(options, function(error, response, body){
+      if(error) return res.status(500).end()
+      return res.status(200).end();
     });
   });
+});
 
-  router.get('/profile', isAuth, function(req, res, next){
+// upload a file
+router.post('/upload', isAuth, function(req, res, next){
 
-    if(isEmpty(req.query.uid)){
-      console.log('query not found');
-      return req.status(412).end()
+  // return 412 if the necessary queries are not passed
+  if(isEmpty(req.query.visibility)) return res.status(412).end();
+
+  // create a new Busboy instance which will be used to obtain the stream of
+  // the files
+  var busboy = new Busboy({headers: req.headers});
+
+  // before uploading, we must obtain a nonce, which is a handshake between
+  // the api and our server to allow us to post to the server
+  var url = 'https://' + config.server.domain + '/files/oauth/api/nonce';
+
+  var headers = {'Authorization': 'Bearer ' + req.user.accessToken};
+
+  var options = {
+    url: url,
+    headers: headers
+  };
+
+  // making the nonce request
+  request.get(options, function(error, response, body){
+
+    //TODO: clarify
+    // if there was an error log the error and send back an error
+    if(error){
+      console.log('nonce failed: ' + error);
+      return res.status(500).end()
     } else {
 
-      var url = 'https://' + config.server.domain + '/profiles/atom/profile.do?userid=' + req.query.uid;
+      // the nonce is returned in the body of the response
+      var nonce = body;
 
-      var headers = {'Authorization' : 'Bearer ' + req.user.accessToken};
+      // when busboy encounters a file (which should be the only thing it
+      // obtains from the page) it will then pipe the file to a request to the
+      // api server
+      busboy.on('file', function(fieldname, file, filename, encoding, mimetype){
+        var j = request.jar();
+        var url = 'https://' + config.server.domain + '/files/oauth/api/myuserlibrary/feed?visibility=' + req.query.visibility;
 
-      var options = {
-        url : url,
-        headers : headers
-      };
+        // add tags
+        if(!isEmpty(req.query.q)) url = url + '&tag=' + req.query.q;
 
-      request.get(options, function(error, response, body){
-        if(error){
-          console.log('error: ' + error);
-          return res.status(500).end();
-        }
+        // add shares
+        if(!isEmpty(req.query.share)) url = url + '&shareWith=' + req.query.share + '&shared=true';
 
-        parseString(body, function(err, result){
+        // the slug is used to tell the api what it should call the file
+        var slug = filename;
 
-          var entry = result.feed.entry;
+        var headers = {
+          'Authorization': 'Bearer ' + req.user.accessToken,
+          'Slug': slug,
+          'Content-Length': req.headers['x-content-length'],
+          //the nonce is the nonce we obtained before
+          'X-Update-Nonce': nonce
+        };
 
-          if(isEmpty(entry)){
-            return res.send("User does not exist.");
-          }
+        var options = {
+          url: url,
+          headers: headers
+        };
 
-          // grab the main data of the json
-          entry = result.feed.entry[0];
+        // we then pipe the file to the request to the api server
+        file.pipe(request.post(options, function(error, response, body){
 
-          // create the object we will send back
-          var profile = {};
+          // if we recieve an error then log it and send and error back to the
+          // client
+          if(error) return res.status(500).end();
+          console.log(body);
+          return res.status(200).end();
+        }));
 
-          // grabbing the name of the profile
-          profile.name = entry.contributor[0].name[0];
-
-          // grabbing the email of the profile
-          profile.email = entry.contributor[0].email[0];
-
-          // iterate through the links to find the image that represents the
-          // profile picture
-          for(var i = 0; i < entry.link.length; i++){
-            if(entry.link[i].$.type.indexOf('image') > -1){
-              profile.img = entry.link[i].$.href;
-              break;
-            }
-          }
-
-          //send back the profile
-          res.send(profile);
-        });
       });
+
+
+      // when the busboy finishes processing the file, send back an OK status
+      // and close the connection
+      busboy.on('finish', function(){
+        return res.status(200).end();
+      });
+
+      req.pipe(busboy);
     }
   });
+});
 
-  var hasOwnProperty = Object.prototype.hasOwnProperty;
+router.get('/profile', isAuth, function(req, res, next){
 
-  function isEmpty(obj) {
+  if(isEmpty(req.query.uid)){
+    console.log('query not found');
+    return req.status(412).end()
+  } else {
 
-    // null and undefined are "empty"
-    if (obj == null) return true;
+    var url = 'https://' + config.server.domain + '/profiles/atom/profile.do?userid=' + req.query.uid;
 
-    // Assume if it has a length property with a non-zero value
-    // that property is correct.
-    if (obj.length > 0)    return false;
-    if (obj.length === 0)  return true;
+    var headers = {'Authorization' : 'Bearer ' + req.user.accessToken};
 
-    //TODO: rephrase
-    // Otherwise, does it have any properties of its own?
-    // Note that this doesn't handle
-    // toString and valueOf enumeration bugs in IE < 9
-    for (var key in obj) {
-      if (hasOwnProperty.call(obj, key)) return false;
-    }
+    var options = {
+      url : url,
+      headers : headers
+    };
 
-    return true;
+    request.get(options, function(error, response, body){
+      if(error){
+        console.log('error: ' + error);
+        return res.status(500).end();
+      }
+
+      parseString(body, function(err, result){
+
+        var entry = result.feed.entry;
+
+        if(isEmpty(entry)){
+          return res.send("User does not exist.");
+        }
+
+        // grab the main data of the json
+        entry = result.feed.entry[0];
+
+        // create the object we will send back
+        var profile = {};
+
+        // grabbing the name of the profile
+        profile.name = entry.contributor[0].name[0];
+
+        // grabbing the email of the profile
+        profile.email = entry.contributor[0].email[0];
+
+        // iterate through the links to find the image that represents the
+        // profile picture
+        for(var i = 0; i < entry.link.length; i++){
+          if(entry.link[i].$.type.indexOf('image') > -1){
+            profile.img = entry.link[i].$.href;
+            break;
+          }
+        }
+
+        //send back the profile
+        res.send(profile);
+      });
+    });
+  }
+});
+
+var hasOwnProperty = Object.prototype.hasOwnProperty;
+
+function isEmpty(obj) {
+
+  // null and undefined are "empty"
+  if (obj == null) return true;
+
+  // Assume if it has a length property with a non-zero value
+  // that property is correct.
+  if (obj.length > 0)    return false;
+  if (obj.length === 0)  return true;
+
+  //TODO: rephrase
+  // Otherwise, does it have any properties of its own?
+  // Note that this doesn't handle
+  // toString and valueOf enumeration bugs in IE < 9
+  for (var key in obj) {
+    if (hasOwnProperty.call(obj, key)) return false;
   }
 
-  module.exports = router;
+  return true;
+}
+
+module.exports = router;

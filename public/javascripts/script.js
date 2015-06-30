@@ -455,10 +455,9 @@ photoApp.controller('ModalInstanceController', function($http, $scope, $modalIns
 
   $scope.uploadFile = function(){
     var fd = new FormData();
-    console.log($scope.files);
     fd.append("file", $scope.files[0]);
 
-    var url = "/api/upload?visibility=private";
+    var url = "/api/upload?visibility=" + $scope.visibility;
 
     if($scope.shares != ''){
       var shares = $scope.shares;
@@ -473,7 +472,7 @@ photoApp.controller('ModalInstanceController', function($http, $scope, $modalIns
     }
 
     $http.post(url, fd, {
-      headers: {'Content-Type' : undefined },
+      headers: { 'Content-Type' : undefined, 'X-Content-Length' : $scope.files[0].size},
       transformRequest: angular.identity
     }).success($scope.ok);
   }
