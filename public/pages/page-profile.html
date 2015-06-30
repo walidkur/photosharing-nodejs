@@ -11,9 +11,15 @@
   </div>
   <div class="row">
     <div class="col-md-12">
-      <div id="profileGallery">
+      <div infinite-scroll="loadMore()" infinite-scroll-distance="1" id="gallery">
         <div ng-repeat="img in uploadFeed">
-          <a href="#/photo/{{img.lid}}/{{img.pid}}"><img src="{{img.thumbnail}}"/></a>
+          <a href="#/photo/{{img.lid}}/{{img.pid}}">
+            <img src="{{img.thumbnail}}"/>
+          </a>
+          <div class="caption">
+            <a href="#/photo/{{img.lid}}/{{img.pid}}">{{img.title}}</a>
+            <div id="author"><a href="#/profile/{{img.uid}}">{{img.photographer}}</a></div>
+          </div>
         </div>
       </div>
     </div>
