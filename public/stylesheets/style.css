@@ -304,6 +304,21 @@ div.photo button
   font-weight: bold;
 }
 
+.photographer a {
+  color: inherit;
+  text-decoration: inherit;
+}
+
+.photographer a:hover {
+  text-decoration: inherit;
+  color: inherit;
+}
+
+.media-body a {
+  color: inherit;
+  text-decoration: inherit;
+}
+
 .date {
   color: #9d9d9d;
 }
