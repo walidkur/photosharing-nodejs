@@ -17,10 +17,8 @@ var request = require('request');
 var Busboy = require('busboy');
 
 function isAuth(req, res, next){
-  if(!req.user)
-  return res.status(401).end();
-  else
-  next();
+  if(!req.user) return res.status(401).end();
+  else next();
 }
 
 // redirect to homepage
@@ -32,8 +30,7 @@ router.get('/', function(req, res, next) {
 router.get('/feed', isAuth, function(req, res, next){
   var url;
 
-  if(isEmpty(req.query.type))
-  return res.status(412).end();
+  if(isEmpty(req.query.type)) return res.status(412).end();
 
   switch(req.query.type) {
     case 'public':
@@ -42,12 +39,11 @@ router.get('/feed', isAuth, function(req, res, next){
     url = 'https://' + config.server.domain + '/files/oauth/api/documents/feed?visibility=public&includeTags=true';
     break;
     case 'user':
-    if(isEmpty(req.query.uid))
-    return res.status(412).end();
+    if(isEmpty(req.query.uid)) return res.status(412).end();
     url = 'https://' + config.server.domain + '/files/oauth/api/userlibrary/' + req.query.uid + '/feed?visibility=public&includeTags=true';
     break;
     case 'private':
-    url = 'https:// ' + config.server.domain + '/files/oauth/api/documents/shared/feed?includeTags=true&direction=inbound'
+    url = 'https://' + config.server.domain + '/files/oauth/api/documents/shared/feed?includeTags=true&direction=inbound'
     break;
     default:
     return res.status(412).end();
@@ -97,8 +93,7 @@ router.get('/feed', isAuth, function(req, res, next){
       // JSON to make parsing easier using the xml2js module for nodejs
       parseString(body, function(err, result){
 
-        if(err)
-        return console.log('Error: ' + err);
+        if(err) return res.status(500).end();
 
 
         // initialize the array of photos we will be sending back
@@ -107,8 +102,7 @@ router.get('/feed', isAuth, function(req, res, next){
         // get the actual entries object in the response
         var entries = result.feed.entry;
 
-        if(isEmpty(entries))
-        return photos;
+        if(isEmpty(entries)) return photos;
 
         // iterate over the entries to send back each photo that was returned
         for(var i = 0; i < entries.length; i++){
@@ -190,20 +184,18 @@ router.put('/photo', isAuth, function(req, res, next){
   } else {
 
     // the url for putting to a photo on the Connections Cloud
-    var url = 'https://' + config.server.domain + '/files/oauth/api/myuserlibrary/document/' + req.query.pid + '/entry';
+    var url = 'https://' + config.server.domain + '/files/oauth/api/myuserlibrary/document/' + req.query.pid + '/entry?';
 
     // the api requires you to pass the title of the photo even if you aren't
     // changing it. You must place it in a title tag with type text.
     var data = '<title type="text">' + req.query.title + '</title>';
 
     // if the request passed tags, then add them to the api call body
-    if(!isEmpty(req.query.q)){
-      url = url + '?tag=' + req.query.q;
-      // var array = req.query.tags.split(',');
-      // for(var i = 0; i < array.length; i++){
-      //   data = data + '<category term="' + array[i] + '"/>';
-      // }
-    }
+    if(!isEmpty(req.query.q)) url = url + '&tag=' + req.query.q;
+
+    // add share with users if passed
+    if(!isEmpty(req.query.share)) url = url + '&shareWith' + req.query.share;
+
 
     // format the request so that the api can handle the request properly
     var body =  '<?xml version="1.0" encoding="UTF-8"?><entry xmlns="http://www.w3.org/2005/Atom" xmlns:app="http://www.w3.org/2007/app" xmlns:snx="http://www.ibm.com/xmlns/prod/sn">' + data + '</entry>';
@@ -291,8 +283,7 @@ router.get('/photo', isAuth, function(req, res, next){
 });
 
 router.delete('/photo', isAuth, function(req, res, next){
-  if(isEmpty(req.query.pid))
-  return res.status(412).end();
+  if(isEmpty(req.query.pid))  return res.status(412).end();
 
   // we must get a nonce from the api server in order to post a comment
   // see upload for more info
@@ -326,9 +317,7 @@ router.delete('/photo', isAuth, function(req, res, next){
     }
 
     request.del(options, function(error, response, body){
-      if(error){
-        return res.status(500).end();
-      }
+      if(error) return res.status(500).end();
       return res.status(200).end();
     });
   });
@@ -383,6 +372,8 @@ router.get('/comments', isAuth, function(req, res, next){
       headers: headers
     };
 
+    console.log(JSON.stringify(options));
+
 
     request.get(options, function(error, response, body){
       if(error){
@@ -398,9 +389,7 @@ router.get('/comments', isAuth, function(req, res, next){
           var entries = result.feed.entry;
 
           // catch if there are no comments on the photo
-          if(isEmpty(entries)){
-            return res.send(comments);
-          }
+          if(isEmpty(entries))  return res.send(comments);
 
           // iterate through the comments creating new objects and pushing them
           // to the array
@@ -498,14 +487,11 @@ router.post('/comments', isAuth, function(req, res, next){
 
 router.delete('/comments', isAuth, function(req, res, next){
 
-  if(isEmpty(req.query.cid))
-  return res.status(412).end();
+  if(isEmpty(req.query.cid))  return res.status(412).end();
 
-  if(isEmpty(req.query.pid))
-  return res.status(412).end();
+  if(isEmpty(req.query.pid))  return res.status(412).end();
 
-  if(isEmpty(req.query.uid))
-  return res.status(412).end();
+  if(isEmpty(req.query.uid))  return res.status(412).end();
 
 
   // we must get a nonce from the api server in order to post a comment
@@ -551,8 +537,11 @@ router.delete('/comments', isAuth, function(req, res, next){
   router.post('/upload', isAuth, function(req, res, next){
 
     // check for queries before we start
-    if(isEmpty(req.query.visibility))
-    return res.status(412).end();
+    if(isEmpty(req.query.visibility)) return res.status(412).end();
+
+    // to obtain the file from the client, we use a module called busboy
+    // that allows us to obtain the file stream from the client
+    var busboy = new Busboy({headers: req.headers});
 
     // before uploading, we must obtain a nonce, which is a handshake between
     // the api and our server to allow us to post to the server
@@ -577,23 +566,17 @@ router.delete('/comments', isAuth, function(req, res, next){
         // the nonce is returned in the body of the response
         var nonce = body;
 
-        // to obtain the file from the client, we use a module called busboy
-        // that allows us to obtain the file stream from the client
-        var busboy = new Busboy({headers: req.headers});
-
         // when busboy encounters a file (which should be the only thing it
         // obtains from the page) it will then pip the file to a request to the
         // api server
         busboy.on('file', function(fieldname, file, filename, encoding, mimetype){
-          var url = 'https://' + server.domain + '/files/oauth/api/myuserlibrary/feed?visibility=' + req.query.visibility;
+          var url = 'https://' + config.server.domain + '/files/oauth/api/myuserlibrary/feed?visibility=' + req.query.visibility;
 
           // add tags
-          if(!isEmpty(req.query.q))
-          url = url + '&tag=' + req.query.q;
+          if(!isEmpty(req.query.q)) url = url + '&tag=' + req.query.q;
 
           // add shares
-          if(!isEmpty(req.query.share))
-          url = url + '&shareWith=' + req.query.share;
+          if(!isEmpty(req.query.share)) url = url + '&shareWith=' + req.query.share;
 
           // the slug is used to tell the api what it should call the file
           var slug = filename;
@@ -610,6 +593,8 @@ router.delete('/comments', isAuth, function(req, res, next){
             headers: headers
           };
 
+          console.log('options: ' + JSON.stringify(options));
+
           // we then pipe the file to the request to the api server
           file.pipe(request.post(options, function(error, response, body){
 
@@ -619,6 +604,9 @@ router.delete('/comments', isAuth, function(req, res, next){
               console.log('upload failed: ' + error);
               return res.status(500).end();
             }
+
+            console.log(body);
+
           }));
 
         });
@@ -628,6 +616,8 @@ router.delete('/comments', isAuth, function(req, res, next){
         busboy.on('finish', function(){
           return res.status(200).end();
         });
+
+        req.pipe(busboy);
       }
     });
   });

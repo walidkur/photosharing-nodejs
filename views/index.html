@@ -91,28 +91,41 @@
 <div ng-controller="navbarController">
   <script type="text/ng-template" id="myModalContent.html">
 
+    <!-- Upload header/title -->
     <div class="modal-header">
       <h3 class="modal-title">Upload your photos!</h3>
     </div>
-
+    <!-- The modal's body -->
     <div class="modal-body">
-      <form action="/api/upload" method="post" enctype="multipart/form-data">
+
+      <!-- Declares the form as a file-uploader -->
         <div style="position:relative;">
       		<a class='btn btn-primary' href='javascript:;'>
       			Choose File...
-      			<input type="file" style='position:absolute;z-index:2;top:0;left:0;filter: alpha(opacity=0);opacity:0;background-color:transparent;color:transparent;' name="file_source" size="40"  onchange='$("#upload-file-info").html($(this).val());'>
+      			<input type="file" file-input="files" style='position:absolute;z-index:2;top:0;left:0;filter: alpha(opacity=0);opacity:0;background-color:transparent;color:transparent;' name="file_source" size="40"  onchange='$("#upload-file-info").html($(this).val());'>
       		</a>
       		&nbsp;
       		<span class='label label-info' id="upload-file-info"></span>
       	</div>
+
+        <!-- Creates ability to make tags for photos -->
         <div class="form-group">
           <label for="tag">Tags:</label>
-          <input type="text" class="form-control" id="tag">
+          <input ng-model="tags" type="text" class="form-control" id="tag">
         </div>
-      </form>
+
+        <div class="form-group">
+          <label for="shares">Share with:</label>
+          <input ng-model="shares" type="text" class="form-control" id="shares">
+        </div>
+
     </div>
+
+    <!-- The modal's footer -->
     <div class="modal-footer">
-      <button type="submit" class="btn btn-info" ng-click="ok()">Upload</button>
+
+      <!-- Creates the submit/"Upload" and "Close" buttons -->
+      <button type="submit" class="btn btn-info" ng-click="uploadFile()">Upload</button>
       <button class="btn btn-warning" ng-click="cancel()">Close</button>
     </div>
 
