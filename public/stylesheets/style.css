@@ -1,3 +1,7 @@
+/*------- Styling for page-home.html -------*/
+
+
+
 body {
   padding: 50px;
   font: 14px "Lucida Grande", Helvetica, Arial, sans-serif;
@@ -7,6 +11,8 @@ a {
   color: #00B7FF;
 }
 
+
+/* Styling for home gallery */
 #mygallery .caption {
   background-color: black;
 }
@@ -35,10 +41,31 @@ a {
   color: white;
 }
 
-#logo {
-  font-family: 'Sue Ellen Francisco', cursive;
-  color: white;
+
+/* Public and Private buttons */
+.btn-circle-lg {
+  width: 79px;
+  height: 79px;
+  text-align: center;
+  padding: 13px 0;
+  font-size: 30px;
+  line-height: 2.00;
+  border-radius: 70px;
 }
+
+#public {
+  margin-right: 25px;
+  font-size: 24px;
+}
+
+#private {
+  margin-left: 25px;
+  font-size: 24px;
+}
+
+
+
+/*------- Styling for navbar -------*/
 
 .navbar {
   height: 65px;
@@ -53,6 +80,8 @@ a {
   display:block;
 }
 
+
+/* Styling for profile button */
 #profilePic{
   align-self: center;
   padding-top: 0px;
@@ -74,6 +103,8 @@ a {
   float: left;
 }
 
+
+/* Styling for upload button and modal */
 .uploadButton {
   color: #9d9d9d;
   float: center;
@@ -111,6 +142,28 @@ a {
   margin-bottom: 20px;
 }
 
+.btn-file {
+    position: relative;
+    overflow: hidden;
+}
+.btn-file input[type=file] {
+    position: absolute;
+    top: 0;
+    right: 0;
+    min-width: 100%;
+    min-height: 100%;
+    font-size: 100px;
+    text-align: right;
+    filter: alpha(opacity=0);
+    opacity: 0;
+    outline: none;
+    background: white;
+    cursor: inherit;
+    display: block;
+}
+
+
+/* Styling for search bar */
 .searchBar {
   float: right;
   font-size: 14px;
@@ -125,6 +178,23 @@ a {
   margin-top: 0px;
 }
 
+.stylish-input-group .input-group-addon {
+  background: white !important;
+}
+
+.stylish-input-group .form-control {
+  border-right:0;
+  box-shadow:0 0 0;
+  border-color:#ccc;
+}
+
+.stylish-input-group button {
+  border: 0;
+  background:transparent;
+}
+
+
+/* Styling for logout button */
 .logoutButton {
   color: #9d9d9d;
   font-size: 16px;
@@ -154,41 +224,8 @@ a {
   border-color: transparent;
 }
 
-.stylish-input-group .input-group-addon {
-  background: white !important;
-}
 
-.stylish-input-group .form-control {
-  border-right:0;
-  box-shadow:0 0 0;
-  border-color:#ccc;
-}
-
-.stylish-input-group button {
-  border: 0;
-  background:transparent;
-}
-
-.btn-file {
-    position: relative;
-    overflow: hidden;
-}
-.btn-file input[type=file] {
-    position: absolute;
-    top: 0;
-    right: 0;
-    min-width: 100%;
-    min-height: 100%;
-    font-size: 100px;
-    text-align: right;
-    filter: alpha(opacity=0);
-    opacity: 0;
-    outline: none;
-    background: white;
-    cursor: inherit;
-    display: block;
-}
-
+/* Styling for page-profile.html */
 #profile {
   margin-top: 5px;
   padding-bottom: 10px;
@@ -198,23 +235,95 @@ a {
   margin-top: 10px;
 }
 
-.col-centered {
-  float: none;
-  margin: 0 auto;
+
+
+/*------- Styling for page-photo.html -------*/
+
+#photoPage {
+  margin-top: 40px;
 }
 
-.btn-circle-lg {
-  width: 79px;
-  height: 79px;
-  text-align: center;
-  padding: 13px 0;
-  font-size: 30px;
-  line-height: 2.00;
-  border-radius: 70px;
+
+/* Photo column */
+#clickedPhoto {
+  float: right;
+  height: 800px;
+}
+
+
+/* Delete photo */
+.glyphicon-remove {
+  padding-right: 5px;
+  background: transparent;
+}
+
+div.photo
+  {
+  position: relative;
+  float:right;
+  }
+
+div.photo:hover button
+  {
+  display: block;
+  border: none;
+  color: white;
+  -webkit-text-stroke-width: 2px;
+  -webkit-text-stroke-color: black;
+  font-size: 24px;
+  weight: bold;
+  background: transparent;
+  bottom: 10;
+  left: 10;
+  }
+
+div.photo button
+  {
+  position:absolute;
+  display:none;
+  }
+
+
+/* Comment column */
+#commentColumn {
+  height: 800px;
+}
+
+
+/* Photo information */
+.photoInfo {
+  height: 100px;
+}
+
+#userPhoto {
+-webkit-border-radius: 30px;
+-moz-border-radius: 30px;
+}
+
+.photographer {
+  font-weight: bold;
+}
+
+.date {
+  color: #9d9d9d;
 }
 
 .glyphicon-tag {
   margin-right: 5px;
+}
+
+
+/* Number of likes */
+#divider {
+  width: 440px;
+  margin-top: 0px;
+  margin-bottom: 10px;
+  float: left;
+}
+
+.likeButton {
+  background-color: inherit;
+  border: none;
 }
 
 .glyphicon-thumbs-up {
@@ -224,37 +333,15 @@ a {
 #photoBar {
   font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
   padding-bottom: 10px;
+  margin-top: 50px;
+  margin-bottom: 0px;
 }
 
-#public {
-  margin-right: 25px;
-  font-size: 24px;
-}
 
-#private {
-  margin-left: 24px;
-  font-size: 24px;
-}
-
-#photoPage {
-  margin-top: 40px;
-}
-
-#commentColumn {
-  height: 800px;
-}
-#userPhoto {
--webkit-border-radius: 30px;
--moz-border-radius: 30px;
-}
-
-#clickedPhoto {
-  float: right;
-  height: 800px;
-}
-
-.photoInfo {
-  height: 100px;
+/* Comments */
+.media-heading {
+  font-size: 14px;
+  font-weight: bold;
 }
 
 #commentBox {
@@ -269,36 +356,8 @@ a {
   width: 400px;
 }
 
-.date {
-  color: #9d9d9d;
-}
 
-.media-heading {
-  font-size: 14px;
-  font-weight: bold;
-}
-
-.photographer {
-  font-weight: bold;
-}
-
-#photoBar {
-  margin-top: 50px;
-  margin-bottom: 0px;
-}
-
-#divider {
-  width: 440px;
-  margin-top: 0px;
-  margin-bottom: 10px;
-  float: left;
-}
-
-.likeButton {
-  background-color: inherit;
-  border: none;
-}
-
+/* Delete comments */
 .deleteCommentButton {
   background-color: inherit;
   border: none;
@@ -311,6 +370,7 @@ a {
 #comment:hover > .deleteComment {
   display: table-cell;
 }
+
 
 /* ANIMATIONS
 ============================================================================= */
