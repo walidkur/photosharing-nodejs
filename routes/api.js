@@ -40,18 +40,27 @@ router.get('/feed', isAuth, function(req, res, next){
     // the url for getting a feed of files marked as public
     url = 'https://' + config.server.domain + '/files/oauth/api/documents/feed?visibility=public&includeTags=true';
     break;
+
     case 'user':
     if(isEmpty(req.query.uid)) return res.status(412).end();
 
     // the url for getting a feed of files for a specfic user
     url = 'https://' + config.server.domain + '/files/oauth/api/userlibrary/' + req.query.uid + '/feed?visibility=public&includeTags=true';
     break;
+
     case 'private':
 
     // the url for getting a feed of files shared with the currently logged in
     // user
     url = 'https://' + config.server.domain + '/files/oauth/api/documents/shared/feed?includeTags=true&direction=inbound'
     break;
+
+    case 'myphotos':
+
+    // url for getting the current user's photos
+    url = 'https://' + config.server.domain + '/files/oauth/api/myuserlibrary/feed?includeTags=true'
+    break;
+
     default:
     return res.status(412).end();
     break;
@@ -86,6 +95,9 @@ router.get('/feed', isAuth, function(req, res, next){
 
   request.get(options, function(error, response, body){
 
+    // initialize the array of photos that will be returned
+    var photos = [];
+
     // return 500 if there is an error
     if(error) return res.status(500).end();
     else {
@@ -94,9 +106,6 @@ router.get('/feed', isAuth, function(req, res, next){
       parseString(body, function(err, result){
 
         if(err) return res.status(500).end();
-
-        // initialize the array of photos that will be returned
-        var photos = [];
 
         // get the entries from the response
         var entries = result.feed.entry;
