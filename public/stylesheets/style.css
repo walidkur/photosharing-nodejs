@@ -13,29 +13,29 @@ a {
 
 
 /* Styling for home gallery */
-#mygallery .caption {
+#gallery .caption {
   background-color: black;
 }
 
-#mygallery .caption a {
+#gallery .caption a {
   font-size: 16px;
   text-decoration: none;
   color: white;
 }
 
-#mygallery .caption a:hover {
+#gallery .caption a:hover {
   font-weight: bold;
   text-decoration: none;
   color: white;
 }
 
-#mygallery .caption #author a {
+#gallery .caption #author a {
   font-size: 12px;
   text-decoration: none;
   color: white;
 }
 
-#mygallery .caption #author a:hover {
+#gallery .caption #author a:hover {
   font-weight: bold;
   text-decoration: none;
   color: white;
@@ -302,6 +302,21 @@ div.photo button
 
 .photographer {
   font-weight: bold;
+}
+
+.photographer a {
+  color: inherit;
+  text-decoration: inherit;
+}
+
+.photographer a:hover {
+  text-decoration: inherit;
+  color: inherit;
+}
+
+.media-body a {
+  color: inherit;
+  text-decoration: inherit;
 }
 
 .date {

@@ -8,7 +8,7 @@
     <!--Displays the photo to the right of the screen-->
     <div class="col-md-8" style="position: relative;">
       <div class="photo" >
-        <img id="clickedPhoto" src="{{photo.link}}"/>
+        <img id="clickedPhoto" ng-src="{{photo.link}}"/>
 
         <!--Allows the user to delete photo-->
         <button class="deletePhotoButton" ng-click="deletePhoto(photo.pid)"><span style="color: white" class="glyphicon glyphicon-remove"></span></button>
@@ -23,7 +23,7 @@
         <div class="media">
           <div class="media-left media-middle">
             <a href="#/profile/{{photo.uid}}">
-              <img id="userPhoto" class="media-object" src="{{photo.profile.img}}" height=60px>
+              <img id="userPhoto" class="media-object" ng-src="{{photo.profile.img}}" height=60px>
             </a>
           </div>
           <div class="media-body">
@@ -58,7 +58,7 @@
 
           <!--Displays the comments-->
           <div class="media-body">
-            <a href="#/profile/{{comment.uid}}"><h4 class="media-heading">{{comment.author}}</h4></a>
+            <a  href="#/profile/{{comment.uid}}"><h4 class="media-heading">{{comment.author}}</h4></a>
             <h5>{{comment.content}}</h5>
             <h5 class="date">{{comment.date}}</h5>
           </div>

@@ -61,7 +61,7 @@ photoApp.controller('homeController', function($scope, $routeParams, $window, ap
 
         angular.element(document).ready(function(){
           index = 21;
-          $('#mygallery').justifiedGallery(galleryConfig);
+          $('#gallery').justifiedGallery(galleryConfig);
           $scope.loading = false;
         });
 
@@ -102,7 +102,7 @@ photoApp.controller('homeController', function($scope, $routeParams, $window, ap
 
         angular.element(document).ready(function(){
           index = 21;
-          $('#mygallery').justifiedGallery(galleryConfig);
+          $('#gallery').justifiedGallery(galleryConfig);
           $scope.loading = false;
         });
 
@@ -121,7 +121,6 @@ photoApp.controller('homeController', function($scope, $routeParams, $window, ap
   }
 
   $scope.loadMore = function(){
-    console.log('Loading more');
 
     if ($scope.loading) return;
     $scope.loading = true;
@@ -141,7 +140,7 @@ photoApp.controller('homeController', function($scope, $routeParams, $window, ap
         $scope.data = $scope.data.concat(data.data);
         index += 5;
         angular.element(document).ready(function() {
-          $("#mygallery").justifiedGallery('norewind');
+          $("#gallery").justifiedGallery('norewind');
           $scope.loading = false;
         });
       },
@@ -299,14 +298,14 @@ photoApp.controller('photoController', function($scope, $rootScope, $http, $rout
 });
 
 
-photoApp.controller('profileController', function($scope, $http, $routeParams, $window) {
+photoApp.controller('profileController', function($scope, $http, $routeParams, $window, apiService) {
 
 
   $scope.pageClass = 'page-profile';
-  var imgPixels = 0;
-  var screenHeight = window.screen.height;
+  var galleryConfig = { rowHeight: window.screen.height * .25,  margins: 10 };
 
-  imgPixels = screenHeight * .25;
+  var index = 1;
+  $scope.loading = false;
 
 
   var getProfile = function(){
@@ -330,35 +329,62 @@ photoApp.controller('profileController', function($scope, $http, $routeParams, $
     });
   }
 
-  var getUploadFeed = function(){
+  $scope.getUploadFeed = function(){
+    index = 1;
 
-    $http({
+    var params = '?type=user&uid=' + $routeParams.uid;
 
-      method:'GET',
-      url:'/api/feed?type=user&uid=' + $routeParams.uid,
+    params += '&ps=20' + '&si=' + index;
 
-    }).success(function(data, status){
+    $scope.loading = true;
 
-      $scope.uploadFeed = data;
+    apiService.getFeed(params).then(
+      function(data, status){
+        $scope.uploadFeed = data.data;
 
-      angular.element(document).ready(function() {
-        $("#profileGallery").justifiedGallery({
-          rowHeight : imgPixels,
-          margins: 10
-        });
-      });
+        angular.element(document).ready(function(){
+          index = 21;
+          $('#gallery').justifiedGallery(galleryConfig);
+          $scope.loading = false;
+        })
+      },
+      function(data, status){
+        $scope.loading = false;
 
-    }).error(function(data, status){
-
-      if(status === 401){
-        $window.location.assign('/');
+        if(status === 401) $window.location.assign('/');
       }
-
-    });
+    );
   }
 
+  $scope.loadMore = function(){
+    if($scope.loading) return;
+    console.log('loading more');
+
+    $scope.loading = true;
+
+    var params = '?type=user&uid=' + $routeParams.uid;
+
+    params += '&ps=5&si=' + index;
+
+    apiService.getFeed(params).then(
+      function(data, status){
+        $scope.uploadFeed = $scope.uploadFeed.concat(data.data);
+        index += 5;
+        angular.element(document).ready(function(){
+          $('#gallery').justifiedGallery('norewind');
+          $scope.loading = false;
+        });
+      },
+      function(data, status){
+        $scope.loading = false;
+        if(status === 401) $window.location.assign('/');
+      }
+    );
+  }
+
+
   getProfile();
-  getUploadFeed();
+  $scope.getUploadFeed();
 
 });
 
@@ -455,10 +481,9 @@ photoApp.controller('ModalInstanceController', function($http, $scope, $modalIns
 
   $scope.uploadFile = function(){
     var fd = new FormData();
-    console.log($scope.files);
     fd.append("file", $scope.files[0]);
 
-    var url = "/api/upload?visibility=private";
+    var url = "/api/upload?visibility=" + $scope.visibility;
 
     if($scope.shares != ''){
       var shares = $scope.shares;
@@ -473,7 +498,7 @@ photoApp.controller('ModalInstanceController', function($http, $scope, $modalIns
     }
 
     $http.post(url, fd, {
-      headers: {'Content-Type' : undefined },
+      headers: { 'Content-Type' : undefined, 'X-Content-Length' : $scope.files[0].size},
       transformRequest: angular.identity
     }).success($scope.ok);
   }
