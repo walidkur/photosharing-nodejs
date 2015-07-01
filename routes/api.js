@@ -448,49 +448,87 @@ router.get('/comments', isAuth, function(req, res, next){
 router.post('/comments', isAuth, function(req, res, next){
 
   // return 412 if the necessary queries were not passed
-  if(isEmpty(req.query.pid) || isEmpty(req.query.uid))  return res.status(412).end();
-  else {
+  if(isEmpty(req.query.pid) || isEmpty(req.query.uid) || isEmpty(req.body.comment))  return res.status(412).end();
 
-    // url for obtaining a nonce
-    var url = 'https://' + config.server.domain + '/files/oauth/api/nonce';
+  // url for obtaining a nonce
+  var url = 'https://' + config.server.domain + '/files/oauth/api/nonce';
 
-    var headers = {'Authorization': 'Bearer ' + req.user.accessToken}
+  var headers = {'Authorization': 'Bearer ' + req.user.accessToken}
+
+  var options = {
+    url: url,
+    headers: headers
+  }
+
+  request.get(options, function(error, response, body){
+    var nonce = body;
+
+    // create the xml string that will wrap the comment
+    var body = '<?xml version="1.0" encoding="UTF-8"?><entry xmlns="http://www.w3.org/2005/Atom" xmlns:app="http://www.w3.org/2007/app" xmlns:snx="http://www.ibm.com/xmlns/prod/sn"><category scheme="tag:ibm.com,2006:td/type" term="comment" label="comment"/><content type="text">' + req.body.comment + '</content></entry>';
+
+    // url for posting a comment on a file
+    var url = 'https://' + config.server.domain + '/files/oauth/api/userlibrary/' + req.query.uid + '/document/' + req.query.pid + '/feed';
+
+    var headers = {
+      'Authorization': 'Bearer ' + req.user.accessToken,
+      'Content-Type': 'application/atom+xml',
+      'Content-Length': body.length,
+      'X-Update-Nonce': nonce
+    };
+
+    // add the atom (xml) document that was created to the body of the request
+    var options = {
+      url: url,
+      headers: headers,
+      body: body
+    };
+
+    request.post(options, function(error, response, body){
+      if(error) return res.status(500).end();
+      return res.status(200).end();
+    });
+  });
+});
+
+// updating a comment
+router.put('/comments', isAuth, function(req, res, next){
+  if(isEmpty(req.query.cid) || isEmpty(req.query.pid) || isEmpty(req.query.uid) || isEmpty(req.body.comment)) return res.status(412).end();
+
+  // url for obtaining a nonce
+  var url = 'https://' + config.server.domain + '/files/oauth/api/nonce';
+
+  var headers = {'Authorization': 'Bearer ' + req.user.accessToken}
+
+  var options = {
+    url: url,
+    headers: headers
+  }
+
+  request.get(options, function(error, response, body){
+    var nonce = body;
+
+    var url = 'https://' + config.server.domain + '/files/oauth/api/userlibrary/' + req.query.uid + '/document/' + req.query.pid + 'comment/' + req.query.cid + '/entry';
+
+    var body = '<?xml version="1.0" encoding="UTF-8"?><entry xmlns="http://www.w3.org/2005/Atom" xmlns:app="http://www.w3.org/2007/app" xmlns:snx="http://www.ibm.com/xmlns/prod/sn"><category scheme="tag:ibm.com,2006:td/type" term="comment" label="comment"/><content type="text">' + req.body.comment + '</content></entry>'
+
+    var headers = {
+      'Authorization' : 'Bearer ' + req.user.accessToken,
+      'Content-Type': 'application/atom+xml',
+      'Content-Length': body.length,
+      'X-Update-Nonce': nonce
+    };
 
     var options = {
       url: url,
-      headers: headers
-    }
+      headers: headers,
+      body: body
+    };
 
-    request.get(options, function(error, response, body){
-      var nonce = body;
-
-      // create the xml string that will wrap the comment
-      var body = '<?xml version="1.0" encoding="UTF-8"?><entry xmlns="http://www.w3.org/2005/Atom" xmlns:app="http://www.w3.org/2007/app" xmlns:snx="http://www.ibm.com/xmlns/prod/sn"><category scheme="tag:ibm.com,2006:td/type" term="comment" label="comment"/><content type="text">' + req.body.comment + '</content></entry>';
-
-      // url for posting a comment on a file
-      var url = 'https://' + config.server.domain + '/files/oauth/api/userlibrary/' + req.query.uid + '/document/' + req.query.pid + '/feed';
-
-      var headers = {
-        'Authorization': 'Bearer ' + req.user.accessToken,
-        'Content-Type': 'application/atom+xml',
-        'Content-Length': body.length,
-        'X-Update-Nonce': nonce
-      };
-
-      // add the atom (xml) document that was created to the body of the request
-      var options = {
-        url: url,
-        headers: headers,
-        body: body
-      };
-
-      request.post(options, function(error, response, body){
-        if(error) return res.status(500).end();
-        return res.status(200).end();
-      });
+    request.put(options, function(error, response, body){
+      if(error) return res.status(500).end();
+      return res.status(200).end();
     });
-
-  }
+  });
 });
 
 // delete a comment
