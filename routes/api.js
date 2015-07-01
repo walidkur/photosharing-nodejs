@@ -230,7 +230,7 @@ router.get('/photo', isAuth, function(req, res, next){
   } else {
 
     // the url for getting a photo
-    var url = 'https://' + config.server.domain + '/files/oauth/api/library/' + req.query.lid + '/document/' + req.query.pid + '/entry?includeTags=true';
+    var url = 'https://' + config.server.domain + '/files/oauth/api/library/' + req.query.lid + '/document/' + req.query.pid + '/entry?includeTags=true&includeRecommendation=true';
 
     var headers = {'Authorization': 'Bearer ' + req.user.accessToken};
 
@@ -248,6 +248,7 @@ router.get('/photo', isAuth, function(req, res, next){
         parseString(body, function(err, result){
           var photo = {};
           var entry = result.entry;
+          photo.liked = false;
           photo.pid = entry['td:uuid'][0];
           var tags = [];
           for(var j = 1; j < entry.category.length; j ++){
@@ -259,10 +260,9 @@ router.get('/photo', isAuth, function(req, res, next){
           for(var j = 0; j < entry.link.length; j++){
             var link = entry.link[j];
             var type = link.$.type;
-            if(!(type === undefined) && (type.indexOf('image') > -1)){
-              photo.link = link.$.href;
-              break;
-            }
+            var rel = link.$.rel;
+            if(!(type === undefined) && (type.indexOf('image') > -1)) photo.link = link.$.href;
+            if(!(rel === undefined) && (rel.indexOf('recommendation') > -1))  photo.liked = true;
           }
           photo.photographer = entry.author[0].name[0];
           photo.uid = entry.author[0]['snx:userid'][0];
@@ -284,6 +284,52 @@ router.get('/photo', isAuth, function(req, res, next){
   }
 });
 
+router.put('/photo', isAuth, function(req, res, next){
+
+  if(isEmpty(req.query.pid)) return res.status(412).end();
+
+  // url for obtaining a nonce from the api
+  var url = 'https://' + config.server.domain + '/files/oauth/api/nonce';
+
+  var headers = {'Authorization': 'Bearer ' + req.user.accessToken}
+
+  var options = {
+    url: url,
+    headers: headers
+  }
+
+  // perform request to get a nonce from the server, which will then be passed
+  // when the deletion is requested.
+  request.get(options, function(error, response, body){
+    if(error) return res.status(500).end();
+
+    var nonce = body;
+
+    var url = 'https://' + config.server.domain + '/files/oauth/api/myuserlibrary/document/' + req.query.pid + '/media?';
+
+    if(!isEmpty(req.query.q)) url = url + '&tag=' + req.query.q;
+
+    if(!isEmpty(req.query.share)) url = url + '&shareWith=' + req.query.share;
+
+    if(!isEmpty(req.query.visibility)) url = url + '&visibility=' + req.query.visibility;
+
+    var headers = {
+      'Authorization': 'Bearer ' + req.user.accessToken,
+      'X-Update-Nonce': nonce
+    };
+
+    var options = {
+      url: url,
+      headers: headers
+    };
+
+    request.put(options, function(error, response, body){
+      if(error) return res.status(500).end();
+      return res.status(200).end();
+    });
+  });
+});
+
 // delete a photo
 router.delete('/photo', isAuth, function(req, res, next){
 
@@ -303,10 +349,7 @@ router.delete('/photo', isAuth, function(req, res, next){
   // perform request to get a nonce from the server, which will then be passed
   // when the deletion is requested.
   request.get(options, function(error, response, body){
-    if(error){
-      console.log('Failed getting nonce')
-      return res.status(412).end();
-    }
+    if(error) return res.status(500).end();
 
     var nonce = body;
 
@@ -331,29 +374,50 @@ router.delete('/photo', isAuth, function(req, res, next){
 });
 
 // updating like status of a photo
-router.put('/like', isAuth, function(req, res, next){
+router.post('/like', isAuth, function(req, res, next){
 
   // return 412 is the necessary queries were not passed
-  if(isEmpty(req.query.pid) || isEmpty(req.query.lid) || isEmpty(req.query.r)){
-    return req.status(412).end();
-  } else {
+  if(isEmpty(req.query.lid) || isEmpty(req.query.r) || isEmpty(req.query.pid))  return req.status(412).end();
 
-    // url for updating like (recommendation) status of a photo
-    var url = 'https://' + config.server.domain + '/files/oauth/api/library/' + req.query.lid + '/document/' + req.query.pid + '/media?recommendation=' + req.query.r;
+  // url for obtaining a nonce
+  var url = 'https://' + config.server.domain + '/files/oauth/api/nonce';
 
-    var headers = {'Authorization': 'Bearer ' + req.user.accessToken};
+  var headers = {'Authorization': 'Bearer ' + req.user.accessToken};
+
+  var options = {
+    url: url,
+    headers: headers
+  }
+
+  request.get(options, function(error, response, body){
+    var nonce = body;
+
+    var headers = {
+      'Authorization': 'Bearer ' + req.user.accessToken,
+      'X-Update-Nonce': nonce,
+      'Content-Type': 'application/atom+xml'
+    };
+
+    var url;
+    if(req.query.r === 'false'){
+      url = 'https://' + config.server.domain + '/files/oauth/api/library/' + req.query.lid + '/document/' + req.query.pid + '/recommendation/' + req.user.userid + '/entry'
+      headers['X-METHOD-OVERRIDE'] = 'delete';
+    } else url = 'https://' + config.server.domain + '/files/oauth/api/library/' + req.query.lid + '/' + req.query.pid + '/feed'
+
+    var content = '<?xml version="1.0" encoding="UTF-8"?><entry xmlns="http://www.w3.org/2005/Atom"><category term="recommendation" scheme="tag:ibm.com,2006:td/type" label="recommendation"/></entry>'
 
     var options = {
       url: url,
-      headers: headers
+      headers: headers,
+      body: content
     };
 
-    request.put(options, function(error, response, body){
+    request.post(options, function(error, response, body){
       if(error) return res.status(500).end();
-      else return res.status(200).end();
+      return res.status(200).end();
     });
-  }
-})
+  });
+});
 
 // get the feed of comments for a photo
 router.get('/comments', isAuth, function(req, res, next){
@@ -427,49 +491,89 @@ router.get('/comments', isAuth, function(req, res, next){
 router.post('/comments', isAuth, function(req, res, next){
 
   // return 412 if the necessary queries were not passed
-  if(isEmpty(req.query.pid) || isEmpty(req.query.uid))  return res.status(412).end();
-  else {
+  if(isEmpty(req.query.pid) || isEmpty(req.query.uid) || isEmpty(req.body.comment))  return res.status(412).end();
 
-    // url for obtaining a nonce
-    var url = 'https://' + config.server.domain + '/files/oauth/api/nonce';
+  // url for obtaining a nonce
+  var url = 'https://' + config.server.domain + '/files/oauth/api/nonce';
 
-    var headers = {'Authorization': 'Bearer ' + req.user.accessToken}
+  var headers = {'Authorization': 'Bearer ' + req.user.accessToken}
+
+  var options = {
+    url: url,
+    headers: headers
+  }
+
+  request.get(options, function(error, response, body){
+    if(error) return res.status(500).end();
+
+    var nonce = body;
+
+    // create the xml string that will wrap the comment
+    var body = '<?xml version="1.0" encoding="UTF-8"?><entry xmlns="http://www.w3.org/2005/Atom" xmlns:app="http://www.w3.org/2007/app" xmlns:snx="http://www.ibm.com/xmlns/prod/sn"><category scheme="tag:ibm.com,2006:td/type" term="comment" label="comment"/><content type="text">' + req.body.comment + '</content></entry>';
+
+    // url for posting a comment on a file
+    var url = 'https://' + config.server.domain + '/files/oauth/api/userlibrary/' + req.query.uid + '/document/' + req.query.pid + '/feed';
+
+    var headers = {
+      'Authorization': 'Bearer ' + req.user.accessToken,
+      'Content-Type': 'application/atom+xml',
+      'Content-Length': body.length,
+      'X-Update-Nonce': nonce
+    };
+
+    // add the atom (xml) document that was created to the body of the request
+    var options = {
+      url: url,
+      headers: headers,
+      body: body
+    };
+
+    request.post(options, function(error, response, body){
+      if(error) return res.status(500).end();
+      return res.status(200).end();
+    });
+  });
+});
+
+// updating a comment
+router.put('/comments', isAuth, function(req, res, next){
+  if(isEmpty(req.query.cid) || isEmpty(req.query.pid) || isEmpty(req.query.uid) || isEmpty(req.body.comment)) return res.status(412).end();
+
+  // url for obtaining a nonce
+  var url = 'https://' + config.server.domain + '/files/oauth/api/nonce';
+
+  var headers = {'Authorization': 'Bearer ' + req.user.accessToken}
+
+  var options = {
+    url: url,
+    headers: headers
+  }
+
+  request.get(options, function(error, response, body){
+    var nonce = body;
+
+    var url = 'https://' + config.server.domain + '/files/oauth/api/userlibrary/' + req.query.uid + '/document/' + req.query.pid + 'comment/' + req.query.cid + '/entry';
+
+    var body = '<?xml version="1.0" encoding="UTF-8"?><entry xmlns="http://www.w3.org/2005/Atom" xmlns:app="http://www.w3.org/2007/app" xmlns:snx="http://www.ibm.com/xmlns/prod/sn"><category scheme="tag:ibm.com,2006:td/type" term="comment" label="comment"/><content type="text">' + req.body.comment + '</content></entry>'
+
+    var headers = {
+      'Authorization' : 'Bearer ' + req.user.accessToken,
+      'Content-Type': 'application/atom+xml',
+      'Content-Length': body.length,
+      'X-Update-Nonce': nonce
+    };
 
     var options = {
       url: url,
-      headers: headers
-    }
+      headers: headers,
+      body: body
+    };
 
-    request.get(options, function(error, response, body){
-      var nonce = body;
-
-      // create the xml string that will wrap the comment
-      var body = '<?xml version="1.0" encoding="UTF-8"?><entry xmlns="http://www.w3.org/2005/Atom" xmlns:app="http://www.w3.org/2007/app" xmlns:snx="http://www.ibm.com/xmlns/prod/sn"><category scheme="tag:ibm.com,2006:td/type" term="comment" label="comment"/><content type="text">' + req.body.comment + '</content></entry>';
-
-      // url for posting a comment on a file
-      var url = 'https://' + config.server.domain + '/files/oauth/api/userlibrary/' + req.query.uid + '/document/' + req.query.pid + '/feed';
-
-      var headers = {
-        'Authorization': 'Bearer ' + req.user.accessToken,
-        'Content-Type': 'application/atom+xml',
-        'Content-Length': body.length,
-        'X-Update-Nonce': nonce
-      };
-
-      // add the atom (xml) document that was created to the body of the request
-      var options = {
-        url: url,
-        headers: headers,
-        body: body
-      };
-
-      request.post(options, function(error, response, body){
-        if(error) return res.status(500).end();
-        return res.status(200).end();
-      });
+    request.put(options, function(error, response, body){
+      if(error) return res.status(500).end();
+      return res.status(200).end();
     });
-
-  }
+  });
 });
 
 // delete a comment
