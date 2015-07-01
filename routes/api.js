@@ -284,6 +284,52 @@ router.get('/photo', isAuth, function(req, res, next){
   }
 });
 
+router.put('/photo', isAuth, function(req, res, next){
+
+  if(isEmpty(req.query.pid)) return res.status(412).end();
+
+  // url for obtaining a nonce from the api
+  var url = 'https://' + config.server.domain + '/files/oauth/api/nonce';
+
+  var headers = {'Authorization': 'Bearer ' + req.user.accessToken}
+
+  var options = {
+    url: url,
+    headers: headers
+  }
+
+  // perform request to get a nonce from the server, which will then be passed
+  // when the deletion is requested.
+  request.get(options, function(error, response, body){
+    if(error) return res.status(500).end();
+
+    var nonce = body;
+
+    var url = 'https://' + config.server.domain + '/files/oauth/api/myuserlibrary/document/' + req.query.pid + '/media?';
+
+    if(!isEmpty(req.query.q)) url = url + '&tag=' + req.query.q;
+
+    if(!isEmpty(req.query.share)) url = url + '&shareWith=' + req.query.share;
+
+    if(!isEmpty(req.query.visibility)) url = url + '&visibility=' + req.query.visibility;
+
+    var headers = {
+      'Authorization': 'Bearer ' + req.user.accessToken,
+      'X-Update-Nonce': nonce
+    };
+
+    var options = {
+      url: url,
+      headers: headers
+    };
+
+    request.put(options, function(error, response, body){
+      if(error) return res.status(500).end();
+      return res.status(200).end();
+    });
+  });
+});
+
 // delete a photo
 router.delete('/photo', isAuth, function(req, res, next){
 
@@ -303,10 +349,7 @@ router.delete('/photo', isAuth, function(req, res, next){
   // perform request to get a nonce from the server, which will then be passed
   // when the deletion is requested.
   request.get(options, function(error, response, body){
-    if(error){
-      console.log('Failed getting nonce')
-      return res.status(412).end();
-    }
+    if(error) return res.status(500).end();
 
     var nonce = body;
 
@@ -461,6 +504,8 @@ router.post('/comments', isAuth, function(req, res, next){
   }
 
   request.get(options, function(error, response, body){
+    if(error) return res.status(500).end();
+
     var nonce = body;
 
     // create the xml string that will wrap the comment
