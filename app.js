@@ -12,6 +12,19 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 
 See the License for the specific language governing permissions and
 limitations under the License. */
+
+var fs = require('fs');
+
+// check to see if the server.js starts
+try {
+  fs.openSync('./config/server.js', 'r', function(err, fd){
+      if (err && err.code=='ENOENT') { return console.log('Server.js does not exist') }
+  });
+} catch (e) {
+  console.log('Server.js does not exist')
+  process.exit(0);
+}
+
 var express = require('express');
 var path = require('path');
 var favicon = require('serve-favicon');
