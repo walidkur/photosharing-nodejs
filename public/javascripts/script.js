@@ -440,8 +440,11 @@ photoApp.controller('navbarController', function($scope, $rootScope, $http, $rou
 
   $scope.mediumScreen = true;
   $(document).ready(function(){
-    if ($(window).width() <= 1148){
+    if ($(window).width() <= 1148 || $(window).width() >= 767){
       $scope.mediumScreen = false;
+    }
+    if ($(window).width() >= 1148 || $(window).width() <= 767){
+      $scope.mediumScreen = true;
     }
   });
 
