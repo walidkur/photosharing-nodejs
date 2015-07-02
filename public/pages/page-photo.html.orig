@@ -6,6 +6,10 @@
   <div class="row">
 
     <!--Displays the photo to the right of the screen-->
+<<<<<<< HEAD
+    <div class="col-md-8">
+      <img id="clickedPhoto" ng-src="{{photo.link}}"/>
+=======
     <div class="col-md-8" style="position: relative;">
       <div class="photo" >
         <img id="clickedPhoto" ng-src="{{photo.link}}"/>
@@ -13,17 +17,21 @@
         <!--Allows the user to delete photo-->
         <button class="deletePhotoButton" ng-click="deletePhoto(photo.pid)"><span style="color: white" class="glyphicon glyphicon-trash"></span></button>
       </div>
+>>>>>>> dd54db91343714ef68f10bd66d39b65ae5eec13b
     </div>
 
     <!--Displays what is left of the screen-->
     <div id="commentColumn" class="col-md-4">
 
-
       <!--Displays the photo's information-->
       <div class="photoInfo">
         <div class="media">
           <div class="media-left media-middle">
+<<<<<<< HEAD
+            <a href="#">
+=======
             <a href="#/profile/{{photo.uid}}">
+>>>>>>> dd54db91343714ef68f10bd66d39b65ae5eec13b
               <img id="userPhoto" class="media-object" ng-src="{{photo.profile.img}}" height=60px>
             </a>
           </div>
@@ -52,7 +60,11 @@
 
           <!--Displays the avatar of the user who commented-->
           <div class="media-left media-top">
+<<<<<<< HEAD
+            <a href="#">
+=======
             <a href="#/profile/{{comment.uid}}">
+>>>>>>> dd54db91343714ef68f10bd66d39b65ae5eec13b
               <img id="userPhoto" class="media-object" ng-src="{{comment.profileImg}}" height=60px>
             </a>
           </div>
@@ -73,6 +85,7 @@
           <div ng-show="uid == comment.uid" class="media-right media-top deleteComment">
             <button class="deleteCommentButton" ng-click="deleteComment(comment.cid)"><span style="color: grey" class="glyphicon glyphicon-remove"></span></button>
           </div>
+
         </li>
       </ul>
 

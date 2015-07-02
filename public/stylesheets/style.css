@@ -1,3 +1,9 @@
+/*------- Styling for page-home.html -------*/
+
+.col-center{
+  margin:0 auto;
+}
+
 body {
   padding: 50px;
   font: 14px "Lucida Grande", Helvetica, Arial, sans-serif;
@@ -7,166 +13,95 @@ a {
   color: #00B7FF;
 }
 
-#mygallery .caption {
+
+/* Styling for home gallery */
+#gallery .caption {
   background-color: black;
 }
 
-#mygallery .caption a {
+#gallery .caption a {
   font-size: 16px;
   text-decoration: none;
   color: white;
 }
 
-#mygallery .caption a:hover {
+#gallery .caption a:hover {
   font-weight: bold;
   text-decoration: none;
   color: white;
 }
 
-#mygallery .caption #author a {
+#gallery .caption #author a {
   font-size: 12px;
   text-decoration: none;
   color: white;
 }
 
-#mygallery .caption #author a:hover {
+#gallery .caption #author a:hover {
   font-weight: bold;
   text-decoration: none;
   color: white;
 }
 
-#logo {
-  font-family: 'Sue Ellen Francisco', cursive;
-  color: white;
-}
 
-.navbar {
-  height: 65px;
-}
 
-.navbar-brand{
-  font-size: 36px;
+/*------- Styling for navbar -------*/
+
+.navbar-brand {
+  font-size: 30px;
   position: absolute;
-  left: 50%;
-  margin-left: -100px !important;
-  margin-top: 5px;
-  display:block;
+  width: 100%;
+  left: 0;
+  top: 0;
+  text-align: center;
+  margin: auto;
 }
 
-#profilePic{
-  align-self: center;
+.navbar-nav > li > a {
   padding-top: 0px;
-  padding-bottom: 0px;
   padding-right: 0px;
-  margin-right: 10px;
-  margin-left: 5px;
-}
-
-.profileButton {
   padding-left: 0px;
-  font-size: 16px;
-  font-weight: bold;
-  padding-top: 0px;
   padding-bottom: 0px;
-  margin-top: 0px;
-  margin-bottom: 10px;
-  margin-right: 30px;
-  float: left;
 }
 
-.uploadButton {
-  color: #9d9d9d;
-  float: center;
-  font-size: 16px;
+.nav, .navbar-nav > li {
+  margin-right: 20px;
+}
+
+.nav, .navbar-nav > li:last-child {
+  margin-right: 0px;
+}
+
+.nav, .navbar-nav, .navbar-right > li {
+  margin-right: 20px;
+}
+
+.navbarButton{
+  margin-top: 15px;
+  margin-left: 10px;
   font-weight: bold;
-  margin-top: 9px;
-  padding-right: 50px;
 }
 
-.navbar .in .uploadButton {
-  margin-top: 0px;
-  float: left;
+
+/* Styling for profile picture */
+.profileButton {
+  font-weight: bold;
+  margin-top: 6px;
+  margin-left: 10px;
 }
 
-.uploadButton:hover {
-  color: white;
+#profilePic {
+  margin-right: 5px;
 }
 
-.uploadBut {
-  padding-top: 13px;
-  background-color: transparent;
-  border-color: transparent;
-}
 
-.navbar .in .uploadBut {
-  padding-top: 0px;
-}
-
+/* Styling for upload button and modal */
 .glyphicon-upload {
-  padding-right: 6px;
-  padding-left: 10px;
+  margin-right: 5px;
 }
 
 .modal-body .btn-primary {
   margin-bottom: 20px;
-}
-
-.searchBar {
-  float: right;
-  font-size: 14px;
-  margin-top: 18;
-  padding-left: 20px;
-  padding-right: 50px;
-  width: 300px;
-}
-
-.navbar .in .searchBar {
-  float: left;
-  margin-top: 0px;
-}
-
-.logoutButton {
-  color: #9d9d9d;
-  font-size: 16px;
-  font-weight: bold;
-  float: left;
-  margin-top: 24px;
-  padding-right: 10px;
-  padding-left: 10px;
-}
-
-.navbar .in .logoutButton {
-  margin-top: 0px;
-  padding-bottom: 0px;
-}
-
-.glyphicon-log-out {
-  padding-right: 6px;
-  padding-left: 0px;
-}
-
-.logoutButton:hover{
-  color: white;
-}
-
-.logoutBut {
-  background-color: transparent;
-  border-color: transparent;
-}
-
-.stylish-input-group .input-group-addon {
-  background: white !important;
-}
-
-.stylish-input-group .form-control {
-  border-right:0;
-  box-shadow:0 0 0;
-  border-color:#ccc;
-}
-
-.stylish-input-group button {
-  border: 0;
-  background:transparent;
 }
 
 .btn-file {
@@ -189,32 +124,161 @@ a {
     display: block;
 }
 
+
+/* Styling for public button */
+.glyphicon-globe {
+  margin-right: 5px;
+}
+
+
+/* Styling for private button */
+.glyphicon-envelope {
+  margin-right: 5px;
+}
+
+
+/* Styling for search bar */
+.searchBar {
+  margin-left: 5px;
+}
+
+.stylish-input-group .input-group-addon {
+  background: white !important;
+}
+
+.stylish-input-group .form-control {
+  border-right:0;
+  box-shadow:0 0 0;
+  border-color:#ccc;
+}
+
+.stylish-input-group button {
+  border: 0;
+  background:transparent;
+}
+
+
+/* Styling for logout button */
+.glyphicon-log-out {
+  margin-right: 5px;
+}
+
+
+/* Styling for page-profile.html */
 #profile {
-  margin-top: 5px;
-  padding-bottom: 10px;
+  margin-top: 15px;
 }
 
 #profileImg {
   margin-top: 10px;
 }
 
-.col-centered {
-  float: none;
-  margin: 0 auto;
+
+
+/*------- Styling for page-photo.html -------*/
+
+#photoPage {
+  margin-top: 40px;
 }
 
-.btn-circle-lg {
-  width: 79px;
-  height: 79px;
-  text-align: center;
-  padding: 13px 0;
-  font-size: 30px;
-  line-height: 2.00;
-  border-radius: 70px;
+
+/* Photo column */
+#clickedPhoto {
+  float: right;
+  height: 800px;
+}
+
+
+/* Delete photo */
+.glyphicon-trash {
+  padding-right: 5px;
+  background: transparent;
+  color: white;
+  -webkit-text-stroke-width: 1px;
+  -webkit-text-stroke-color: black;
+}
+
+div.photo
+  {
+  position: relative;
+  float:right;
+  }
+
+div.photo:hover button
+  {
+  display: block;
+  border: none;
+  color: white;
+
+  font-size: 24px;
+  weight: bold;
+  background: transparent;
+  bottom: 10;
+  left: 10;
+  }
+
+div.photo button
+  {
+  position:absolute;
+  display:none;
+  }
+
+
+/* Comment column */
+#commentColumn {
+  height: 800px;
+}
+
+
+/* Photo information */
+.photoInfo {
+  height: 100px;
+}
+
+#userPhoto {
+-webkit-border-radius: 30px;
+-moz-border-radius: 30px;
+}
+
+.photographer {
+  font-weight: bold;
+}
+
+.photographer a {
+  color: inherit;
+  text-decoration: inherit;
+}
+
+.photographer a:hover {
+  text-decoration: inherit;
+  color: inherit;
+}
+
+.media-body a {
+  color: inherit;
+  text-decoration: inherit;
+}
+
+.date {
+  color: #9d9d9d;
 }
 
 .glyphicon-tag {
   margin-right: 5px;
+}
+
+
+/* Number of likes */
+#divider {
+  width: 440px;
+  margin-top: 0px;
+  margin-bottom: 10px;
+  float: left;
+}
+
+.likeButton {
+  background-color: inherit;
+  border: none;
 }
 
 .glyphicon-thumbs-up {
@@ -224,37 +288,15 @@ a {
 #photoBar {
   font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
   padding-bottom: 10px;
+  margin-top: 50px;
+  margin-bottom: 0px;
 }
 
-#public {
-  margin-right: 25px;
-  font-size: 24px;
-}
 
-#private {
-  margin-left: 24px;
-  font-size: 24px;
-}
-
-#photoPage {
-  margin-top: 40px;
-}
-
-#commentColumn {
-  height: 800px;
-}
-#userPhoto {
--webkit-border-radius: 30px;
--moz-border-radius: 30px;
-}
-
-#clickedPhoto {
-  float: right;
-  height: 800px;
-}
-
-.photoInfo {
-  height: 100px;
+/* Comments */
+.media-heading {
+  font-size: 14px;
+  font-weight: bold;
 }
 
 #commentBox {
@@ -269,36 +311,23 @@ a {
   width: 400px;
 }
 
-.date {
-  color: #9d9d9d;
-}
 
-.media-heading {
-  font-size: 14px;
-  font-weight: bold;
-}
-
-.photographer {
-  font-weight: bold;
-}
-
-#photoBar {
-  margin-top: 50px;
-  margin-bottom: 0px;
-}
-
-#divider {
-  width: 440px;
-  margin-top: 0px;
-  margin-bottom: 10px;
-  float: left;
-}
-
-.likeButton {
+/* Edit comments */
+.editCommentButton {
   background-color: inherit;
   border: none;
 }
 
+.editComment {
+  display: none;
+}
+
+#comment:hover > .editComment {
+  display: table-cell;
+}
+
+
+/* Delete comments */
 .deleteCommentButton {
   background-color: inherit;
   border: none;
@@ -311,6 +340,7 @@ a {
 #comment:hover > .deleteComment {
   display: table-cell;
 }
+
 
 /* ANIMATIONS
 ============================================================================= */
