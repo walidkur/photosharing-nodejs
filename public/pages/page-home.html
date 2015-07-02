@@ -3,14 +3,6 @@
 <!--Provides necessary padding-->
 <h1></h1>
 
-<!--Creates a "Public" and "Private" buttons-->
-<div>
-  <center>
-    <a id="public" class="btn btn-circle-lg btn-primary" ng-click="getPublicFeed()">Public</a>
-    <a id="private" class="btn btn-circle-lg btn-success" ng-click="getPrivateFeed()">Private</a>
-  </center>
-</div>
-
 <!--Implemented Justified Gallery-->
 <div infinite-scroll="loadMore()" infinite-scroll-distance="1" id="gallery">
   <div ng-repeat="entry in data">

@@ -6,70 +6,73 @@
 <link rel="import" href="pages/partials/head.html">
 <link rel="stylesheet" type="text/css" href="../stylesheets/style.css">
 
+
 <body  ng-app="photoApp">
 
 <!--Calls back to navbarController, and creates the navbar fixed at the top of the screen-->
 <nav ng-controller="navbarController" class="navbar navbar-inverse navbar-fixed-top" role="navigation">
-
-  <div class="container-fluid">
+    <!-- Brand and toggle get grouped for better mobile display -->
     <div class="navbar-header">
-
-      <!--Creates hamburger icon and functionality of collapsing the navbar-->
-      <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#navbar-collapse">
+      <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar-collapse" aria-expanded="false">
+        <span class="sr-only">Toggle navigation</span>
         <span class="icon-bar"></span>
         <span class="icon-bar"></span>
         <span class="icon-bar"></span>
       </button>
-
-      <!--The name of the app/site-->
-      <a class="navbar-brand" href="/#/">PhotoNode</a>
-
+      <a class="navbar-brand" href="#">PhotoNode</a>
     </div>
 
-    <!--Defines what will be collapsed into the hamburger when screens are smaller-->
-    <div class="navbar-collapse collapse" id="navbar-collapse">
+    <!-- Collect the nav links, forms, and other content for toggling -->
+    <div class="collapse navbar-collapse" id="navbar-collapse">
+      <ul class="nav navbar-nav">
 
-      <!--Places the following to the left of the navbar-->
-      <ul class="nav navbar-nav navbar-left">
+        <!--Displays the profile button-->
+        <li class="profileButton">
+          <a href="#/profile/{{uid}}"><img id="profilePic" src="{{$root.avatar}}" height=40p>
+            <!--Display on glyphicon when screen gets smaller-->
+            <text ng-show="mediumScreen">{{displayName}}</text>
+          </a>
+        </li>
+
+        <!--Displays the upload button-->
+        <li class="navbarButton">
+          <a ng-click="open()" href=""><span class="glyphicon glyphicon-upload"></span>
+            <!--Display on glyphicon when screen gets smaller-->
+            <text ng-show="mediumScreen">Upload</text>
+          </a>
+        </li>
+
+        <!--Displays the public button-->
+        <li class="navbarButton">
+          <a ng-click="open()" href=""><span class="glyphicon glyphicon-globe"></span>
+            <!--Display on glyphicon when screen gets smaller-->
+            <text ng-show="mediumScreen">Public</text>
+          </a>
+        </li>
+
+        <!--Displays the private button-->
+        <li class="navbarButton">
+          <a ng-click="open()" href=""><span class="glyphicon glyphicon-envelope"></span>
+            <!--Display on glyphicon when screen gets smaller-->
+            <text ng-show="mediumScreen">Private</text>
+          </a>
+        </li>
+      </ul>
+
+      <!--Places the following to the right of the navbar-->
+      <ul class="nav navbar-nav navbar-right">
         <li>
-          <!--Displays the user's profile picture and user idea-->
-          <a class="profileButton" href="#/profile/{{uid}}"><img id="profilePic" ng-src="{{$root.avatar}}" height=40px>{{displayName}}</a>
-        </li>
-      </ul>
-
-      <!--Places the following to the left of the navbar-->
-      <ul class="nav navbar-nav navbar-left">
-        <li class="uploadButton">
-          <!--Displays the upload button-->
-          <button class="uploadBut" ng-click="open()"><span class="glyphicon glyphicon-upload"></span>Upload</button>
-        </li>
-      </ul>
-
-      <!--Places the following to the right of the navbar-->
-      <ul class="nav navbar-nav navbar-right">
-        <li class="logoutButton">
-          <!--Creates a form that directs the user to logout-->
-          <form action="/logout" method="post">
-            <!--Displays the logout button-->
-            <button class="logoutBut" type="submit"><span class="glyphicon glyphicon-log-out"></span>Logout</button>
-          </form>
-        </li>
-      </ul>
-
-      <!--Places the following to the right of the navbar-->
-      <ul class="nav navbar-nav navbar-right">
-
-        <!--Displays the search bar and defines its functionality-->
-        <li class="searchBar">
-          <div class="input-group stylish-input-group">
-            <input type="text" id="searchText" ng-model="searchQuery" class="form-control" placeholder="Search">
+          <!--Displays the search bar and defines its functionality-->
+          <form class="searchBar navbar-form" role="search">
+            <div class="form-group input-group stylish-input-group">
+              <input type="text" id="searchText" ng-model="searchQuery" class="form-control" placeholder="Search">
               <span class="input-group-addon">
                 <button type="submit" id="searchButton" ng-click="search()">
                   <span class="glyphicon glyphicon-search"></span>
                 </button>
               </span>
 
-              <!--Allows the user to hit enter and submit search-->
+              <!--Allows the user to submit search by hitting enter-->
               <script>
               $("#searchText").keyup(function(event){
                 if(event.keyCode == 13 || event.which == 13){
@@ -78,14 +81,23 @@
               });
               </script>
 
-        </div>
+            </div>
+          </form>
+        </li>
+
+        <!--Displays the logout button-->
+        <li class="navbarButton">
+          <a ng-click="open()" href=""><span class="glyphicon glyphicon-log-out"></span>
+            <!--Display on glyphicon when screen gets smaller-->
+            <text ng-show="mediumScreen">Logout</text>
+          </a>
         </li>
 
       </ul>
 
     </div>
-  </div>
 </nav>
+
 
 <!--Calls navbarController to allow functionality of the upload modal-->
 <div ng-controller="navbarController">

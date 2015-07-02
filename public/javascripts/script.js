@@ -438,6 +438,23 @@ photoApp.controller('navbarController', function($scope, $rootScope, $http, $rou
 
   }
 
+  $scope.mediumScreen = true;
+  $(document).ready(function(){
+    if ($(window).width() <= 1148){
+      $scope.mediumScreen = false;
+    }
+  });
+
+  $(window).resize(function() {
+    if ($(window).width() <= 1148){
+      $scope.mediumScreen = false;
+    }
+    if ($(window).width() >= 1148 || $(window).width() <= 767){
+      $scope.mediumScreen = true;
+    }
+    $scope.$apply();
+  });
+
   var getAvatar = function () {
 
     $http({
