@@ -308,6 +308,21 @@ div.photo button
 }
 
 
+/* Edit comments */
+.editCommentButton {
+  background-color: inherit;
+  border: none;
+}
+
+.editComment {
+  display: none;
+}
+
+#comment:hover > .editComment {
+  display: table-cell;
+}
+
+
 /* Delete comments */
 .deleteCommentButton {
   background-color: inherit;
