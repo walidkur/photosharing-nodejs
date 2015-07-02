@@ -16,6 +16,18 @@ var parseString = require('xml2js').parseString;
 var request = require('request');
 var Busboy = require('busboy');
 
+// main api url
+var FILES_API = 'https://' + config.server.domain + '/files/oauth/api/';
+
+// string needed to recommendations (like)
+var RECOMMENDATION_STRING = '<?xml version="1.0" encoding="UTF-8"?><entry xmlns="http://www.w3.org/2005/Atom"><category term="recommendation" scheme="tag:ibm.com,2006:td/type" label="recommendation"/></entry>';
+
+// formatter for comment content
+function commentFormat(content){
+  return '<?xml version="1.0" encoding="UTF-8"?><entry xmlns="http://www.w3.org/2005/Atom" xmlns:app="http://www.w3.org/2007/app" xmlns:snx="http://www.ibm.com/xmlns/prod/sn">' + content + '</entry>';
+}
+
+// check whether a session exists for the request
 function isAuth(req, res, next){
   if(!req.user) return res.status(401).end();
   else next();
@@ -28,37 +40,37 @@ router.get('/', function(req, res, next) {
 
 // get feed of photos
 router.get('/feed', isAuth, function(req, res, next){
-  var url;
 
   if(isEmpty(req.query.type)) return res.status(412).end();
+
+  var url;
 
   switch(req.query.type) {
     case 'public':
 
     // config.server.domain is the domain name of the server (without the
     // https or the directory, for example: example.com).
-    // the url for getting a feed of files marked as public
-    url = 'https://' + config.server.domain + '/files/oauth/api/documents/feed?visibility=public&includeTags=true';
+    // the url to return a feed of public files
+    url = FILES_API + 'documents/feed?visibility=public&includeTags=true';
     break;
 
     case 'user':
     if(isEmpty(req.query.uid)) return res.status(412).end();
 
-    // the url for getting a feed of files for a specfic user
-    url = 'https://' + config.server.domain + '/files/oauth/api/userlibrary/' + req.query.uid + '/feed?visibility=public&includeTags=true';
+    // the url to return a feed of a user's files
+    url = FILES_API + 'userlibrary/' + req.query.uid + '/feed?visibility=public&includeTags=true';
     break;
 
     case 'private':
 
-    // the url for getting a feed of files shared with the currently logged in
-    // user
-    url = 'https://' + config.server.domain + '/files/oauth/api/documents/shared/feed?includeTags=true&direction=inbound'
+    // the url to return a feed of files shared with the user
+    url = FILES_API + 'documents/shared/feed?includeTags=true&direction=inbound'
     break;
 
     case 'myphotos':
 
-    // url for getting the current user's photos
-    url = 'https://' + config.server.domain + '/files/oauth/api/myuserlibrary/feed?includeTags=true'
+    // url to return the user's photos
+    url = FILES_API + 'myuserlibrary/feed?includeTags=true'
     break;
 
     default:
@@ -69,9 +81,7 @@ router.get('/feed', isAuth, function(req, res, next){
   // append the tags to the url if query parameter exist
   if(!isEmpty(req.query.q)){
     var array = req.query.q.split(",");
-    for(var i = 0; i < array.length; i++){
-      url = url + '&tag=' + array[i];
-    }
+    for(var i = 0; i < array.length; i++) url = url + '&tag=' + array[i];
   }
 
   // append page size to the url if page size parameter exist
@@ -95,7 +105,7 @@ router.get('/feed', isAuth, function(req, res, next){
 
   request.get(options, function(error, response, body){
 
-    // initialize the array of photos that will be returned
+    // initialize the array of photos to be returned
     var photos = [];
 
     // return 500 if there is an error
@@ -133,8 +143,7 @@ router.get('/feed', isAuth, function(req, res, next){
           // add the tag array to the photo
           photo.tags = tags;
 
-          // add the author of the file to the object, but rename it to
-          // photographer
+          // add the author of the file to the object
           photo.photographer = entry.author[0].name[0];
 
           // add the title of the file
@@ -145,7 +154,7 @@ router.get('/feed', isAuth, function(req, res, next){
 
           // iterate over the links provided by the api to obtain the image and
           // thumbnail of the file. These can be found by using the type and rel
-          // fields respectfully
+          // fields respectively
           for(var j = 0; j < entry.link.length; j++){
             var link = entry.link[j];
             var type = link.$.type;
@@ -180,57 +189,15 @@ router.get('/feed', isAuth, function(req, res, next){
   });
 });
 
-// update a photo
-router.put('/photo', isAuth, function(req, res, next){
-
-  // return 412 if the necesary queryies were not passed
-  if(isEmpty(req.query.pid) || isEmpty(req.query.title)) {
-    console.log("Query not found");
-    return res.status(412).end();
-  } else {
-
-    // the url for updating a file on the Connections Cloud
-    var url = 'https://' + config.server.domain + '/files/oauth/api/myuserlibrary/document/' + req.query.pid + '/entry?';
-
-    // build a string to format the file title as per required by the api
-    var data = '<title type="text">' + req.query.title + '</title>';
-
-    // add tags to the url if passed
-    if(!isEmpty(req.query.q)) url = url + '&tag=' + req.query.q;
-
-    // add share with users if passed
-    if(!isEmpty(req.query.share)) url = url + '&shareWith' + req.query.share;
-
-    // format the request so that the api can handle the request properly
-    var body =  '<?xml version="1.0" encoding="UTF-8"?><entry xmlns="http://www.w3.org/2005/Atom" xmlns:app="http://www.w3.org/2007/app" xmlns:snx="http://www.ibm.com/xmlns/prod/sn">' + data + '</entry>';
-
-    var headers = {'Authorization' : 'Bearer ' + req.user.accessToken};
-
-    var options = {
-      url: url,
-      headers: headers
-    };
-
-    request.put(options, function(error, response, body){
-      if(error){
-        return res.status(500).end();
-      }
-
-      return res.status(200).end();
-    });
-  }
-});
-
 // get information for a photo
 router.get('/photo', isAuth, function(req, res, next){
 
   // return 412 if the necessary queries were not passed
-  if(isEmpty(req.query.pid) || isEmpty(req.query.lid)){
-    return res.status(412).end();
-  } else {
+  if(isEmpty(req.query.pid) || isEmpty(req.query.lid))  return res.status(412).end();
+  else {
 
-    // the url for getting a photo
-    var url = 'https://' + config.server.domain + '/files/oauth/api/library/' + req.query.lid + '/document/' + req.query.pid + '/entry?includeTags=true';
+    // the url to return a photo
+    var url = FILES_API + 'library/' + req.query.lid + '/document/' + req.query.pid + '/entry?includeTags=true&includeRecommendation=true';
 
     var headers = {'Authorization': 'Bearer ' + req.user.accessToken};
 
@@ -240,14 +207,13 @@ router.get('/photo', isAuth, function(req, res, next){
     };
 
     request.get(options, function(error, response, body){
-      if(error){
-        console.log('photo error: ' + error);
-        res.status(500).end();
-      } else {
+      if(error) res.status(500).end();
+      else {
         // see get feed for more details
         parseString(body, function(err, result){
           var photo = {};
           var entry = result.entry;
+          photo.liked = false;
           photo.pid = entry['td:uuid'][0];
           var tags = [];
           for(var j = 1; j < entry.category.length; j ++){
@@ -259,10 +225,9 @@ router.get('/photo', isAuth, function(req, res, next){
           for(var j = 0; j < entry.link.length; j++){
             var link = entry.link[j];
             var type = link.$.type;
-            if(!(type === undefined) && (type.indexOf('image') > -1)){
-              photo.link = link.$.href;
-              break;
-            }
+            var rel = link.$.rel;
+            if(!(type === undefined) && (type.indexOf('image') > -1)) photo.link = link.$.href;
+            if(!(rel === undefined) && (rel.indexOf('recommendation') > -1))  photo.liked = true;
           }
           photo.photographer = entry.author[0].name[0];
           photo.uid = entry.author[0]['snx:userid'][0];
@@ -284,64 +249,38 @@ router.get('/photo', isAuth, function(req, res, next){
   }
 });
 
-// delete a photo
-router.delete('/photo', isAuth, function(req, res, next){
+router.put('/photo', isAuth, function(req, res, next){
 
-  // retrn 412 if the necessary queries were not passed
-  if(isEmpty(req.query.pid))  return res.status(412).end();
+  if(isEmpty(req.query.pid)) return res.status(412).end();
 
-  // url for obtaining a nonce from the api
-  var url = 'https://' + config.server.domain + '/files/oauth/api/nonce';
+  // url to return a nonce from the api
+  var url = FILES_API + 'nonce';
 
-  var headers = {'Authorization': 'Bearer ' + req.user.accessToken}
+  var headers = { 'Authorization' : 'Bearer ' + req.user.accessToken };
 
   var options = {
     url: url,
     headers: headers
-  }
+  };
 
-  // perform request to get a nonce from the server, which will then be passed
-  // when the deletion is requested.
+  // perform request to get a nonce from the server
   request.get(options, function(error, response, body){
-    if(error){
-      console.log('Failed getting nonce')
-      return res.status(412).end();
-    }
+    if(error) return res.status(500).end();
 
     var nonce = body;
 
-    // url for deleting a photo
-    var url = 'https://' + config.server.domain + '/files/oauth/api/myuserlibrary/document/' + req.query.pid + '/entry';
+    var url = FILES_API + 'myuserlibrary/document/' + req.query.pid + '/media?';
+
+    if(!isEmpty(req.query.q)) url = url + '&tag=' + req.query.q;
+
+    if(!isEmpty(req.query.share)) url = url + '&shareWith=' + req.query.share;
+
+    if(!isEmpty(req.query.visibility)) url = url + '&visibility=' + req.query.visibility;
 
     var headers = {
       'Authorization': 'Bearer ' + req.user.accessToken,
       'X-Update-Nonce': nonce
-    }
-
-    var options = {
-      url: url,
-      headers: headers
-    }
-
-    request.del(options, function(error, response, body){
-      if(error) return res.status(500).end();
-      return res.status(200).end();
-    });
-  });
-});
-
-// updating like status of a photo
-router.put('/like', isAuth, function(req, res, next){
-
-  // return 412 is the necessary queries were not passed
-  if(isEmpty(req.query.pid) || isEmpty(req.query.lid) || isEmpty(req.query.r)){
-    return req.status(412).end();
-  } else {
-
-    // url for updating like (recommendation) status of a photo
-    var url = 'https://' + config.server.domain + '/files/oauth/api/library/' + req.query.lid + '/document/' + req.query.pid + '/media?recommendation=' + req.query.r;
-
-    var headers = {'Authorization': 'Bearer ' + req.user.accessToken};
+    };
 
     var options = {
       url: url,
@@ -350,10 +289,98 @@ router.put('/like', isAuth, function(req, res, next){
 
     request.put(options, function(error, response, body){
       if(error) return res.status(500).end();
-      else return res.status(200).end();
+      return res.status(200).end();
     });
+  });
+});
+
+// delete a photo
+router.delete('/photo', isAuth, function(req, res, next){
+
+  // retrn 412 if the necessary queries were not passed
+  if(isEmpty(req.query.pid))  return res.status(412).end();
+
+  // url to return a nonce from the api
+  var url = FILES_API + 'nonce';
+
+  var headers = {'Authorization': 'Bearer ' + req.user.accessToken};
+
+  var options = {
+    url: url,
+    headers: headers
+  };
+
+  // perform request to get a nonce from the server
+  request.get(options, function(error, response, body){
+    if(error) return res.status(500).end();
+
+    var nonce = body;
+
+    // url to delete a photo
+    var url = FILES_API + 'myuserlibrary/document/' + req.query.pid + '/entry';
+
+    var headers = {
+      'Authorization': 'Bearer ' + req.user.accessToken,
+      'X-Update-Nonce': nonce
+    };
+
+    var options = {
+      url: url,
+      headers: headers
+    };
+
+    request.del(options, function(error, response, body){
+      if(error) return res.status(500).end();
+      return res.status(200).end();
+    });
+  });
+});
+
+// like or unlike a photo
+router.post('/like', isAuth, function(req, res, next){
+
+  // return 412 is the necessary queries were not passed
+  if(isEmpty(req.query.lid) || isEmpty(req.query.r) || isEmpty(req.query.pid))  return req.status(412).end();
+
+  // url to return a nonce
+  var url = FILES_API + 'nonce';
+
+  var headers = {'Authorization': 'Bearer ' + req.user.accessToken};
+
+  var options = {
+    url: url,
+    headers: headers
   }
-})
+
+  request.get(options, function(error, response, body){
+    var nonce = body;
+
+    var headers = {
+      'Authorization': 'Bearer ' + req.user.accessToken,
+      'X-Update-Nonce': nonce,
+      'Content-Type': 'application/atom+xml'
+    };
+
+    var url;
+    if(req.query.r === 'false'){
+      url = FILES_API + 'library/' + req.query.lid + '/document/' + req.query.pid + '/recommendation/' + req.user.userid + '/entry'
+      headers['X-METHOD-OVERRIDE'] = 'delete';
+    } else url = FILES_API + 'library/' + req.query.lid + '/' + req.query.pid + '/feed'
+
+    var content = RECOMMENDATION_STRING;
+
+    var options = {
+      url: url,
+      headers: headers,
+      body: content
+    };
+
+    request.post(options, function(error, response, body){
+      if(error) return res.status(500).end();
+      return res.status(200).end();
+    });
+  });
+});
 
 // get the feed of comments for a photo
 router.get('/comments', isAuth, function(req, res, next){
@@ -362,8 +389,8 @@ router.get('/comments', isAuth, function(req, res, next){
   if(isEmpty(req.query.pid) || isEmpty(req.query.uid))  return res.status(412).end();
   else {
 
-    // the url for getting comments on a file; specify category=comment
-    var url = 'https://' + config.server.domain + '/files/oauth/api/userlibrary/' + req.query.uid + '/document/' + req.query.pid + '/feed?category=comment';
+    // the url to return comments on a file; specify category=comment
+    var url = FILES_API + 'userlibrary/' + req.query.uid + '/document/' + req.query.pid + '/feed?category=comment';
 
     var headers = {'Authorization': 'Bearer ' + req.user.accessToken};
 
@@ -377,7 +404,7 @@ router.get('/comments', isAuth, function(req, res, next){
       else {
         parseString(body, function(err, result){
 
-          // create the comment array that will be return
+          // create the comment array that to be return
           var comments = [];
 
           // get the entries from the response object
@@ -390,10 +417,10 @@ router.get('/comments', isAuth, function(req, res, next){
           // to the array
           for(var i = 0; i < entries.length; i++){
 
-            // get the current entry
+            // obtain the entry
             var entry = entries[i];
 
-            // create the comment that will be added to the array
+            // create the comment to be added to the array
             var comment = {};
 
             // add the user id of the author to the comment object
@@ -423,53 +450,93 @@ router.get('/comments', isAuth, function(req, res, next){
   }
 });
 
-// adding a comment
+// add a comment
 router.post('/comments', isAuth, function(req, res, next){
 
   // return 412 if the necessary queries were not passed
-  if(isEmpty(req.query.pid) || isEmpty(req.query.uid))  return res.status(412).end();
-  else {
+  if(isEmpty(req.query.pid) || isEmpty(req.query.uid) || isEmpty(req.body.comment))  return res.status(412).end();
 
-    // url for obtaining a nonce
-    var url = 'https://' + config.server.domain + '/files/oauth/api/nonce';
+  // url to return a nonce
+  var url = FILES_API + 'nonce';
 
-    var headers = {'Authorization': 'Bearer ' + req.user.accessToken}
+  var headers = {'Authorization': 'Bearer ' + req.user.accessToken}
+
+  var options = {
+    url: url,
+    headers: headers
+  }
+
+  request.get(options, function(error, response, body){
+    if(error) return res.status(500).end();
+
+    var nonce = body;
+
+    // create the xml string that wraps the comment
+    var body = commentFormat(res.body.comment);
+
+    // url to post a comment on a file
+    var url = FILES_API + 'userlibrary/' + req.query.uid + '/document/' + req.query.pid + '/feed';
+
+    var headers = {
+      'Authorization': 'Bearer ' + req.user.accessToken,
+      'Content-Type': 'application/atom+xml',
+      'Content-Length': body.length,
+      'X-Update-Nonce': nonce
+    };
+
+    // add the atom (xml) document that was created to the body of the request
+    var options = {
+      url: url,
+      headers: headers,
+      body: body
+    };
+
+    request.post(options, function(error, response, body){
+      if(error) return res.status(500).end();
+      return res.status(200).end();
+    });
+  });
+});
+
+// update a comment
+router.put('/comments', isAuth, function(req, res, next){
+  if(isEmpty(req.query.cid) || isEmpty(req.query.pid) || isEmpty(req.query.uid) || isEmpty(req.body.comment)) return res.status(412).end();
+
+  // url to return a nonce
+  var url = FILES_API + 'nonce';
+
+  var headers = {'Authorization': 'Bearer ' + req.user.accessToken}
+
+  var options = {
+    url: url,
+    headers: headers
+  }
+
+  request.get(options, function(error, response, body){
+    var nonce = body;
+
+    var url = FILES_API + 'userlibrary/' + req.query.uid + '/document/' + req.query.pid + 'comment/' + req.query.cid + '/entry';
+
+    var body = commentFormat(res.body.comment);
+
+    var headers = {
+      'Authorization' : 'Bearer ' + req.user.accessToken,
+      'Content-Type': 'application/atom+xml',
+      'Content-Length': body.length,
+      'X-Update-Nonce': nonce
+    };
 
     var options = {
       url: url,
-      headers: headers
-    }
+      headers: headers,
+      body: body
+    };
 
-    request.get(options, function(error, response, body){
-      var nonce = body;
-
-      // create the xml string that will wrap the comment
-      var body = '<?xml version="1.0" encoding="UTF-8"?><entry xmlns="http://www.w3.org/2005/Atom" xmlns:app="http://www.w3.org/2007/app" xmlns:snx="http://www.ibm.com/xmlns/prod/sn"><category scheme="tag:ibm.com,2006:td/type" term="comment" label="comment"/><content type="text">' + req.body.comment + '</content></entry>';
-
-      // url for posting a comment on a file
-      var url = 'https://' + config.server.domain + '/files/oauth/api/userlibrary/' + req.query.uid + '/document/' + req.query.pid + '/feed';
-
-      var headers = {
-        'Authorization': 'Bearer ' + req.user.accessToken,
-        'Content-Type': 'application/atom+xml',
-        'Content-Length': body.length,
-        'X-Update-Nonce': nonce
-      };
-
-      // add the atom (xml) document that was created to the body of the request
-      var options = {
-        url: url,
-        headers: headers,
-        body: body
-      };
-
-      request.post(options, function(error, response, body){
-        if(error) return res.status(500).end();
-        return res.status(200).end();
-      });
+    request.put(options, function(error, response, body){
+      if(error) return res.status(500).end();
+      return res.status(200).end();
     });
-
-  }
+  });
 });
 
 // delete a comment
@@ -478,8 +545,8 @@ router.delete('/comments', isAuth, function(req, res, next){
   // return 412 if the necessary queries are not passed
   if(isEmpty(req.query.cid) || isEmpty(req.query.pid) || isEmpty(req.query.uid))  return res.status(412).end();
 
-  // url for obtaining a nonce
-  var url = 'https://' + config.server.domain + '/files/oauth/api/nonce';
+  // url to return a nonce
+  var url = FILES_API + 'nonce';
 
   var headers = {'Authorization': 'Bearer ' + req.user.accessToken}
 
@@ -493,8 +560,8 @@ router.delete('/comments', isAuth, function(req, res, next){
 
     var nonce = body;
 
-    // url for deleting a comment
-    var url = 'https://' + config.server.domain + '/files/oauth/api/userlibrary/' + req.query.uid + '/document/' + req.query.pid + '/comment/' + req.query.cid + '/entry';
+    // url to return a comment
+    var url = FILES_API + 'userlibrary/' + req.query.uid + '/document/' + req.query.pid + '/comment/' + req.query.cid + '/entry';
 
     var headers = {
       'Authorization': 'Bearer ' + req.user.accessToken,
@@ -519,12 +586,12 @@ router.post('/upload', isAuth, function(req, res, next){
   // return 412 if the necessary queries are not passed
   if(isEmpty(req.query.visibility)) return res.status(412).end();
 
-  // create a new Busboy instance which will be used to obtain the stream of
+  // create a new Busboy instance which is used to obtain the stream of
   // the files
   var busboy = new Busboy({headers: req.headers});
 
-  // url for obtaining a nonce
-  var url = 'https://' + config.server.domain + '/files/oauth/api/nonce';
+  // url to return a nonce
+  var url = FILES_API + 'nonce';
 
   var headers = {'Authorization': 'Bearer ' + req.user.accessToken};
 
@@ -536,16 +603,14 @@ router.post('/upload', isAuth, function(req, res, next){
   request.get(options, function(error, response, body){
 
     // return 400 if there was an error
-    if(error){
-      return res.status(500).end()
-    } else {
-
+    if(error) return res.status(500).end()
+    else {
       var nonce = body;
 
-      // process the file that is being uploaded
+      // process the file to be uploaded
       busboy.on('file', function(fieldname, file, filename, encoding, mimetype){
         var j = request.jar();
-        var url = 'https://' + config.server.domain + '/files/oauth/api/myuserlibrary/feed?visibility=' + req.query.visibility;
+        var url = FILES_API + 'myuserlibrary/feed?visibility=' + req.query.visibility;
 
         // add tags to the url
         if(!isEmpty(req.query.q)) url = url + '&tag=' + req.query.q;
@@ -569,7 +634,7 @@ router.post('/upload', isAuth, function(req, res, next){
           headers: headers
         };
 
-        // pipe the file to a request to the file uploaded api
+        // pipe the file to the request
         file.pipe(request.post(options, function(error, response, body){
 
           // return 500 if there was an error
@@ -598,7 +663,7 @@ router.get('/profile', isAuth, function(req, res, next){
   if(isEmpty(req.query.uid))  return req.status(412).end()
   else {
 
-    // url for searching for a profile by id
+    // url to search for a profile by id
     var url = 'https://' + config.server.domain + '/profiles/atom/profile.do?userid=' + req.query.uid;
 
     var headers = {'Authorization' : 'Bearer ' + req.user.accessToken};
@@ -623,7 +688,7 @@ router.get('/profile', isAuth, function(req, res, next){
         // get the entry form the response
         entry = result.feed.entry[0];
 
-        // create the object we will send back
+        // create the object to be sent back
         var profile = {};
 
         // add the name of the user
@@ -659,7 +724,7 @@ function isEmpty(obj) {
   if (obj.length > 0)    return false;
   if (obj.length === 0)  return true;
 
-  // check to see if the obj has it's own properties
+  // check to see if the obj has its own properties
   for (var key in obj) {
     if (hasOwnProperty.call(obj, key)) return false;
   }

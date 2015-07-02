@@ -166,13 +166,13 @@ photoApp.controller('photoController', function($scope, $rootScope, $http, $rout
   $scope.like = function(){
     var params = '?lid=' + $routeParams.lid + '&pid=' + $routeParams.pid;
     if($scope.liked){
-      params += '&r=off';
+      params += '&r=false';
     } else {
-      params =+ '&r=on';
+      params =+ '&r=true';
     }
-    apiService.putLike(params).then(
+    apiService.postLike(params).then(
       function(data, status){
-        console.log("Liked")
+        console.log("Liked");
         if($scope.liked){
           $scope.liked = false;
           $scope.photo.likes -= 1;
@@ -202,6 +202,7 @@ photoApp.controller('photoController', function($scope, $rootScope, $http, $rout
       data.published = data.published.toLocaleDateString();
 
       $scope.photo = data;
+      $scope.liked = data.liked;
       $scope.getComments(data.uid);
       getProfile();
 
