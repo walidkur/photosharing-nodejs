@@ -7,7 +7,7 @@
 
     <!--Displays the photo to the right of the screen-->
     <div class="col-md-8">
-      <img id="clickedPhoto" src="{{photo.link}}"/>
+      <img id="clickedPhoto" ng-src="{{photo.link}}"/>
     </div>
 
     <!--Displays what is left of the screen-->
@@ -19,7 +19,7 @@
         <div class="media">
           <div class="media-left media-middle">
             <a href="#">
-              <img id="userPhoto" class="media-object" src="{{photo.profile.img}}" height=60px>
+              <img id="userPhoto" class="media-object" ng-src="{{photo.profile.img}}" height=60px>
             </a>
           </div>
           <div class="media-body">
@@ -48,7 +48,7 @@
           <!--Displays the avatar of the user who commented-->
           <div class="media-left media-top">
             <a href="#">
-              <img id="userPhoto" class="media-object" src="{{comment.profileImg}}" height=60px>
+              <img id="userPhoto" class="media-object" ng-src="{{comment.profileImg}}" height=60px>
             </a>
           </div>
 
