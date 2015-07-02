@@ -31,7 +31,7 @@
 
         <!--Displays the profile button-->
         <li class="profileButton">
-          <a href="#/profile/{{uid}}"><img id="profilePic" src="{{$root.avatar}}" height=40p>
+          <a href="#/profile/{{uid}}"><img id="profilePic" ng-src="{{$root.avatar}}" height=40p>
             <!--Display on glyphicon when screen gets smaller-->
             <text ng-show="mediumScreen">{{displayName}}</text>
           </a>
@@ -47,7 +47,7 @@
 
         <!--Displays the public button-->
         <li class="navbarButton">
-          <a ng-click="open()" href=""><span class="glyphicon glyphicon-globe"></span>
+          <a href="#/public"><span class="glyphicon glyphicon-globe"></span>
             <!--Display on glyphicon when screen gets smaller-->
             <text ng-show="mediumScreen">Public</text>
           </a>
@@ -55,7 +55,7 @@
 
         <!--Displays the private button-->
         <li class="navbarButton">
-          <a ng-click="open()" href=""><span class="glyphicon glyphicon-envelope"></span>
+          <a href="#/private"><span class="glyphicon glyphicon-envelope"></span>
             <!--Display on glyphicon when screen gets smaller-->
             <text ng-show="mediumScreen">Private</text>
           </a>

@@ -2,17 +2,17 @@
 <div class="container-fluid">
   <div class="row" id="profile">
     <div class="col-md-2">
-      <img class="img-responsive img-circle" ng-src={{profile.img}} id="profileImg"></img>
+      <img class="img-responsive img-circle" src={{profile.img}} id="profileImg"></img>
     </div>
-    <div class="col-md-10">
+    <div class="col-md-4">
       <h1>{{profile.name}}</h1>
-      <h4>Email: {{profile.email}}</h4>
+      <h3>{{profile.email}}</h3>
     </div>
   </div>
   <div class="row">
     <div class="col-md-12">
-      <div infinite-scroll="loadMore()" infinite-scroll-distance="1" id="gallery">
-        <div ng-repeat="img in uploadFeed">
+      <div infinite-scroll="loadMore()" infinite-scroll-distance="1" class="gallery" id="profileGallery">
+        <div ng-repeat="img in data">
           <a href="#/photo/{{img.lid}}/{{img.pid}}">
             <img ng-src="{{img.thumbnail}}"/>
           </a>
