@@ -4,9 +4,9 @@
     <div class="col-md-2">
       <img class="img-responsive img-circle" ng-src={{profile.img}} id="profileImg"></img>
     </div>
-    <div class="col-md-4">
+    <div class="col-md-10">
       <h1>{{profile.name}}</h1>
-      <h3>{{profile.email}}</h3>
+      <h4>Email: {{profile.email}}</h4>
     </div>
   </div>
   <div class="row">
@@ -14,7 +14,7 @@
       <div infinite-scroll="loadMore()" infinite-scroll-distance="1" id="gallery">
         <div ng-repeat="img in uploadFeed">
           <a href="#/photo/{{img.lid}}/{{img.pid}}">
-            <img src="{{img.thumbnail}}"/>
+            <img ng-src="{{img.thumbnail}}"/>
           </a>
           <div class="caption">
             <a href="#/photo/{{img.lid}}/{{img.pid}}">{{img.title}}</a>
