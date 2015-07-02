@@ -11,8 +11,8 @@
   </div>
   <div class="row">
     <div class="col-md-12">
-      <div infinite-scroll="loadMore()" infinite-scroll-distance="1" id="profileGallery">
-        <div ng-repeat="img in uploadFeed">
+      <div infinite-scroll="loadMore()" infinite-scroll-distance="1" class="gallery" id="profileGallery">
+        <div ng-repeat="img in data">
           <a href="#/photo/{{img.lid}}/{{img.pid}}">
             <img ng-src="{{img.thumbnail}}"/>
           </a>

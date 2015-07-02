@@ -15,29 +15,29 @@ a {
 
 
 /* Styling for home gallery */
-#gallery .caption {
+.gallery .caption {
   background-color: black;
 }
 
-#gallery .caption a {
+.gallery .caption a {
   font-size: 16px;
   text-decoration: none;
   color: white;
 }
 
-#gallery .caption a:hover {
+.gallery .caption a:hover {
   font-weight: bold;
   text-decoration: none;
   color: white;
 }
 
-#gallery .caption #author a {
+.gallery .caption #author a {
   font-size: 12px;
   text-decoration: none;
   color: white;
 }
 
-#gallery .caption #author a:hover {
+.gallery .caption #author a:hover {
   font-weight: bold;
   text-decoration: none;
   color: white;
