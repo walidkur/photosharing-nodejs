@@ -189,41 +189,6 @@ router.get('/feed', isAuth, function(req, res, next){
   });
 });
 
-// update a photo
-router.put('/photo', isAuth, function(req, res, next){
-
-  // return 412 if the necesary queries were not passed
-  if(isEmpty(req.query.pid) || isEmpty(req.query.title))  return res.status(412).end();
-  else {
-
-    // the url to update a file on the Connections Cloud
-    var url = FILES_API + 'myuserlibrary/document/' + req.query.pid + '/entry?';
-
-    // build a string to format the file title as per required by the api
-    var data = '<title type="text">' + req.query.title + '</title>';
-
-    // add tags to the url if passed
-    if(!isEmpty(req.query.q)) url += '&tag=' + req.query.q;
-
-    // add share with users if passed
-    if(!isEmpty(req.query.share)) url += '&shareWith' + req.query.share;
-
-    // format the request so that the api can handle the request properly
-    var body =
-    var headers = {'Authorization' : 'Bearer ' + req.user.accessToken};
-
-    var options = {
-      url: url,
-      headers: headers
-    };
-
-    request.put(options, function(error, response, body){
-      if(error) return res.status(500).end();
-      return res.status(200).end();
-    });
-  }
-});
-
 // get information for a photo
 router.get('/photo', isAuth, function(req, res, next){
 
