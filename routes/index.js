@@ -33,12 +33,12 @@ router.get('/', function(req, res, next) {
 
     // render the index to the page
     res.render('index');
-  } else
-    next();
+  } else { res.render('landing') }
 
 // if the user was not found in the request, authenticate the user using oauth2
-}, passport.authenticate('ibm-connections-cloud'));
+});
 
+router.post('/login', passport.authenticate('ibm-connections-cloud'));
 
 // logout route
 router.post('/logout', function(req, res, next){
