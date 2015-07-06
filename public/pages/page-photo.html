@@ -68,12 +68,20 @@
                 <button class="deleteCommentButton" ng-click="deleteComment(comment.cid)">
                   <span ng-show="(uid == comment.uid || uid == photo.uid) && comment.hovered" style="color: grey" class="glyphicon glyphicon-remove"></span>
                 </button>
-                <button  class="editCommentButton" ng-click="editComment(comment.cid)">
+                <button  class="editCommentButton" ng-click="edit = !edit">
                   <span ng-show="uid == comment.uid && comment.hovered" style="color: grey" class="glyphicon glyphicon-edit"></span>
                 </button>
               </h4>
             </a>
-            <h5>{{comment.content}}</h5>
+
+            <h5 ng-show="!edit">{{comment.content}}</h5>
+            <div ng-show="edit" class="input-group">
+            <input type="text" ng-model="comment.content" class="form-control" >
+            <span class="input-group-btn"><button ng-click="edit = !edit; editComment(comment.content, comment.cid);" class="btn btn-primary" type="button">Submit</button>
+            </span>
+            </div>
+
+
             <h5 class="date">{{comment.date}}</h5>
           </div>
 

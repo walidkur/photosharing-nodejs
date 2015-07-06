@@ -106,6 +106,20 @@ photoApp.factory('apiService', function($http, $q){
       return promise;
     },
 
+
+    editComment: function(content, params, successCallback, errorCallback){
+      var promise = $http({
+        method:'PUT',
+        url: '/api/comments' + params,
+        data: {comment: content}
+      }).success(function(data, status){
+        successCallback(data, status);
+      }).error(function(data, status){
+        errorCallback(data, status);
+      })
+
+    },
+
     logout: function(errorCallback){
       $http.post('/logout')
            .error(errorCallback);
