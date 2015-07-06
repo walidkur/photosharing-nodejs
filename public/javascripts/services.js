@@ -109,6 +109,14 @@ photoApp.factory('apiService', function($http, $q){
     logout: function(errorCallback){
       $http.post('/logout')
            .error(errorCallback);
+    },
+
+    deletePhoto: function(params){
+      var promise = $http({
+        method: 'DELETE',
+        url: '/api/photo' + params
+      });
+      return promise;
     }
 
 
