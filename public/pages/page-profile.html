@@ -1,14 +1,16 @@
+<div class="container-full">
 
-<div class="container-fluid">
-  <div class="row" id="profile">
-    <div class="col-md-2">
+  <div class="row profileContainer" id="profile" align="middle">
+    <div class="col-md-12">
       <img class="img-responsive img-circle" ng-src={{profile.img}} id="profileImg"></img>
-    </div>
-    <div class="col-md-10">
-      <h1>{{profile.name}}</h1>
-      <h4>Email: {{profile.email}}</h4>
+      <div class="profileInfo">
+        <h1 class="user">{{profile.name}}</h1>
+      </div>
     </div>
   </div>
+</div>
+
+<div class="container-fluid">
   <div class="row">
     <div class="col-md-12">
       <div infinite-scroll="loadMore()" infinite-scroll-distance="1" id="gallery">
