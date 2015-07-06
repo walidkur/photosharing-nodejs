@@ -475,7 +475,7 @@ router.post('/comments', isAuth, function(req, res, next){
     var nonce = body;
 
     // create the xml string that wraps the comment
-    var body = commentFormat(res.body.comment);
+    var body = commentFormat(req.body.comment);
 
     // url to post a comment on a file
     var url = FILES_API + 'userlibrary/' + req.query.uid + '/document/' + req.query.pid + '/feed';
