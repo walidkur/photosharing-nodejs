@@ -201,6 +201,19 @@ photoApp.controller('photoController', function($scope, $rootScope, $http, $rout
   $scope.comments = photoData.comments;
   $scope.liked = $scope.photo.liked;
 
+  $scope.editComment = function(content, cid){
+    apiService.editComment(content, '?uid=' + $scope.photo.uid + '&pid=' + $scope.photo.pid + '&cid=' + cid, editCallback, errorCallback)
+    .then(function(){
+      apiService.getComments('?pid' + $scope.photo.pid + '&uid' + $scope.uid, commentCallback, errorCallback)
+      .then(function(){
+        apiService.getProfiles($scope.comments, profilesCallback, errorCallback)
+        .then(function(){
+          return;
+        });
+      });
+    });
+  }
+
   $scope.addComment = function(){
     apiService.addComment($scope.content, '?pid=' + $scope.photo.pid + '&uid=' + $scope.uid, addCommentCallback, errorCallback)
     .then(function(){
@@ -224,6 +237,10 @@ photoApp.controller('photoController', function($scope, $rootScope, $http, $rout
 
     function profilesCallback(data, status, comment){
       comment.profileImg = data.img;
+    }
+
+    function editCallback(data, status){
+      console.log("Successfully edited!");
     }
 
     function errorCallback(data, status){

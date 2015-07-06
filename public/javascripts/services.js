@@ -104,6 +104,19 @@ photoApp.factory('apiService', function($http, $q){
         url: '/api/comments' + params
       });
       return promise;
+    },
+
+    editComment: function(content, params, successCallback, errorCallback){
+      var promise = $http({
+        method:'PUT',
+        url: '/api/comments' + params,
+        data: {comment: content}
+      }).success(function(data, status){
+        successCallback(data, status);
+      }).error(function(data, status){
+        errorCallback(data, status);
+      })
+
     }
 
 
