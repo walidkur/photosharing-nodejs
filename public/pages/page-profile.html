@@ -1,5 +1,6 @@
 <div class="container-full">
 
+
   <div class="row profileContainer" id="profile" align="middle">
     <div class="col-md-12">
       <img class="img-responsive img-circle" ng-src={{profile.img}} id="profileImg"></img>
@@ -13,8 +14,8 @@
 <div class="container-fluid">
   <div class="row">
     <div class="col-md-12">
-      <div infinite-scroll="loadMore()" infinite-scroll-distance="1" id="gallery">
-        <div ng-repeat="img in uploadFeed">
+      <div infinite-scroll="loadMore()" infinite-scroll-distance="1" class="gallery" id="profileGallery">
+        <div ng-repeat="img in data">
           <a href="#/photo/{{img.lid}}/{{img.pid}}">
             <img ng-src="{{img.thumbnail}}"/>
           </a>
