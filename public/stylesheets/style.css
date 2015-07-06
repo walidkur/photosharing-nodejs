@@ -65,20 +65,21 @@ a {
 }
 
 .nav, .navbar-nav > li {
-  margin-right: 20px;
+  padding-right: 20px;
 }
 
 .nav, .navbar-nav > li:last-child {
-  margin-right: 0px;
+  padding-right: 0px;
 }
 
 .nav, .navbar-nav, .navbar-right > li {
-  margin-right: 20px;
+  padding-right: 20px;
 }
 
-.navbarButton{
-  margin-top: 15px;
-  margin-left: 10px;
+#navbar-collapse > ul > .navbarButton > a {
+  padding-top: 15px;
+  padding-bottom: 11px;
+  padding-left: 10px;
   font-weight: bold;
 }
 
@@ -86,12 +87,12 @@ a {
 /* Styling for profile picture */
 .profileButton {
   font-weight: bold;
-  margin-top: 6px;
-  margin-left: 10px;
+  padding-top: 6px;
+  padding-left: 10px
 }
 
 #profilePic {
-  margin-right: 5px;
+  padding-right: 5px;
 }
 
 
