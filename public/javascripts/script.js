@@ -211,8 +211,8 @@ photoApp.controller('photoController', function($scope, $rootScope, $http, $rout
           return;
         });
       });
-    })
-    ;}
+    });
+  }
 
     function addCommentCallback(data, status){
       $scope.content = '';
