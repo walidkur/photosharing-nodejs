@@ -520,7 +520,7 @@ router.put('/comments', isAuth, function(req, res, next){
 
     var url = FILES_API + 'userlibrary/' + req.query.uid + '/document/' + req.query.pid + 'comment/' + req.query.cid + '/entry';
 
-    var body = commentFormat(res.body.comment);
+    var body = commentFormat(req.body.comment);
 
     var headers = {
       'Authorization' : 'Bearer ' + req.user.accessToken,
