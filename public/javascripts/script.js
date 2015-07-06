@@ -181,7 +181,7 @@ photoApp.controller('homeController', function($scope, $routeParams, $window, ap
   function feedCallback(data, status){
     $scope.data = $scope.data.concat(data);
     angular.element(document).ready(function(){
-      $('#mygallery').justifiedGallery('norewind');
+      $('#homeGallery').justifiedGallery('norewind');
       $scope.loading = false;
     });
   }
