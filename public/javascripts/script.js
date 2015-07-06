@@ -196,7 +196,7 @@ photoApp.controller('homeController', function($scope, $routeParams, $window, ap
 
 });
 
-photoApp.controller('photoController', function($scope, $rootScope, $http, $routeParams, $window, $cookies, apiService, photoData) {
+photoApp.controller('photoController', function($location, $scope, $rootScope, $http, $routeParams, $window, $cookies, apiService, photoData) {
 
   $scope.cookie = JSON.parse($cookies.get('user'));
   $scope.uid = $scope.cookie.uid;
@@ -255,6 +255,18 @@ photoApp.controller('photoController', function($scope, $rootScope, $http, $rout
           if(status === 401){
             $window.location.assign('/');
           }
+        }
+      )
+    }
+
+    $scope.deletePhoto = function(){
+      var params = '?pid=' + $scope.photo.pid;
+      apiService.deletePhoto(params).then(
+        function(data, status){
+          $location.path("/#/public");
+        },
+        function(data, status){
+          console.log('Deleting failed')
         }
       )
     }

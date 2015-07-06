@@ -218,6 +218,11 @@ div.photo:hover button
   left: 10;
   }
 
+div.photo:hover button:hover > span {
+  color: white;
+  font-size: 26px;
+}
+
 div.photo button
   {
   position:absolute;
