@@ -18,6 +18,8 @@ photoApp.config(function($routeProvider) {
           type = $route.current.params.type;
         }
 
+        document.title = type.charAt(0).toUpperCase() + type.slice(1);
+
         if($route.current.params.tags){
           tags = $route.current.params.tags;
         }
@@ -73,6 +75,7 @@ photoApp.config(function($routeProvider) {
         function photoCallback(data, status){
           resolveData.photo = data;
           uid = data.uid;
+          document.title = data.title;
         }
 
         function commentCallback(data, status){
@@ -116,6 +119,7 @@ photoApp.config(function($routeProvider) {
         function profileCallback(data, status){
           console.log("Callback!!!:" + data);
           resolveData.profile = data;
+          document.title = data.name;
         }
         function feedCallback(data, status){
           resolveData.feed = data;
