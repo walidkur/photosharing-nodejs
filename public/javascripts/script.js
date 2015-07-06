@@ -76,11 +76,17 @@ photoApp.config(function($routeProvider) {
         function photoCallback(data, status){
           resolveData.photo = data;
           uid = data.uid;
+          resolveData.photo.published = new Date(resolveData.photo.published);
+          resolveData.photo.published = resolveData.photo.published.toLocaleDateString();
           document.title = data.title;
         }
 
         function commentCallback(data, status){
           resolveData.comments = data;
+          resolveData.comments.forEach(function(comment, index){
+            comment.date = new Date(comment.date);
+            comment.date = comment.date.toLocaleDateString();
+          })
         }
 
         function profilesCallback(data, status, comment){
