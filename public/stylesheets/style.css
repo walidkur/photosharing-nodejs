@@ -47,6 +47,37 @@ a {
 
 /*------- Styling for navbar -------*/
 
+.navbar > a{
+  background-color: #070B19;
+  color: white;
+}
+
+.navbar > a:hover{
+  background-color: #070B19;
+  color: #EFF5FB;
+}
+
+.navbar > a:focus{
+  background-color: #070B19;
+  color: #EFF5FB;
+}
+
+.navbar > .navbar-collapse > ul > li > a {
+  color: white;
+}
+
+.navbar > .navbar-collapse > ul > li > a:hover {
+  color: #EFF5FB;
+  background-color: inherit;
+}
+
+.navbar > .navbar-collapse > ul > li > a:focus {
+  color: #EFF5FB;
+  background-color: inherit;
+}
+
+
+
 .navbar-brand {
   font-size: 30px;
   position: absolute;
@@ -166,12 +197,34 @@ a {
 
 
 /* Styling for page-profile.html */
-#profile {
-  margin-top: 15px;
+.container-full {
+  width: 100%;
+  margin: 0 auto;
+
 }
 
+body{
+  padding: 0px;
+}
+
+
 #profileImg {
-  margin-top: 10px;
+  margin-top: 60px;
+  height: 200px;
+}
+
+.profileInfo {
+  font-family: "Ariel", sans-serif;
+}
+
+.user{
+  font-size: 32px;
+
+}
+
+/*background-color: #EFF5FB;*/
+.profileContainer {
+  color: #070B19;
 }
 
 
