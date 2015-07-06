@@ -45,7 +45,7 @@ router.post('/logout', function(req, res, next){
   res.clearCookie('user');
   req.logout();
   req.session.destroy();
-  res.redirect('https://' + config.server.domain + '/manage/account/logoutSSO');
+  res.status(302).send('https://' + config.server.domain + '/manage/account/logoutSSO').end();
 })
 
 router.get('/callback', passport.authenticate('ibm-connections-cloud', {successReturnToOrRedirect:'/', failureRedirect: '/'}));

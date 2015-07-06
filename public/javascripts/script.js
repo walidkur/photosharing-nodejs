@@ -18,6 +18,8 @@ photoApp.config(function($routeProvider) {
           type = $route.current.params.type;
         }
 
+        document.title = type.charAt(0).toUpperCase() + type.slice(1);
+
         if($route.current.params.tags){
           tags = $route.current.params.tags;
         }
@@ -30,6 +32,7 @@ photoApp.config(function($routeProvider) {
 
         function successCallback(data, status){
           feed = data;
+          console.log(data);
         }
 
         function errorCallback(data, status){
@@ -73,10 +76,17 @@ photoApp.config(function($routeProvider) {
         function photoCallback(data, status){
           resolveData.photo = data;
           uid = data.uid;
+          resolveData.photo.published = new Date(resolveData.photo.published);
+          resolveData.photo.published = resolveData.photo.published.toLocaleDateString();
+          document.title = data.title;
         }
 
         function commentCallback(data, status){
           resolveData.comments = data;
+          resolveData.comments.forEach(function(comment, index){
+            comment.date = new Date(comment.date);
+            comment.date = comment.date.toLocaleDateString();
+          })
         }
 
         function profilesCallback(data, status, comment){
@@ -116,6 +126,7 @@ photoApp.config(function($routeProvider) {
         function profileCallback(data, status){
           console.log("Callback!!!:" + data);
           resolveData.profile = data;
+          document.title = data.name;
         }
         function feedCallback(data, status){
           resolveData.feed = data;
@@ -192,7 +203,7 @@ photoApp.controller('homeController', function($scope, $routeParams, $window, ap
 
 });
 
-photoApp.controller('photoController', function($scope, $rootScope, $http, $routeParams, $window, $cookies, apiService, photoData) {
+photoApp.controller('photoController', function($location, $scope, $rootScope, $http, $routeParams, $window, $cookies, apiService, photoData) {
 
   $scope.cookie = JSON.parse($cookies.get('user'));
   $scope.uid = $scope.cookie.uid;
@@ -271,6 +282,18 @@ photoApp.controller('photoController', function($scope, $rootScope, $http, $rout
         }
       )
     }
+
+    $scope.deletePhoto = function(){
+      var params = '?pid=' + $scope.photo.pid;
+      apiService.deletePhoto(params).then(
+        function(data, status){
+          $location.path("/#/public");
+        },
+        function(data, status){
+          console.log('Deleting failed')
+        }
+      )
+    }
   });
 
 
@@ -288,7 +311,7 @@ photoApp.controller('photoController', function($scope, $rootScope, $http, $rout
     });
   });
 
-  photoApp.controller('navbarController', function($scope, $rootScope, $http, $route, $routeParams, $cookies, $modal, $log, $window){
+  photoApp.controller('navbarController', function($location, $scope, $rootScope, $http, $route, $routeParams, $cookies, $modal, $log, $window, apiService){
 
     $scope.cookie = JSON.parse($cookies.get('user'));
     $scope.displayName = $scope.cookie.displayName;
@@ -299,6 +322,14 @@ photoApp.controller('photoController', function($scope, $rootScope, $http, $rout
     $scope.items = ['item1', 'item2', 'item3'];
 
     $scope.animationsEnabled = false;
+
+    $scope.logout = function() {
+      apiService.logout(errorCallback);
+
+      function errorCallback(data, status) {
+        if(status === 302)  $window.location.href = data;
+      }
+    }
 
     $scope.open = function (size) {
 

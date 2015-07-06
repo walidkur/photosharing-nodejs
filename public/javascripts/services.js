@@ -106,6 +106,7 @@ photoApp.factory('apiService', function($http, $q){
       return promise;
     },
 
+
     editComment: function(content, params, successCallback, errorCallback){
       var promise = $http({
         method:'PUT',
@@ -117,8 +118,20 @@ photoApp.factory('apiService', function($http, $q){
         errorCallback(data, status);
       })
 
-    }
+    },
 
+    logout: function(errorCallback){
+      $http.post('/logout')
+           .error(errorCallback);
+    },
+
+    deletePhoto: function(params){
+      var promise = $http({
+        method: 'DELETE',
+        url: '/api/photo' + params
+      });
+      return promise;
+    }
 
 
   };
