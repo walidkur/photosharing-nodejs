@@ -275,7 +275,7 @@ photoApp.controller('photoController', function($scope, $rootScope, $http, $rout
     });
   });
 
-  photoApp.controller('navbarController', function($location, $scope, $rootScope, $http, $route, $routeParams, $cookies, $modal, $log, $window){
+  photoApp.controller('navbarController', function($location, $scope, $rootScope, $http, $route, $routeParams, $cookies, $modal, $log, $window, apiService){
 
     $scope.cookie = JSON.parse($cookies.get('user'));
     $scope.displayName = $scope.cookie.displayName;
@@ -288,10 +288,11 @@ photoApp.controller('photoController', function($scope, $rootScope, $http, $rout
     $scope.animationsEnabled = false;
 
     $scope.logout = function() {
-      $http.post('/logout')
-           .error(function(data, status){
-             if(status === 302)  $window.location.href = data;
-           })
+      apiService.logout(errorCallback);
+
+      function errorCallback(data, status) {
+        if(status === 302)  $window.location.href = data;
+      }
     }
 
     $scope.open = function (size) {

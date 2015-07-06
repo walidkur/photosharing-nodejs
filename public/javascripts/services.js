@@ -104,8 +104,12 @@ photoApp.factory('apiService', function($http, $q){
         url: '/api/comments' + params
       });
       return promise;
-    }
+    },
 
+    logout: function(errorCallback){
+      $http.post('/logout')
+           .error(errorCallback);
+    }
 
 
   };
