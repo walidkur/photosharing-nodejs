@@ -32,6 +32,7 @@ photoApp.config(function($routeProvider) {
 
         function successCallback(data, status){
           feed = data;
+          console.log(data);
         }
 
         function errorCallback(data, status){

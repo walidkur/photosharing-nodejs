@@ -146,6 +146,9 @@ router.get('/feed', isAuth, function(req, res, next){
           // add the author of the file to the object
           photo.photographer = entry.author[0].name[0];
 
+          // add the author uid to the file
+          photo.uid = entry.author[0]['snx:userid'][0];
+
           // add the title of the file
           photo.title = entry.title[0]['_'];
 
