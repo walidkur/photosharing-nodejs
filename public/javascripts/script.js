@@ -235,11 +235,10 @@ photoApp.controller('photoController', function($scope, $rootScope, $http, $rout
       if($scope.liked){
         params += '&r=off';
       } else {
-        params =+ '&r=on';
+        params += '&r=on';
       }
-      apiService.putLike(params).then(
+      apiService.postLike(params).then(
         function(data, status){
-          console.log("Liked")
           if($scope.liked){
             $scope.liked = false;
             $scope.photo.likes -= 1;
