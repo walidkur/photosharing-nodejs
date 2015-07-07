@@ -18,7 +18,6 @@
     <!--Displays what is left of the screen-->
     <div id="commentColumn" class="col-md-4">
 
-
       <!--Displays the photo's information-->
       <div class="photoInfo">
         <div class="media">
@@ -33,7 +32,15 @@
             <h5>{{photo.title}}</h5>
           </div>
         </div>
-        <h5><span ng-if="photo.tags.length > 0" class="glyphicon glyphicon-tag"></span>{{photo.tags.join(", ")}}</h5>
+        <h5 class="tagField">
+          <button class="tagButton"><span class="glyphicon glyphicon-tag"></span></button>
+          <span ng-if="photo.tags.length !== 0">
+            <tag>{{photo.tags.join(", ")}}<tag>
+          </span>
+          <span ng-if="photo.tags.length === 0">
+            <tag>Add tags<tag>
+          </span>
+        </h5>
       </div>
 
       <!--Displays the like button and number of likes-->
