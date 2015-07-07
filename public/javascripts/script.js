@@ -145,7 +145,7 @@ photoApp.config(function($routeProvider) {
 });
 
 
-photoApp.controller('homeController', function($scope, $routeParams, $window, apiService, feedData) {
+photoApp.controller('homeController', function($animate, $scope, $routeParams, $window, apiService, feedData) {
 
   //Class for ng-view in index.html
   $scope.pageClass = 'page-home';
@@ -154,15 +154,20 @@ photoApp.controller('homeController', function($scope, $routeParams, $window, ap
 
   //Configuration for image gallery
   var galleryConfig = { rowHeight: window.screen.height * .25,  margins: 10 };
+
   var index = 21;
   var pageSize = 20;
   $scope.loading = true;
 
-  angular.element(document).ready(function(){
-    $('#homeGallery').justifiedGallery(galleryConfig);
-    $scope.loading = false;
+  $animate.on('enter', $('body'), function (element, phase){
+    if(phase === 'close'){
+      angular.element(document).ready(function(){
+        $('#homeGallery').justifiedGallery(galleryConfig);
+        $('#homeGallery').removeClass('hidden');
+        $scope.loading = false;
+      });
+    }
   });
-
 
   $scope.loadMore = function(){
 
