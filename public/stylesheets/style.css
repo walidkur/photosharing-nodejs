@@ -438,7 +438,7 @@ div.photo button
 /* page specific animations ------------------------ */
 
 /* home -------------------------- */
-.page-home.ng-enter         { animation:slideInLeft 0.5s both ease-in; }
+.page-home.ng-enter         { animation:slideInLeft 0.5s both ease-in;}
 .page-home.ng-leave         { animation:slideOutRight 0.5s both ease-in; }
 
 /* about ------------------------ */

@@ -231,7 +231,7 @@ photoApp.controller('photoController', function($location, $scope, $rootScope, $
   $scope.editComment = function(content, cid){
     apiService.editComment(content, '?uid=' + $scope.photo.uid + '&pid=' + $scope.photo.pid + '&cid=' + cid, editCallback, errorCallback)
     .then(function(){
-      apiService.getComments('?pid' + $scope.photo.pid + '&uid' + $scope.uid, commentCallback, errorCallback)
+      apiService.getComments('?pid=' + $scope.photo.pid + '&uid=' + $scope.uid, commentCallback, errorCallback)
       .then(function(){
         apiService.getProfiles($scope.comments, profilesCallback, errorCallback)
         .then(function(){
@@ -239,6 +239,19 @@ photoApp.controller('photoController', function($location, $scope, $rootScope, $
         });
       });
     });
+  }
+
+  $scope.deleteComment = function(cid){
+    apiService.deleteComment('?cid=' + cid + '&pid=' + $scope.photo.pid + '&uid=' + $scope.photo.uid, deleteCallback, errorCallback)
+    .then(function(){
+      apiService.getComments('?pid=' + $scope.photo.pid + '&uid=' + $scope.uid, commentCallback, errorCallback)
+      .then(function(){
+        apiService.getProfiles($scope.comments, profilesCallback, errorCallback)
+        .then(function(){
+          return;
+        })
+      })
+    })
   }
 
   $scope.addComment = function(){
@@ -256,6 +269,10 @@ photoApp.controller('photoController', function($location, $scope, $rootScope, $
 
   function addCommentCallback(data, status){
     $scope.content = '';
+  }
+
+  function deleteCallback(data, status){
+
   }
 
   function commentCallback(data, status){
@@ -332,6 +349,7 @@ photoApp.controller('navbarController', function($location, $scope, $rootScope, 
   $scope.cookie = JSON.parse($cookies.get('user'));
   $scope.displayName = $scope.cookie.displayName;
   $rootScope.uid = $scope.cookie.uid;
+  $scope.state = 'public';
 
   $scope.searchQuery = '';
 
@@ -378,7 +396,7 @@ photoApp.controller('navbarController', function($location, $scope, $rootScope, 
 
       $scope.searchTags = $scope.searchQuery.split(" ");
 
-      $window.location.assign('/#/?tags=' + $scope.searchTags.join());
+      $window.location.assign('/#/' + $scope.state + '?tags=' + $scope.searchTags.join());
 
     }
 
