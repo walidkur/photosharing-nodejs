@@ -191,7 +191,7 @@ a {
 
 
 /* Styling for logout button */
-.glyphicon-log-out {
+.logOut {
   margin-right: 5px;
 }
 
@@ -226,8 +226,6 @@ body{
 .profileContainer {
   color: #070B19;
 }
-
-
 
 /*------- Styling for page-photo.html -------*/
 
@@ -287,7 +285,6 @@ div.photo button
 #commentColumn {
   height: 800px;
 }
-
 
 /* Photo information */
 .photoInfo {
@@ -365,6 +362,12 @@ div.photo button
   height: 550px;
 }
 
+.editButton {
+  background-color: inherit;
+  border: none;
+  margin-left: 50px;
+}
+
 .addCommentBox {
   float: left;
   width: 400px;
@@ -375,14 +378,7 @@ div.photo button
 .editCommentButton {
   background-color: inherit;
   border: none;
-}
-
-.editComment {
-  display: none;
-}
-
-#comment:hover > .editComment {
-  display: table-cell;
+  font-size: 10px;
 }
 
 
@@ -390,15 +386,9 @@ div.photo button
 .deleteCommentButton {
   background-color: inherit;
   border: none;
+  font-size: 10px;
 }
 
-.deleteComment {
-  display: none;
-}
-
-#comment:hover > .deleteComment {
-  display: table-cell;
-}
 
 
 /* ANIMATIONS
