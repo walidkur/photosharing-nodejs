@@ -365,10 +365,10 @@ router.post('/like', isAuth, function(req, res, next){
     };
 
     var url;
-    if(req.query.r === 'false'){
+    if(req.query.r === 'off'){
       url = FILES_API + 'library/' + req.query.lid + '/document/' + req.query.pid + '/recommendation/' + req.user.userid + '/entry'
       headers['X-METHOD-OVERRIDE'] = 'delete';
-    } else url = FILES_API + 'library/' + req.query.lid + '/' + req.query.pid + '/feed'
+    } else url = FILES_API + 'library/' + req.query.lid + '/document/' + req.query.pid + '/feed'
 
     var content = RECOMMENDATION_STRING;
 
@@ -495,6 +495,7 @@ router.post('/comments', isAuth, function(req, res, next){
     };
 
     request.post(options, function(error, response, body){
+      fs.writeFile("addCommentResponse", JSON.stringify(response));
       if(error) return res.status(500).end();
       return res.status(200).end();
     });
