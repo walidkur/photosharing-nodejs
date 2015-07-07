@@ -166,7 +166,6 @@ photoApp.controller('homeController', function($animate, $scope, $routeParams, $
   var galleryConfig = { rowHeight: window.screen.height * .25,  margins: 10 };
 
   var index = 21;
-  var pageSize = 20;
   var animateCount = 1;
   $scope.loading = true;
 
@@ -334,18 +333,54 @@ photoApp.controller('photoController', function($location, $scope, $rootScope, $
 });
 
 
-photoApp.controller('profileController', function($scope, $http, $routeParams, $window, profileData) {
+photoApp.controller('profileController', function($scope, $http, $routeParams, $window, apiService, profileData) {
 
 
+  var index = 21;
   $scope.pageClass = 'page-profile';
   $scope.profile = profileData.profile;
   $scope.data = profileData.feed;
+  $scope.loading = true;
 
   var galleryConfig = { rowHeight: window.screen.height * .25,  margins: 10 };
 
   angular.element(document).ready(function(){
     $('#profileGallery').justifiedGallery(galleryConfig);
+    $scope.loading = false;
   });
+
+  $scope.loadMore = function(){
+
+    if ($scope.loading){
+      return;
+    }
+    $scope.loading = true;
+    console.log("Loading!!!!!");
+    var tags = '';
+
+    if($routeParams.tags){
+      tags = $routeParams.tags;
+    }
+
+    apiService.getFeed('?type=user&uid=' + $routeParams.uid + '&q=' + tags + '&ps=5' + '&si=' + index, feedCallback, errorCallback)
+    .then(function(){
+      index += 5;
+      return;
+    });
+  }
+
+  function feedCallback(data, status){
+    console.log(data);
+    $scope.data = $scope.data.concat(data);
+    angular.element(document).ready(function(){
+      $('#profileGallery').justifiedGallery('norewind');
+      $scope.loading = false;
+    });
+  }
+
+  function errorCallback(data, status){
+    console.log("Error!");
+  }
 });
 
 photoApp.controller('navbarController', function($location, $scope, $rootScope, $http, $route, $routeParams, $cookies, $modal, $log, $window, apiService){
