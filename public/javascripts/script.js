@@ -49,27 +49,33 @@ photoApp.config(function($routeProvider) {
     templateUrl : 'pages/page-photo.html',
 
     resolve     :  {
-      photoData : function($route, apiService){
+    photoData : function($route, apiService){
 
-        var resolveData = {};
-        var uid = '';
+      var resolveData = {};
+      var uid = '';
 
-        return apiService.getPhoto('?pid=' + $route.current.params.pid + '&lid=' + $route.current.params.lid, photoCallback, errorCallback)
+      return apiService.getPhoto('?pid=' + $route.current.params.pid + '&lid=' + $route.current.params.lid, photoCallback, errorCallback)
 
         .then(function(){
 
-          return apiService.getComments('?pid=' + $route.current.params.pid + '&uid=' + uid, commentCallback, errorCallback)
-
-          .then(function(){
-
-            return apiService.getProfiles(resolveData.comments, profilesCallback, errorCallback)
+          return apiService.getProfile('?uid=' + uid, profileCallback, errorCallback)
 
             .then(function(){
 
-              return resolveData;
-            });
-          });
-        });
+              return apiService.getComments('?pid=' + $route.current.params.pid + '&uid=' + uid, commentCallback, errorCallback)
+
+                .then(function(){
+
+                  return apiService.getProfiles(resolveData.comments, profilesCallback, errorCallback)
+
+                    .then(function(){
+
+                        return resolveData;
+
+                        });
+                      });
+                    });
+                  });
 
 
         //Promise Callbacks
@@ -87,6 +93,10 @@ photoApp.config(function($routeProvider) {
             comment.date = new Date(comment.date);
             comment.date = comment.date.toLocaleDateString();
           })
+        }
+
+        function profileCallback(data, status){
+          resolveData.profile = data;
         }
 
         function profilesCallback(data, status, comment){
@@ -209,6 +219,7 @@ photoApp.controller('photoController', function($location, $scope, $rootScope, $
   $scope.uid = $scope.cookie.uid;
   $scope.pageClass = 'page-photo';
   $scope.photo = photoData.photo;
+  $scope.profile = photoData.profile;
   $scope.comments = photoData.comments;
   $scope.liked = $scope.photo.liked;
 
