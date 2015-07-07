@@ -157,15 +157,19 @@ photoApp.controller('homeController', function($animate, $scope, $routeParams, $
 
   var index = 21;
   var pageSize = 20;
+  var animateCount = 1;
   $scope.loading = true;
 
   $animate.on('enter', $('body'), function (element, phase){
-    if(phase === 'close'){
-      angular.element(document).ready(function(){
-        $('#homeGallery').justifiedGallery(galleryConfig);
-        $('#homeGallery').removeClass('hidden');
-        $scope.loading = false;
-      });
+    if(animateCount > 0){
+      if(phase === 'close'){
+        animateCount = 0;
+        angular.element(document).ready(function(){
+          $('#homeGallery').justifiedGallery(galleryConfig);
+          $('#homeGallery').removeClass('hidden');
+          $scope.loading = false;
+        });
+      }
     }
   });
 
