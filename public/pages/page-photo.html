@@ -24,7 +24,7 @@
 
           <div class="media-left media-middle">
             <a href="#/profile/{{photo.uid}}">
-              <img id="userPhoto" class="media-object" ng-src="{{photo.profile.img}}" height=60px>
+              <img id="userPhoto" class="media-object" ng-src="{{profile.img}}" height=60px>
             </a>
 
           </div>
@@ -63,16 +63,19 @@
 
           <!--Displays the comments-->
           <div ng-mouseover="comment.hovered = true" ng-mouseleave="comment.hovered = false" class="media-body">
+            <h4 class="media-heading">
             <a  href="#/profile/{{comment.uid}}">
-              <h4 class="media-heading">{{comment.author}}
-                <button class="deleteCommentButton" ng-click="deleteComment(comment.cid)">
-                  <span ng-show="(uid == comment.uid || uid == photo.uid) && comment.hovered" style="color: grey" class="glyphicon glyphicon-remove"></span>
-                </button>
-                <button  class="editCommentButton" ng-click="edit = !edit">
-                  <span ng-show="uid == comment.uid && comment.hovered" style="color: grey" class="glyphicon glyphicon-edit"></span>
-                </button>
-              </h4>
+              {{comment.author}}
             </a>
+            <div style="float: right">
+              <button  class="editCommentButton" ng-click="edit = !edit">
+                <span ng-show="uid == comment.uid && comment.hovered" style="color: grey" class="glyphicon glyphicon-edit"></span>
+              </button>
+              <button class="deleteCommentButton" ng-click="deleteComment(comment.cid)">
+                <span ng-show="(uid == comment.uid || uid == photo.uid) && comment.hovered" style="color: grey" class="glyphicon glyphicon-remove"></span>
+              </button>
+            </div>
+          </h4>
 
             <h5 ng-show="!edit">{{comment.content}}</h5>
             <div ng-show="edit" class="input-group">
