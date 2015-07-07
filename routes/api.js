@@ -15,6 +15,7 @@ var config = require('../config/server');
 var parseString = require('xml2js').parseString;
 var request = require('request');
 var Busboy = require('busboy');
+var fs = require('fs');
 
 // main api url
 var FILES_API = 'https://' + config.server.domain + '/files/oauth/api/';
@@ -24,7 +25,7 @@ var RECOMMENDATION_STRING = '<?xml version="1.0" encoding="UTF-8"?><entry xmlns=
 
 // formatter for comment content
 function commentFormat(content){
-  return '<?xml version="1.0" encoding="UTF-8"?><entry xmlns="http://www.w3.org/2005/Atom" xmlns:app="http://www.w3.org/2007/app" xmlns:snx="http://www.ibm.com/xmlns/prod/sn">' + content + '</entry>';
+  return '<?xml version="1.0" encoding="UTF-8"?><entry xmlns="http://www.w3.org/2005/Atom" xmlns:app="http://www.w3.org/2007/app" xmlns:snx="http://www.ibm.com/xmlns/prod/sn"><category scheme="tag:ibm.com,2006:td/type" term="comment" label="comment"/><content type="text">' + content + '</content></entry>';
 }
 
 // check whether a session exists for the request
@@ -518,7 +519,7 @@ router.put('/comments', isAuth, function(req, res, next){
   request.get(options, function(error, response, body){
     var nonce = body;
 
-    var url = FILES_API + 'userlibrary/' + req.query.uid + '/document/' + req.query.pid + 'comment/' + req.query.cid + '/entry';
+    var url = FILES_API + 'userlibrary/' + req.query.uid + '/document/' + req.query.pid + '/comment/' + req.query.cid + '/entry';
 
     var body = commentFormat(req.body.comment);
 
@@ -535,7 +536,10 @@ router.put('/comments', isAuth, function(req, res, next){
       body: body
     };
 
+    console.log(JSON.stringify(options));
+
     request.put(options, function(error, response, body){
+      fs.writeFile("putComment.txt", JSON.stringify(response));
       if(error) return res.status(500).end();
       return res.status(200).end();
     });
