@@ -92,15 +92,6 @@
             <h5 class="date">{{comment.date}}</h5>
           </div>
 
-          <!--Allows the user to edit a comment-->
-          <div ng-show="uid == comment.uid" class="media-right media-top editComment">
-            <button class="editCommentButton" ng-click="edit = !edit"><span style="color: grey" class="glyphicon glyphicon-edit"></span></button>
-          </div>
-
-          <!--Allows the user to delete a comment-->
-          <div ng-show="uid == comment.uid" class="media-right media-top deleteComment">
-            <button class="deleteCommentButton" ng-click="deleteComment(comment.cid)"><span style="color: grey" class="glyphicon glyphicon-remove"></span></button>
-          </div>
         </li>
       </ul>
 

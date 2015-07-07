@@ -121,7 +121,7 @@ router.get('/feed', isAuth, function(req, res, next){
         var entries = result.feed.entry;
 
         // return the empty array if entries is empty
-        if(isEmpty(entries)) return photos;
+        if(isEmpty(entries)) return res.send(photos);
 
         // iterate over the entries, building a photo object for each entry
         for(var i = 0; i < entries.length; i++){
