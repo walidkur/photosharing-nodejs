@@ -1,5 +1,9 @@
 /*------- Styling for page-home.html -------*/
 
+.hidden {
+  visibility: hidden;
+}
+
 .col-center{
   margin:0 auto;
 }
