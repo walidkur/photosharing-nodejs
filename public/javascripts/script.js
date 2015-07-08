@@ -500,7 +500,6 @@ photoApp.controller('ModalInstanceController', function($window, $http, $scope, 
 
   $scope.ok = function () {
     $modalInstance.close($scope.selected.item);
-    $window.location.assign('/#/public');
   };
 
   $scope.cancel = function () {
@@ -528,6 +527,9 @@ photoApp.controller('ModalInstanceController', function($window, $http, $scope, 
     $http.post(url, fd, {
       headers: { 'Content-Type' : undefined, 'X-Content-Length' : $scope.files[0].size},
       transformRequest: angular.identity
-    }).success($scope.ok);
+    }).success(function(data, status){
+      $scope.ok();
+      $window.location.assign('/#/photo/' + data.lid + '/' + data.pid);
+    });
   }
 });

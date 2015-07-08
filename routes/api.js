@@ -15,6 +15,7 @@ var config = require('../config/server');
 var parseString = require('xml2js').parseString;
 var request = require('request');
 var Busboy = require('busboy');
+var fs = require('fs');
 
 // main api url
 var FILES_API = 'https://' + config.server.domain + '/files/oauth/api/';
@@ -639,10 +640,19 @@ router.post('/upload', isAuth, function(req, res, next){
 
         // pipe the file to the request
         file.pipe(request.post(options, function(error, response, body){
-
           // return 500 if there was an error
           if(error) return res.status(500).end();
-          return res.status(200).end();
+          parseString(body, function(err, result){
+            console.log(result);
+            var entry = result.entry;
+            console.log('Entry: ' + JSON.stringify(entry));
+            var pid = entry['td:uuid'];
+            var lid = entry['td:libraryId'];
+            var photo = {};
+            photo.pid = pid;
+            photo.lid = lid;
+            return res.send(photo);
+          });
         }));
 
       });
@@ -650,7 +660,6 @@ router.post('/upload', isAuth, function(req, res, next){
 
       // return 200 when busboy finishes processing the file
       busboy.on('finish', function(){
-        return res.status(200).end();
       });
 
       // pipe the request to busboy
