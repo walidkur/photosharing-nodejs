@@ -54,8 +54,8 @@
       <hr id="divider">
 
       <!--Creates the comment box-->
-      <ul id="commentBox" class="media-list">
-        <li class="media" id="comment" ng-repeat="comment in comments">
+      <div id="commentBox" class="media-list">
+        <div class="media" id="comment" ng-repeat="comment in comments">
 
           <!--Displays the avatar of the user who commented-->
           <div class="media-left media-top">
@@ -64,44 +64,59 @@
             </a>
           </div>
 
-          <!--Displays the comments-->
-
+          <!--Shows the delete and edit comment buttons when comments are hovered over-->
           <div ng-mouseover="comment.hovered = true" ng-mouseleave="comment.hovered = false" class="media-body">
+
             <h4 class="media-heading">
-            <a  href="#/profile/{{comment.uid}}">
-              {{comment.author}}
-            </a>
-            <div style="float: right">
-              <button  class="editCommentButton" ng-click="edit = !edit">
-                <span ng-show="uid == comment.uid && comment.hovered" style="color: grey" class="glyphicon glyphicon-edit"></span>
-              </button>
-              <button class="deleteCommentButton" ng-click="deleteComment(comment.cid)">
-                <span ng-show="(uid == comment.uid || uid == photo.uid) && comment.hovered" style="color: grey" class="glyphicon glyphicon-remove"></span>
-              </button>
-            </div>
-          </h4>
+
+              <!--Displays the name of the comment's author-->
+              <a  href="#/profile/{{comment.uid}}">
+                {{comment.author}}
+              </a>
+
+              <!--Displays the delete and edit comment buttons-->
+              <div style="float: right">
+                <button  class="editCommentButton" ng-click="edit = !edit">
+                  <span ng-show="uid == comment.uid && comment.hovered" style="color: grey" class="glyphicon glyphicon-edit"></span>
+                </button>
+                <button class="deleteCommentButton" ng-click="deleteComment(comment.cid)">
+                  <span ng-show="(uid == comment.uid || uid == photo.uid) && comment.hovered" style="color: grey" class="glyphicon glyphicon-remove"></span>
+                </button>
+              </div>
+
+            </h4>
 
             <h5 ng-show="!edit">{{comment.content}}</h5>
 
-            <div ng-show="edit" class="input-group">
-            <input type="text" ng-model="comment.content" class="form-control" >
-            <span class="input-group-btn"><button ng-click="edit = !edit; editComment(comment.content, comment.cid);" class="btn btn-primary" type="button">Submit</button>
-            </span>
-            </div>
+            <!--This form allows user to hit enter to submit comment-->
+            <form ng-submit="submit()">
 
+              <!--Displays the "Edit comment" box-->
+              <div ng-show="edit" class="input-group">
+                <input id="commentText" type="text" ng-model="comment.content" class="form-control" >
+                <span class="input-group-btn">
+                  <button id="editCommentButton" ng-click="edit = !edit; editComment(comment.content, comment.cid);" class="btn btn-primary" type="submit">Submit</button>
+                </span>
+
+              </div>
+
+            </form>
+
+            <!--Displays the date the comment was published-->
             <h5 class="date">{{comment.date}}</h5>
+
           </div>
 
-        </li>
-      </ul>
+        </div>
+      </div>
 
-      <ul>
+      <div>
 
         <!--This form allows user to hit enter to submit comment-->
         <form ng-submit="submit()">
 
           <!--Displays the "Add comment" box-->
-          <li class="addCommentBox">
+          <div class="addCommentBox">
             <div class="input-group stylish-input-group">
                 <input type="text" id="addComment" class="form-control" ng-model="content" placeholder="Add comment">
                   <span class="input-group-addon">
@@ -110,9 +125,9 @@
                     </button>
                   </span>
             </div>
-          </li>
+          </div>
         </form>
-      </ul>
+      </div>
 
     </div>
   </div>
