@@ -489,7 +489,7 @@ photoApp.controller('navbarController', function($location, $scope, $rootScope, 
 });
 
 
-photoApp.controller('ModalInstanceController', function($http, $scope, $modalInstance, items) {
+photoApp.controller('ModalInstanceController', function($window, $http, $scope, $modalInstance, items) {
 
   $scope.items = items;
   $scope.shares = '';
@@ -500,6 +500,7 @@ photoApp.controller('ModalInstanceController', function($http, $scope, $modalIns
 
   $scope.ok = function () {
     $modalInstance.close($scope.selected.item);
+    $window.location.assign('/#/public');
   };
 
   $scope.cancel = function () {
