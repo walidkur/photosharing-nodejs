@@ -8,7 +8,7 @@ photoApp.config(function($routeProvider) {
   .when('/:type', {
     templateUrl : 'pages/page-home.html',
     resolve     : {
-      feedData  : function($route, apiService){
+      feedData  : function($rootScope, $route, apiService){
 
         var feed;
         var type = 'public';
@@ -17,6 +17,9 @@ photoApp.config(function($routeProvider) {
         if($route.current.params.type){
           type = $route.current.params.type;
         }
+
+        $rootScope.state = type;
+        $rootScope.$apply();
 
         document.title = type.charAt(0).toUpperCase() + type.slice(1);
 
@@ -268,18 +271,22 @@ photoApp.controller('photoController', function($location, $scope, $rootScope, $
   $scope.addComment = function(){
     apiService.addComment($scope.content, '?pid=' + $scope.photo.pid + '&uid=' + $scope.uid, $scope.photo.commenturl, addCommentCallback, errorCallback)
     .then(function(){
-      apiService.getComments('?pid=' + $scope.photo.pid + '&uid=' + $scope.photo.uid, commentCallback, errorCallback)
+      apiService.getProfile('?uid=' + $scope.comments[0].uid, getProfileCallback, errorCallback)
       .then(function(){
-        apiService.getProfiles($scope.comments, profilesCallback, errorCallback)
-        .then(function(){
-          return;
-        });
-      });
+        return;
+      })
     });
+  }
+
+  function getProfileCallback(data, status){
+    $scope.comments[0].profileImg = data.img;
   }
 
   function addCommentCallback(data, status){
     $scope.content = '';
+    data.date = new Date(data.date);
+    data.date = data.date.toLocaleDateString();
+    $scope.comments.unshift(data);
   }
 
   function deleteCallback(data, status){
@@ -400,7 +407,7 @@ photoApp.controller('navbarController', function($location, $scope, $rootScope, 
   $scope.cookie = JSON.parse($cookies.get('user'));
   $scope.displayName = $scope.cookie.displayName;
   $rootScope.uid = $scope.cookie.uid;
-  $scope.state = 'public';
+  $rootScope.state = 'public';
 
   $scope.searchQuery = '';
 
