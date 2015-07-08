@@ -246,6 +246,15 @@ photoApp.controller('photoController', function($location, $scope, $rootScope, $
     });
   }
 
+  $scope.editPhoto = function(content){
+    var tags = content.replace(/ /g, ",");
+    console.log(tags);
+    apiService.editPhoto('?pid=' + $scope.photo.pid + '&q=' + tags, editPhotoCallback, errorCallback)
+    .then(function(){
+      return;
+    });
+  }
+
   $scope.deleteComment = function(cid){
     apiService.deleteComment('?cid=' + cid + '&pid=' + $scope.photo.pid + '&uid=' + $scope.photo.uid, deleteCallback, errorCallback)
     .then(function(){
@@ -278,6 +287,10 @@ photoApp.controller('photoController', function($location, $scope, $rootScope, $
 
   function deleteCallback(data, status){
 
+  }
+
+  function editPhotoCallback(data, status){
+    $scope.photo.tags += $scope.newMeta.replace(/ /g, ",");
   }
 
   function commentCallback(data, status){

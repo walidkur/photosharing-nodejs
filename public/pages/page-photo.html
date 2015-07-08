@@ -33,7 +33,7 @@
           </div>
         </div>
         <h5 class="tagField">
-          <button class="tagButton"><span class="glyphicon glyphicon-tag"></span></button>
+          <button ng-click="meta = !meta;" class="tagButton"><span class="glyphicon glyphicon-tag"></span></button>
           <span ng-if="photo.tags.length !== 0">
             <tag>{{photo.tags.join(", ")}}<tag>
           </span>
@@ -42,6 +42,16 @@
           </span>
         </h5>
       </div>
+
+      <br ng-show="meta">
+      <br ng-show="meta">
+      <div ng-show="meta" class="input-group">
+      <input type="text" ng-model="newMeta" class="form-control" placeholder="Enter new tags (separated by spaces)">
+      <span class="input-group-btn"><button ng-click="meta = !meta; editPhoto(newMeta);" class="btn btn-primary" type="button">Submit</button>
+      </span>
+      </div>
+
+
 
       <!--Displays the like button and number of likes-->
       <div id="photoBar">
