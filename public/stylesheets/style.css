@@ -51,34 +51,7 @@ a {
 
 /*------- Styling for navbar -------*/
 
-.navbar > a{
-  background-color: #070B19;
-  color: white;
-}
 
-.navbar > a:hover{
-  background-color: #070B19;
-  color: #EFF5FB;
-}
-
-.navbar > a:focus{
-  background-color: #070B19;
-  color: #EFF5FB;
-}
-
-.navbar > .navbar-collapse > ul > li > a {
-  color: white;
-}
-
-.navbar > .navbar-collapse > ul > li > a:hover {
-  color: #EFF5FB;
-  background-color: inherit;
-}
-
-.navbar > .navbar-collapse > ul > li > a:focus {
-  color: #EFF5FB;
-  background-color: inherit;
-}
 
 
 
