@@ -51,10 +51,6 @@ a {
 
 /*------- Styling for navbar -------*/
 
-
-
-
-
 .navbar-brand {
   font-size: 30px;
   position: absolute;
@@ -351,6 +347,7 @@ tag {
 }
 
 .addCommentBox {
+  margin-top: 10px;
   float: left;
   width: 400px;
 }
