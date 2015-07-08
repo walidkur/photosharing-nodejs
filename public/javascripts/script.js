@@ -32,7 +32,6 @@ photoApp.config(function($routeProvider) {
 
         function successCallback(data, status){
           feed = data;
-          console.log(data);
         }
 
         function errorCallback(data, status){
@@ -134,7 +133,6 @@ photoApp.config(function($routeProvider) {
         });
 
         function profileCallback(data, status){
-          console.log("Callback!!!:" + data);
           resolveData.profile = data;
           document.title = data.name;
         }
@@ -188,7 +186,6 @@ photoApp.controller('homeController', function($animate, $scope, $routeParams, $
       return;
     }
     $scope.loading = true;
-    console.log("Loading!!!!!");
     var type;
     var tags = '';
 
@@ -236,7 +233,7 @@ photoApp.controller('photoController', function($location, $scope, $rootScope, $
   $scope.editComment = function(content, cid){
     apiService.editComment(content, '?uid=' + $scope.photo.uid + '&pid=' + $scope.photo.pid + '&cid=' + cid, editCallback, errorCallback)
     .then(function(){
-      apiService.getComments('?pid=' + $scope.photo.pid + '&uid=' + $scope.uid, commentCallback, errorCallback)
+      apiService.getComments('?pid=' + $scope.photo.pid + '&uid=' + $scope.photo.uid, commentCallback, errorCallback)
       .then(function(){
         apiService.getProfiles($scope.comments, profilesCallback, errorCallback)
         .then(function(){
@@ -246,10 +243,19 @@ photoApp.controller('photoController', function($location, $scope, $rootScope, $
     });
   }
 
+  $scope.editPhoto = function(content){
+    var tags = content.replace(/ /g, ",");
+    console.log("Scope function: " + tags);
+    apiService.editPhoto('?pid=' + $scope.photo.pid + '&q=' + tags, editPhotoCallback, errorCallback)
+    .then(function(){
+      return;
+    });
+  }
+
   $scope.deleteComment = function(cid){
     apiService.deleteComment('?cid=' + cid + '&pid=' + $scope.photo.pid + '&uid=' + $scope.photo.uid, deleteCallback, errorCallback)
     .then(function(){
-      apiService.getComments('?pid=' + $scope.photo.pid + '&uid=' + $scope.uid, commentCallback, errorCallback)
+      apiService.getComments('?pid=' + $scope.photo.pid + '&uid=' + $scope.photo.uid, commentCallback, errorCallback)
       .then(function(){
         apiService.getProfiles($scope.comments, profilesCallback, errorCallback)
         .then(function(){
@@ -260,9 +266,9 @@ photoApp.controller('photoController', function($location, $scope, $rootScope, $
   }
 
   $scope.addComment = function(){
-    apiService.addComment($scope.content, '?pid=' + $scope.photo.pid + '&uid=' + $scope.uid, addCommentCallback, errorCallback)
+    apiService.addComment($scope.content, '?pid=' + $scope.photo.pid + '&uid=' + $scope.uid, $scope.photo.commenturl, addCommentCallback, errorCallback)
     .then(function(){
-      apiService.getComments('?pid=' + $scope.photo.pid + '&uid=' + $scope.uid, commentCallback, errorCallback)
+      apiService.getComments('?pid=' + $scope.photo.pid + '&uid=' + $scope.photo.uid, commentCallback, errorCallback)
       .then(function(){
         apiService.getProfiles($scope.comments, profilesCallback, errorCallback)
         .then(function(){
@@ -278,6 +284,10 @@ photoApp.controller('photoController', function($location, $scope, $rootScope, $
 
   function deleteCallback(data, status){
 
+  }
+
+  function editPhotoCallback(data, status){
+    $scope.photo.tags = $scope.photo.tags.concat($scope.newMeta.split(" "));
   }
 
   function commentCallback(data, status){
@@ -357,7 +367,6 @@ photoApp.controller('profileController', function($scope, $http, $routeParams, $
       return;
     }
     $scope.loading = true;
-    console.log("Loading!!!!!");
     var tags = '';
 
     if($routeParams.tags){
@@ -501,7 +510,6 @@ photoApp.controller('ModalInstanceController', function($window, $http, $scope, 
 
   $scope.ok = function () {
     $modalInstance.close($scope.selected.item);
-    $window.location.assign('/#/public');
   };
 
   $scope.cancel = function () {
@@ -529,6 +537,9 @@ photoApp.controller('ModalInstanceController', function($window, $http, $scope, 
     $http.post(url, fd, {
       headers: { 'Content-Type' : undefined, 'X-Content-Length' : $scope.files[0].size},
       transformRequest: angular.identity
-    }).success($scope.ok);
+    }).success(function(data, status){
+      $scope.ok();
+      $window.location.assign('/#/photo/' + data.lid + '/' + data.pid);
+    });
   }
 });

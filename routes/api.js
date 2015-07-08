@@ -231,6 +231,9 @@ router.get('/photo', isAuth, function(req, res, next){
             var rel = link.$.rel;
             if(!(type === undefined) && (type.indexOf('image') > -1)) photo.link = link.$.href;
             if(!(rel === undefined) && (rel.indexOf('recommendation') > -1))  photo.liked = true;
+            if(!(rel === undefined) && (rel.indexOf('replies') > -1)){
+              photo.commenturl = link.$.href;
+            }
           }
           photo.photographer = entry.author[0].name[0];
           photo.uid = entry.author[0]['snx:userid'][0];
@@ -457,7 +460,7 @@ router.get('/comments', isAuth, function(req, res, next){
 router.post('/comments', isAuth, function(req, res, next){
 
   // return 412 if the necessary queries were not passed
-  if(isEmpty(req.query.pid) || isEmpty(req.query.uid) || isEmpty(req.body.comment))  return res.status(412).end();
+  if(isEmpty(req.query.pid) || isEmpty(req.query.uid) || isEmpty(req.body.comment) || isEmpty(req.body.url))  return res.status(412).end();
 
   // url to return a nonce
   var url = FILES_API + 'nonce';
@@ -478,7 +481,7 @@ router.post('/comments', isAuth, function(req, res, next){
     var body = commentFormat(req.body.comment);
 
     // url to post a comment on a file
-    var url = FILES_API + 'userlibrary/' + req.query.uid + '/document/' + req.query.pid + '/feed';
+    var url = req.body.url;
 
     var headers = {
       'Authorization': 'Bearer ' + req.user.accessToken,
@@ -639,10 +642,17 @@ router.post('/upload', isAuth, function(req, res, next){
 
         // pipe the file to the request
         file.pipe(request.post(options, function(error, response, body){
-
           // return 500 if there was an error
           if(error) return res.status(500).end();
-          return res.status(200).end();
+          parseString(body, function(err, result){
+            var entry = result.entry;
+            var pid = entry['td:uuid'];
+            var lid = entry['td:libraryId'];
+            var photo = {};
+            photo.pid = pid;
+            photo.lid = lid;
+            return res.send(photo);
+          });
         }));
 
       });
@@ -650,7 +660,6 @@ router.post('/upload', isAuth, function(req, res, next){
 
       // return 200 when busboy finishes processing the file
       busboy.on('finish', function(){
-        return res.status(200).end();
       });
 
       // pipe the request to busboy

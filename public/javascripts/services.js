@@ -5,8 +5,6 @@ photoApp.factory('apiService', function($http, $q){
   var apiService = {
 
     getFeed: function(params, successCallback, errorCallback){
-
-        console.log("SERVICE!!!!");
         var promise = $http({
           method:'GET',
           url:'/api/feed' + params
@@ -77,11 +75,12 @@ photoApp.factory('apiService', function($http, $q){
         return promise;
     },
 
-    addComment: function(content, params, successCallback, errorCallback){
+    addComment: function(content, params, url, successCallback, errorCallback){
       var promise = $http({
         method:'POST',
         url:'/api/comments' + params,
-        data: {comment: content}
+        data: {comment: content,
+               url: url}
       }).success(function(data, status){
         successCallback(data, status);
       }).error(function(data, status){
@@ -116,8 +115,22 @@ photoApp.factory('apiService', function($http, $q){
         successCallback(data, status);
       }).error(function(data, status){
         errorCallback(data, status);
-      })
+      });
+      return promise;
+    },
 
+    editPhoto: function(params, successCallback, errorCallback){
+      console.log("Request?");
+      var promise = $http({
+        method:'PUT',
+        url:'/api/photo' + params
+      }).success(function(data, status){
+        successCallback(data, status);
+      }).error(function(data, status){
+        errorCallback(data, status);
+      });
+      console.log("Request made");
+      return promise;
     },
 
     logout: function(errorCallback){
