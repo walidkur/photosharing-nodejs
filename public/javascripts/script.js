@@ -443,7 +443,7 @@ photoApp.controller('navbarController', function($location, $scope, $rootScope, 
 
   $scope.mediumScreen = true;
   $(document).ready(function(){
-    if ($(window).width() <= 1148 || $(window).width() >= 767){
+    if ($(window).width() < 1148 || $(window).width() > 767){
       $scope.mediumScreen = false;
     }
     if ($(window).width() >= 1148 || $(window).width() <= 767){
@@ -452,10 +452,11 @@ photoApp.controller('navbarController', function($location, $scope, $rootScope, 
   });
 
   $(window).resize(function() {
-    if ($(window).width() <= 1148){
+    if ($(window).width() < 1148 || $(window).width() > 767){
       $scope.mediumScreen = false;
     }
-    if ($(window).width() >= 1148 || $(window).width() <= 767){
+    $scope.$apply();
+    if ($(window).width() >= 1127 || $(window).width() <= 746){
       $scope.mediumScreen = true;
     }
     $scope.$apply();
