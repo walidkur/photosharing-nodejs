@@ -208,11 +208,13 @@ photoApp.controller('homeController', function($animate, $scope, $routeParams, $
   }
 
   function feedCallback(data, status){
-    $scope.data = $scope.data.concat(data);
-    angular.element(document).ready(function(){
-      $('#homeGallery').justifiedGallery('norewind');
-      $scope.loading = false;
-    });
+    if(data.length != 0){
+      $scope.data = $scope.data.concat(data);
+      angular.element(document).ready(function(){
+        $('#homeGallery').justifiedGallery('norewind');
+        $scope.loading = false;
+      });
+    }
   }
 
   function errorCallback(data, status){
@@ -370,12 +372,13 @@ photoApp.controller('profileController', function($scope, $http, $routeParams, $
   }
 
   function feedCallback(data, status){
-    console.log(data);
-    $scope.data = $scope.data.concat(data);
-    angular.element(document).ready(function(){
-      $('#profileGallery').justifiedGallery('norewind');
-      $scope.loading = false;
-    });
+    if(data.length != 0) {
+      $scope.data = $scope.data.concat(data);
+      angular.element(document).ready(function(){
+        $('#profileGallery').justifiedGallery('norewind');
+        $scope.loading = false;
+      });
+    }
   }
 
   function errorCallback(data, status){
@@ -486,7 +489,7 @@ photoApp.controller('navbarController', function($location, $scope, $rootScope, 
 });
 
 
-photoApp.controller('ModalInstanceController', function($http, $scope, $modalInstance, items) {
+photoApp.controller('ModalInstanceController', function($window, $http, $scope, $modalInstance, items) {
 
   $scope.items = items;
   $scope.shares = '';
@@ -497,6 +500,7 @@ photoApp.controller('ModalInstanceController', function($http, $scope, $modalIns
 
   $scope.ok = function () {
     $modalInstance.close($scope.selected.item);
+    $window.location.assign('/#/public');
   };
 
   $scope.cancel = function () {
