@@ -115,8 +115,20 @@ photoApp.factory('apiService', function($http, $q){
         successCallback(data, status);
       }).error(function(data, status){
         errorCallback(data, status);
-      })
+      });
+      return promise;
+    },
 
+    editPhoto: function(params, successCallback, errorCallback){
+      var promise = $http({
+        method:'PUT',
+        url:'/api/photo' + params,
+      }).success(function(data, status){
+        successCallback(data, status);
+      }).error(function(data, status){
+        errorCallback(data, status);
+      });
+      return promise;
     },
 
     logout: function(errorCallback){
