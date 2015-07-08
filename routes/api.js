@@ -495,7 +495,6 @@ router.post('/comments', isAuth, function(req, res, next){
     };
 
     request.post(options, function(error, response, body){
-      fs.writeFile("addCommentResponse", JSON.stringify(response));
       if(error) return res.status(500).end();
       return res.status(200).end();
     });
