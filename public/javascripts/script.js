@@ -19,6 +19,7 @@ photoApp.config(function($routeProvider) {
         }
 
         $rootScope.state = type;
+        $rootScope.$apply();
 
         document.title = type.charAt(0).toUpperCase() + type.slice(1);
 
