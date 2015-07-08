@@ -6,9 +6,9 @@
   <div class="row">
 
     <!--Displays the photo to the right of the screen-->
-    <div class="col-md-8" style="position: relative;">
-      <div class="photo" >
-        <img id="clickedPhoto" ng-src="{{photo.link}}"/>
+    <div class="col-md-8">
+      <div class="photo">
+        <img class="img-responsive" id="clickedPhoto" ng-src="{{photo.link}}"/>
 
         <!--Allows the user to delete photo-->
         <button class="deletePhotoButton" ng-click="deletePhoto()"><span class="glyphicon glyphicon-trash"></span></button>
@@ -130,6 +130,9 @@
       </div>
 
     </div>
+
+
+
   </div>
 
 </div>
