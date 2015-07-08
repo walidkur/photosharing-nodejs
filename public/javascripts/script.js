@@ -248,7 +248,7 @@ photoApp.controller('photoController', function($location, $scope, $rootScope, $
 
   $scope.editPhoto = function(content){
     var tags = content.replace(/ /g, ",");
-    console.log(tags);
+    console.log("Scope function: " + tags);
     apiService.editPhoto('?pid=' + $scope.photo.pid + '&q=' + tags, editPhotoCallback, errorCallback)
     .then(function(){
       return;
@@ -290,7 +290,7 @@ photoApp.controller('photoController', function($location, $scope, $rootScope, $
   }
 
   function editPhotoCallback(data, status){
-    $scope.photo.tags += $scope.newMeta.replace(/ /g, ",");
+    $scope.photo.tags = $scope.photo.tags.concat($scope.newMeta.split(" "));
   }
 
   function commentCallback(data, status){
