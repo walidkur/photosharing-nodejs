@@ -499,7 +499,16 @@ router.post('/comments', isAuth, function(req, res, next){
 
     request.post(options, function(error, response, body){
       if(error) return res.status(500).end();
-      return res.status(200).end();
+      parseString(body, function(err, result){
+        var comment = {};
+        var entry = result.entry;
+        comment.uid = entry.author[0]['snx:userid'][0];
+        comment.author = entry.author[0].name[0];
+        comment.date = entry.published[0];
+        comment.content = entry.content[0]['_'];
+        comment.cid = entry['td:uuid'][0];
+        res.send(comment);
+      });
     });
   });
 });
