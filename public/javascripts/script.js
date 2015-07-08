@@ -8,7 +8,7 @@ photoApp.config(function($routeProvider) {
   .when('/:type', {
     templateUrl : 'pages/page-home.html',
     resolve     : {
-      feedData  : function($route, apiService){
+      feedData  : function($rootScope, $route, apiService){
 
         var feed;
         var type = 'public';
@@ -17,6 +17,8 @@ photoApp.config(function($routeProvider) {
         if($route.current.params.type){
           type = $route.current.params.type;
         }
+
+        $rootScope.state = type;
 
         document.title = type.charAt(0).toUpperCase() + type.slice(1);
 
@@ -404,7 +406,7 @@ photoApp.controller('navbarController', function($location, $scope, $rootScope, 
   $scope.cookie = JSON.parse($cookies.get('user'));
   $scope.displayName = $scope.cookie.displayName;
   $rootScope.uid = $scope.cookie.uid;
-  $scope.state = 'public';
+  $rootScope.state = 'public';
 
   $scope.searchQuery = '';
 
