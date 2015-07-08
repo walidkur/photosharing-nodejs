@@ -208,11 +208,13 @@ photoApp.controller('homeController', function($animate, $scope, $routeParams, $
   }
 
   function feedCallback(data, status){
-    $scope.data = $scope.data.concat(data);
-    angular.element(document).ready(function(){
-      $('#homeGallery').justifiedGallery('norewind');
-      $scope.loading = false;
-    });
+    if(data.length != 0){
+      $scope.data = $scope.data.concat(data);
+      angular.element(document).ready(function(){
+        $('#homeGallery').justifiedGallery('norewind');
+        $scope.loading = false;
+      });
+    }
   }
 
   function errorCallback(data, status){
@@ -370,12 +372,13 @@ photoApp.controller('profileController', function($scope, $http, $routeParams, $
   }
 
   function feedCallback(data, status){
-    console.log(data);
-    $scope.data = $scope.data.concat(data);
-    angular.element(document).ready(function(){
-      $('#profileGallery').justifiedGallery('norewind');
-      $scope.loading = false;
-    });
+    if(data.length != 0) {
+      $scope.data = $scope.data.concat(data);
+      angular.element(document).ready(function(){
+        $('#profileGallery').justifiedGallery('norewind');
+        $scope.loading = false;
+      });
+    }
   }
 
   function errorCallback(data, status){
