@@ -36,7 +36,7 @@
           <button ng-click="meta = !meta;" class="tagButton"><span class="glyphicon glyphicon-tag"></span></button>
           <span ng-if="photo.tags.length !== 0">
             <span ng-repeat="tag in photo.tags">
-              <tag><a href="/#/public?tags={{tag}}">{{tag}}<span ng-hide="$last">, </span></a><tag>
+              <tag><a href="/#/public?tags={{tag}}">{{tag}}</a><span ng-hide="$last">, </span><tag>
             </span>
           </span>
           <span ng-if="photo.tags.length === 0">

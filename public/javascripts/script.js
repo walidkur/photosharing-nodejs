@@ -256,7 +256,6 @@ photoApp.controller('photoController', function($location, $scope, $rootScope, $
 
   $scope.editPhoto = function(content){
     var tags = content.replace(/ /g, ",");
-    console.log("Scope function: " + tags);
     apiService.editPhoto('?pid=' + $scope.photo.pid + '&q=' + tags, editPhotoCallback, errorCallback);
 
     function editPhotoCallback(data, status) {
@@ -272,9 +271,7 @@ photoApp.controller('photoController', function($location, $scope, $rootScope, $
     apiService.deleteComment('?cid=' + cid + '&pid=' + $scope.photo.pid + '&uid=' + $scope.photo.uid, deleteCallback, errorCallback);
 
     function deleteCallback(data, status){
-      console.log('delete callback')
       if(status == 200){
-        console.log('successful delete');
         $scope.comments = $scope.comments.filter(function(el) {
           return el.cid != cid;
         });
