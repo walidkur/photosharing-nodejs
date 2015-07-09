@@ -97,11 +97,15 @@ photoApp.factory('apiService', function($http, $q){
       return promise;
     },
 
-    deleteComment: function(params){
+    deleteComment: function(params, successCallback, errorCallback){
       var promise = $http({
         method:'DELETE',
         url: '/api/comments' + params
-      });
+      }).success(function(data, status){
+        successCallback(data, status);
+      }).error(function(data, status){
+        errorCallback(data, status);
+      })
       return promise;
     },
 

@@ -33,7 +33,7 @@
         <li class="profileButton">
           <a href="#/profile/{{uid}}"><img id="profilePic" ng-src="{{$root.avatar}}" height=40p>
             <!--Display on glyphicon when screen gets smaller-->
-            <text ng-show="mediumScreen">{{displayName}}</text>
+            <text ng-show="mediumScreen">{{$root.displayName}}</text>
           </a>
         </li>
 
@@ -151,7 +151,7 @@
     <div class="modal-footer">
 
       <!-- Creates the submit/"Upload" and "Close" buttons -->
-      <button type="submit" class="btn btn-info" ng-click="uploadFile()">Upload</button>
+      <button id="uploadButton" type="submit" class="btn btn-info" ng-click="uploadFile()"><span id="uploadSpinner" class="glyphicon glyphicon-refresh spin"></span><span id="uploadText">Upload</span></button>
       <button class="btn btn-warning" ng-click="cancel()">Close</button>
     </div>
 
