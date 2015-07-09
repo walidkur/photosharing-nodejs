@@ -544,10 +544,13 @@ photoApp.controller('ModalInstanceController', function($window, $http, $scope, 
   };
 
   $scope.uploadFile = function(){
+    $('#uploadButton').attr('disabled', '');
+    $('#uploadText').css('display', 'none')
+    $('#uploadSpinner').css('display', 'inline')
     var fd = new FormData();
     fd.append("file", $scope.files[0]);
 
-    var url = "/api/upload?visibility=" + $scope.visibility;
+    var url = '/api/upload?visibility=' + $scope.visibility;
 
     if($scope.shares != ''){
       var shares = $scope.shares;
