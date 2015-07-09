@@ -87,14 +87,26 @@
               </a>
 
               <!--Displays the delete and edit comment buttons-->
-              <div style="float: right">
+              <span ng-show="!comment.loading && $root.uid == comment.uid && comment.hovered" style="float: right">
                 <button  class="editCommentButton" ng-click="edit = !edit">
-                  <span ng-show="uid == comment.uid && comment.hovered" style="color: grey" class="glyphicon glyphicon-edit"></span>
+                  <span style="color: grey" class="glyphicon glyphicon-edit"></span>
                 </button>
                 <button class="deleteCommentButton" ng-click="deleteComment(comment.cid)">
-                  <span ng-show="(uid == comment.uid || uid == photo.uid) && comment.hovered" style="color: grey" class="glyphicon glyphicon-remove"></span>
+                  <span style="color: grey" class="glyphicon glyphicon-remove"></span>
                 </button>
-              </div>
+              </span>
+
+              <span ng-show="comment.success && !comment.loading">
+                <span class="alert alert-success"><span class="glyphicon glyphicon-ok"></span></span>
+              </span>
+
+              <span ng-show="comment.failure && !comment.loading">
+                <span class="alert alert-danger">!</span>
+              </span>
+
+              <span ng-show="comment.loading">
+                <span class="glyphicon glyphicon-refresh spin"></span>
+              </span>
 
             </h4>
 

@@ -15,6 +15,7 @@ var config = require('../config/server');
 var parseString = require('xml2js').parseString;
 var request = require('request');
 var Busboy = require('busboy');
+var fs = require('fs');
 
 // main api url
 var FILES_API = 'https://' + config.server.domain + '/files/oauth/api/';
@@ -549,6 +550,7 @@ router.put('/comments', isAuth, function(req, res, next){
 
     request.put(options, function(error, response, body){
       if(error) return res.status(500).end();
+      fs.writeFile("putComment.txt", JSON.stringify(body));
       return res.status(200).end();
     });
   });

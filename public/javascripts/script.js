@@ -19,7 +19,6 @@ photoApp.config(function($routeProvider) {
         }
 
         $rootScope.state = type;
-        $rootScope.$apply();
 
         document.title = type.charAt(0).toUpperCase() + type.slice(1);
 
@@ -225,8 +224,6 @@ photoApp.controller('homeController', function($animate, $scope, $routeParams, $
 
 photoApp.controller('photoController', function($location, $scope, $rootScope, $http, $routeParams, $window, $cookies, apiService, photoData) {
 
-  $scope.cookie = JSON.parse($cookies.get('user'));
-  $scope.uid = $scope.cookie.uid;
   $scope.pageClass = 'page-photo';
   $scope.photo = photoData.photo;
   $scope.profile = photoData.profile;
@@ -234,63 +231,89 @@ photoApp.controller('photoController', function($location, $scope, $rootScope, $
   $scope.liked = $scope.photo.liked;
 
   $scope.editComment = function(content, cid){
-    apiService.editComment(content, '?uid=' + $scope.photo.uid + '&pid=' + $scope.photo.pid + '&cid=' + cid, editCallback, errorCallback)
-    .then(function(){
-      apiService.getComments('?pid=' + $scope.photo.pid + '&uid=' + $scope.photo.uid, commentCallback, errorCallback)
-      .then(function(){
-        apiService.getProfiles($scope.comments, profilesCallback, errorCallback)
-        .then(function(){
-          return;
-        });
-      });
-    });
+    var comment = $scope.comments.filter(function(el){
+      return el.cid == cid;
+    }).pop();
+    var commentContent = comment.content;
+
+    comment.loading = true;
+    comment.content = content;
+    apiService.editComment(content, '?uid=' + $scope.photo.uid + '&pid=' + $scope.photo.pid + '&cid=' + cid, editCallback, editErrorCallback);
+
+    function editCallback(data, status){
+      if(status == 200){
+        comment.loading = false;
+        comment.success = true;
+      }
+    }
+
+    function editErrorCallback(data, status){
+      comment.loading = false;
+      comment.failure = true;
+      comment.content = commentContent;
+    }
   }
 
   $scope.editPhoto = function(content){
     var tags = content.replace(/ /g, ",");
     console.log("Scope function: " + tags);
-    apiService.editPhoto('?pid=' + $scope.photo.pid + '&q=' + tags, editPhotoCallback, errorCallback)
-    .then(function(){
-      return;
-    });
+    apiService.editPhoto('?pid=' + $scope.photo.pid + '&q=' + tags, editPhotoCallback, errorCallback);
+
+    function editPhotoCallback(data, status) {
+
+    }
   }
 
   $scope.deleteComment = function(cid){
-    apiService.deleteComment('?cid=' + cid + '&pid=' + $scope.photo.pid + '&uid=' + $scope.photo.uid, deleteCallback, errorCallback)
-    .then(function(){
-      apiService.getComments('?pid=' + $scope.photo.pid + '&uid=' + $scope.photo.uid, commentCallback, errorCallback)
-      .then(function(){
-        apiService.getProfiles($scope.comments, profilesCallback, errorCallback)
-        .then(function(){
-          return;
-        })
-      })
-    })
+    var comment = $scope.comments.filter(function(el){
+      return el.cid == cid;
+    }).pop();
+    comment.loading = true;
+    apiService.deleteComment('?cid=' + cid + '&pid=' + $scope.photo.pid + '&uid=' + $scope.photo.uid, deleteCallback, errorCallback);
+
+    function deleteCallback(data, status){
+      console.log('delete callback')
+      if(status == 200){
+        console.log('successful delete');
+        $scope.comments = $scope.comments.filter(function(el) {
+          return el.cid != cid;
+        });
+      }
+    }
+
   }
 
   $scope.addComment = function(){
-    apiService.addComment($scope.content, '?pid=' + $scope.photo.pid + '&uid=' + $scope.uid, $scope.photo.commenturl, addCommentCallback, errorCallback)
-    .then(function(){
-      apiService.getProfile('?uid=' + $scope.comments[0].uid, getProfileCallback, errorCallback)
-      .then(function(){
-        return;
-      })
-    });
+    var comment = {};
+    comment.content = $scope.content;
+    comment.author = $rootScope.displayName;
+    comment.profileImg = $rootScope.avatar;
+    comment.date = new Date();
+    comment.date = comment.date.toLocaleDateString();
+    comment.loading = true;
+    comment.sucess = false;
+    comment.failure = false;
+    comment.uid = $rootScope.uid;
+    $scope.comments.unshift(comment);
+    $scope.content = '';
+    apiService.addComment(comment.content, '?pid=' + $scope.photo.pid + '&uid=' + $scope.uid, $scope.photo.commenturl, addCommentCallback, addCommentErrorCallback);
+
+    function addCommentCallback(data, status){
+      if(status == 200) {
+        comment.cid = data.cid;
+        comment.success = true;
+        comment.loading = false;
+      }
+    }
+
+    function addCommentErrorCallback(data, status){
+      comment.failure = true;
+      comment.loading = false;
+    }
   }
 
   function getProfileCallback(data, status){
     $scope.comments[0].profileImg = data.img;
-  }
-
-  function addCommentCallback(data, status){
-    $scope.content = '';
-    data.date = new Date(data.date);
-    data.date = data.date.toLocaleDateString();
-    $scope.comments.unshift(data);
-  }
-
-  function deleteCallback(data, status){
-
   }
 
   function editPhotoCallback(data, status){
@@ -405,7 +428,7 @@ photoApp.controller('profileController', function($scope, $http, $routeParams, $
 photoApp.controller('navbarController', function($location, $scope, $rootScope, $http, $route, $routeParams, $cookies, $modal, $log, $window, apiService){
 
   $scope.cookie = JSON.parse($cookies.get('user'));
-  $scope.displayName = $scope.cookie.displayName;
+  $rootScope.displayName = $scope.cookie.displayName;
   $rootScope.uid = $scope.cookie.uid;
   $rootScope.state = 'public';
 
