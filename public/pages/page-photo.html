@@ -6,7 +6,7 @@
   <div class="row">
 
     <!--Displays the photo to the right of the screen-->
-    <div class="col-md-8">
+    <div class="col-lg-8 col-md-12">
       <div class="photo">
         <img class="img-responsive" id="clickedPhoto" ng-src="{{photo.link}}"/>
 
@@ -16,7 +16,7 @@
     </div>
 
     <!--Displays what is left of the screen-->
-    <div id="commentColumn" class="col-md-4">
+    <div id="commentColumn" class="col-lg-4 col-md-12">
 
       <!--Displays the photo's information-->
       <div class="photoInfo">
@@ -152,6 +152,32 @@
           </div>
         </form>
       </div>
+
+
+      <script>
+
+      $(document).ready(function(){
+        if ($(window).width() < 1270){
+          $("#commentColumn").
+
+          $scope.mediumScreen = false;
+        }
+        if ($(window).width() >= 1270){
+          $scope.mediumScreen = true;
+        }
+      });
+
+      $(window).resize(function() {
+        if ($(window).width() < 1148 || $(window).width() > 767){
+          $scope.mediumScreen = false;
+        }
+        $scope.$apply();
+        if ($(window).width() >= 1127 || $(window).width() <= 746){
+          $scope.mediumScreen = true;
+        }
+        $scope.$apply();
+      });
+      </script>
 
     </div>
 
