@@ -367,6 +367,14 @@ tag {
   font-size: 10px;
 }
 
+#uploadSpinner {
+  display: none;
+}
+
+#uploadText {
+  display: inline;
+}
+
 
 
 /* ANIMATIONS
