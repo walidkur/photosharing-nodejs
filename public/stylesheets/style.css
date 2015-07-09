@@ -17,7 +17,6 @@ a {
   color: #00B7FF;
 }
 
-
 /* Styling for home gallery */
 .gallery .caption {
   background-color: black;
@@ -50,6 +49,35 @@ a {
 
 
 /*------- Styling for navbar -------*/
+
+#navStyle {
+  background-color: #162338;
+}
+#navStyle > a{
+  background-color: inherit;
+  color: #D1D6E9;
+}
+
+#navStyle > a:hover{
+  color: white;
+}
+
+#navStyle > a:focus{
+  color: white;
+}
+
+#navStyle > .navbar-collapse > ul > li > a {
+  color: #D1D6E9;
+}
+#navStyle > .navbar-collapse > ul > li > a:hover {
+  color: white;
+  background-color: inherit;
+}
+
+#navStyle > .navbar-collapse > ul > li > a:focus {
+  color: white;
+  background-color: inherit;
+}
 
 .navbar-brand {
   font-size: 30px;
@@ -96,7 +124,7 @@ a {
 }
 
 #profilePic {
-  padding-right: 5px;
+  margin-right: 5px;
 }
 
 
