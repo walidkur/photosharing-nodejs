@@ -17,7 +17,6 @@ a {
   color: #00B7FF;
 }
 
-
 /* Styling for home gallery */
 .gallery .caption {
   background-color: black;
@@ -50,6 +49,35 @@ a {
 
 
 /*------- Styling for navbar -------*/
+
+#navStyle {
+  background-color: #162338;
+}
+#navStyle > a{
+  background-color: inherit;
+  color: #D1D6E9;
+}
+
+#navStyle > a:hover{
+  color: white;
+}
+
+#navStyle > a:focus{
+  color: white;
+}
+
+#navStyle > .navbar-collapse > ul > li > a {
+  color: #D1D6E9;
+}
+#navStyle > .navbar-collapse > ul > li > a:hover {
+  color: white;
+  background-color: inherit;
+}
+
+#navStyle > .navbar-collapse > ul > li > a:focus {
+  color: white;
+  background-color: inherit;
+}
 
 .navbar-brand {
   font-size: 30px;
@@ -96,7 +124,7 @@ a {
 }
 
 #profilePic {
-  padding-right: 5px;
+  margin-right: 5px;
 }
 
 
@@ -195,7 +223,6 @@ body{
 
 }
 
-/*background-color: #EFF5FB;*/
 .profileContainer {
   color: #070B19;
 }
@@ -255,12 +282,14 @@ div.photo button
 
 /* Comment column */
 #commentColumn {
-  height: 800px;
+  max-height: 750px;
+  max-width: 450px;
 }
 
 /* Photo information */
 .photoInfo {
-  height: 100px;
+  height: 20%;
+  overflow: auto;
 }
 
 #userPhoto {
@@ -321,7 +350,7 @@ tag {
 #photoBar {
   font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
   padding-bottom: 10px;
-  margin-top: 50px;
+  margin-top: 10px;
   margin-bottom: 0px;
 }
 
@@ -336,7 +365,7 @@ tag {
   float: left;
   overflow: auto;
   width: 440px;
-  height: 550px;
+  max-height: 50%;
 }
 
 .editButton {
@@ -346,7 +375,8 @@ tag {
 }
 
 .addCommentBox {
-  margin-top: 10px;
+  margin-top: 5px;
+  margin-bottom: 5px;
   float: left;
   width: 400px;
 }
