@@ -59,7 +59,12 @@
       <div id="photoBar">
         <button ng-show="liked" class="likeButton" ng-click="like()"><span style="color: blue" class="glyphicon glyphicon-thumbs-up"></span></button>
         <button ng-show="!liked" class="likeButton" ng-click="like()"><span class="glyphicon glyphicon-thumbs-up"></span></button>
-        {{photo.likes}} people
+        <span ng-if="photo.likes !== 1">
+          {{photo.likes}} people
+        </span>
+        <span ng-if="photo.likes === 1">
+          {{photo.likes}} person
+        </span>
       </div>
 
       <!--Creates a divider before somments-->
