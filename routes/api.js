@@ -15,6 +15,7 @@ var config = require('../config/server');
 var parseString = require('xml2js').parseString;
 var request = require('request');
 var Busboy = require('busboy');
+var fs = require('fs');
 
 // main api url
 var FILES_API = 'https://' + config.server.domain + '/files/oauth/api/';
@@ -731,6 +732,31 @@ router.get('/profile', isAuth, function(req, res, next){
       });
     });
   }
+});
+
+router.get('/searchTag', isAuth, function(req, res, next){
+  if(isEmpty(req.query.q)) return res.status(412).end();
+
+  var url = 'https://' + config.server.domain + '/search/oauth/atom/mysearch/results?query=' + req.query.q + '&facet={"id": "Tag", "count" : "ALL"}';
+
+  var headers = {
+    'Authorization' : 'Bearer ' + req.user.accessToken
+  }
+
+  var options = {
+    url : url,
+    headers : headers
+  }
+
+  console.log(JSON.stringify(options));
+
+  request.get(options, function(error, response, body){
+    if(error) return res.status(500);
+    parseString(body, function(err, result){
+      fs.writeFile("getSearch.txt", JSON.stringify(result));
+      res.status(200).end();
+    })
+  })
 });
 
 var hasOwnProperty = Object.prototype.hasOwnProperty;

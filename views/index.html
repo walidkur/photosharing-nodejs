@@ -126,7 +126,7 @@
         <!-- Creates ability to make tags for photos -->
         <div class="form-group">
           <label for="tag">Tags:</label>
-          <input ng-model="tags" type="text" class="form-control" id="tag">
+          <input ng-change="searchTags()" ng-model="tags" type="text" class="form-control" id="tag">
         </div>
 
         <div class="form-group">

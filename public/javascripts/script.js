@@ -535,6 +535,14 @@ photoApp.controller('ModalInstanceController', function($window, $http, $scope, 
     item: $scope.items[0]
   };
 
+  $scope.searchTags = function(){
+
+    $http.get('/api/searchTag?q=' + $scope.tags)
+         .success(function(data, status){
+           console.log("done");
+         });
+  }
+
   $scope.ok = function () {
     $modalInstance.close($scope.selected.item);
   };
