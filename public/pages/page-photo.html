@@ -32,6 +32,8 @@
             <h5>{{photo.title}}</h5>
           </div>
         </div>
+
+        <!--Displays the tags for the file-->
         <h5 class="tagField">
           <button ng-click="meta = !meta;" class="tagButton"><span class="glyphicon glyphicon-tag"></span></button>
           <span ng-if="photo.tags.length !== 0">
@@ -45,6 +47,7 @@
         </h5>
       </div>
 
+      <!--Allows photographer to add tags to file-->
       <br ng-show="meta">
       <br ng-show="meta">
       <div ng-show="meta" class="input-group">
@@ -53,13 +56,19 @@
       </span>
       </div>
 
-
-
       <!--Displays the like button and number of likes-->
       <div id="photoBar">
         <button ng-show="liked" class="likeButton" ng-click="like()"><span style="color: blue" class="glyphicon glyphicon-thumbs-up"></span></button>
         <button ng-show="!liked" class="likeButton" ng-click="like()"><span class="glyphicon glyphicon-thumbs-up"></span></button>
-        {{photo.likes}} people
+
+        <!--Dipslays number of people who have liked the file-->
+        <span ng-if="photo.likes !== 1">
+          {{photo.likes}} people
+        </span>
+        <span ng-if="photo.likes === 1">
+          {{photo.likes}} person
+        </span>
+
       </div>
 
       <!--Creates a divider before somments-->
@@ -97,11 +106,12 @@
               </span>
 
               <span ng-show="comment.success && !comment.loading">
-                <span class="alert alert-success"><span class="glyphicon glyphicon-ok"></span></span>
+                <span class="glyphicon glyphicon-ok-sign"></span>
+
               </span>
 
               <span ng-show="comment.failure && !comment.loading">
-                <span class="alert alert-danger">!</span>
+                <span class="glyphicon glyphicon-exclamation-sign"></span>
               </span>
 
               <span ng-show="comment.loading">
@@ -153,9 +163,8 @@
         </form>
       </div>
 
-
+      <!--Adds responsiveness to the page-->
       <script>
-
       $(document).ready(function(){
         if ($(window).width() < 1270){
           $("#commentColumn").
@@ -180,8 +189,6 @@
       </script>
 
     </div>
-
-
 
   </div>
 
