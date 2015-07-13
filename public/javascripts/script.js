@@ -528,6 +528,7 @@ photoApp.controller('navbarController', function($location, $scope, $rootScope, 
 
 photoApp.controller('ModalInstanceController', function($window, $http, $scope, $modalInstance, items) {
 
+  $scope.appliedTags = [];
   $scope.items = items;
   $scope.shares = '';
   $scope.tags = '';
@@ -558,6 +559,16 @@ photoApp.controller('ModalInstanceController', function($window, $http, $scope, 
   $scope.cancel = function () {
     $modalInstance.dismiss('cancel');
   };
+
+  $scope.removeTag = function(index){
+    $scope.appliedTags.splice(index, 1);
+  }
+
+  $scope.addTag = function(index) {
+    $scope.appliedTags.push($scope.tagsList[index]);
+    $scope.tags = '';
+    $scope.tagsList = [];
+  }
 
   $scope.uploadFile = function(){
     $('#uploadButton').attr('disabled', '');

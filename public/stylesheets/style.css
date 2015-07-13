@@ -324,6 +324,7 @@ div.photo button
 
 tag {
   font-family: "Ariel", sans-serif;
+  display: inline;
 }
 
 .tagButton {
