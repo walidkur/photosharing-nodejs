@@ -15,6 +15,7 @@ var config = require('../config/server');
 var parseString = require('xml2js').parseString;
 var request = require('request');
 var Busboy = require('busboy');
+var fs = require('fs');
 
 // main api url
 var FILES_API = 'https://' + config.server.domain + '/files/oauth/api/';
@@ -104,6 +105,7 @@ router.get('/feed', isAuth, function(req, res, next){
   };
 
   request.get(options, function(error, response, body){
+    if(response.statusCode === 403) return res.status(403).end();
 
     // initialize the array of photos to be returned
     var photos = [];
@@ -211,53 +213,58 @@ router.get('/photo', isAuth, function(req, res, next){
 
     request.get(options, function(error, response, body){
       if(error) res.status(500).end();
-      else {
-        // see get feed for more details
-        parseString(body, function(err, result){
-          var photo = {};
-          var entry = result.entry;
-          photo.liked = false;
-          photo.pid = entry['td:uuid'][0];
-          var tags = [];
-          for(var j = 1; j < entry.category.length; j ++){
-            var category = entry.category[j];
-            var tag = category.$.label;
-            tags.push(tag);
+      if(response.statusCode === 403) return res.status(403).end();
+      // see get feed for more details
+      parseString(body, function(err, result){
+        if(err) return res.status(500).end();
+        fs.writeFile('getphotojson.json', JSON.stringify(result));
+        var photo = {};
+        var entry = result.entry;
+        photo.id = entry.id;
+        photo.liked = false;
+        photo.pid = entry['td:uuid'][0];
+        var tags = [];
+        for(var j = 1; j < entry.category.length; j ++){
+          var category = entry.category[j];
+          var tag = category.$.label;
+          tags.push(tag);
+        }
+        photo.tags = tags;
+        for(var j = 0; j < entry.link.length; j++){
+          var link = entry.link[j];
+          var type = link.$.type;
+          var rel = link.$.rel;
+          if(!(type === undefined) && (type.indexOf('image') > -1)) photo.link = link.$.href;
+          if(!(rel === undefined) && (rel.indexOf('recommendation') > -1))  photo.liked = true;
+          if(!(rel === undefined) && (rel.indexOf('replies') > -1)){
+            photo.commenturl = link.$.href;
           }
-          photo.tags = tags;
-          for(var j = 0; j < entry.link.length; j++){
-            var link = entry.link[j];
-            var type = link.$.type;
-            var rel = link.$.rel;
-            if(!(type === undefined) && (type.indexOf('image') > -1)) photo.link = link.$.href;
-            if(!(rel === undefined) && (rel.indexOf('recommendation') > -1))  photo.liked = true;
-            if(!(rel === undefined) && (rel.indexOf('replies') > -1)){
-              photo.commenturl = link.$.href;
-            }
+          if(!(rel === undefined) && (rel.indexOf('edit-media') > -1)){
+            photo.editurl = link.$.href
           }
-          photo.photographer = entry.author[0].name[0];
-          photo.uid = entry.author[0]['snx:userid'][0];
-          photo.title = entry.title[0]['_'];
-          photo.published = entry.published[0];
-          var socialx = entry['snx:rank'];
-          for(var i = 0; i < socialx.length; i++){
-            var x = socialx[i];
-            if(x.$.scheme.indexOf('recommendations') > -1){
-              photo.likes = parseInt(x['_']);
-              break;
-            }
+        }
+        photo.photographer = entry.author[0].name[0];
+        photo.uid = entry.author[0]['snx:userid'][0];
+        photo.title = entry.title[0]['_'];
+        photo.published = entry.published[0];
+        var socialx = entry['snx:rank'];
+        for(var i = 0; i < socialx.length; i++){
+          var x = socialx[i];
+          if(x.$.scheme.indexOf('recommendations') > -1){
+            photo.likes = parseInt(x['_']);
+            break;
           }
-          photo.lid = entry['td:libraryId'][0];
-          res.send(photo);
-        });
-      }
+        }
+        photo.lid = entry['td:libraryId'][0];
+        res.send(photo);
+      });
     });
   }
 });
 
 router.put('/photo', isAuth, function(req, res, next){
 
-  if(isEmpty(req.query.pid)) return res.status(412).end();
+  if(isEmpty(req.query.pid) || isEmpty(req.body.url) || isEmpty(req.body.id)) return res.status(412).end();
 
   // url to return a nonce from the api
   var url = FILES_API + 'nonce';
@@ -272,10 +279,13 @@ router.put('/photo', isAuth, function(req, res, next){
   // perform request to get a nonce from the server
   request.get(options, function(error, response, body){
     if(error) return res.status(500).end();
+    if(response.statusCode === 403) return res.status(403).end();
 
     var nonce = body;
 
-    var url = FILES_API + 'myuserlibrary/document/' + req.query.pid + '/media?';
+    var url = 'https://' + config.server.domain + '/files/basic/api/' + 'myuserlibrary/document/' + req.query.pid + '/entry?';
+
+    var body = '<?xml version="1.0" encoding="UTF-8"?><entry xmlns="http://www.w3.org/2005/Atom"><category term="document" label="document" scheme="tag:ibm.com,2006:td/type"/><id>' + req.body.id + '</id></entry>';
 
     if(!isEmpty(req.query.q)) url = url + '&tag=' + req.query.q;
 
@@ -285,16 +295,20 @@ router.put('/photo', isAuth, function(req, res, next){
 
     var headers = {
       'Authorization': 'Bearer ' + req.user.accessToken,
-      'X-Update-Nonce': nonce
+      'X-Update-Nonce': nonce,
+      'Content-Length' : body.length,
+      'Content-Type' : 'application/atom+xml'
     };
 
     var options = {
       url: url,
-      headers: headers
+      headers: headers,
+      body: body
     };
 
     request.put(options, function(error, response, body){
       if(error) return res.status(500).end();
+      if(response.statusCode === 402) return res.status(403).end();
       return res.status(200).end();
     });
   });
@@ -319,6 +333,7 @@ router.delete('/photo', isAuth, function(req, res, next){
   // perform request to get a nonce from the server
   request.get(options, function(error, response, body){
     if(error) return res.status(500).end();
+    if(response.statusCode === 403) return res.status(403).end();
 
     var nonce = body;
 
@@ -359,6 +374,7 @@ router.post('/like', isAuth, function(req, res, next){
   }
 
   request.get(options, function(error, response, body){
+    if(response.statusCode === 403) return res.status(403).end();
     var nonce = body;
 
     var headers = {
@@ -383,6 +399,7 @@ router.post('/like', isAuth, function(req, res, next){
 
     request.post(options, function(error, response, body){
       if(error) return res.status(500).end();
+      if(response.statusCode === 403) return res.status(403).end();
       return res.status(200).end();
     });
   });
@@ -407,8 +424,10 @@ router.get('/comments', isAuth, function(req, res, next){
 
     request.get(options, function(error, response, body){
       if(error) return res.status(500).end();
+      if(response.statusCode === 403) return res.status(403).end();
       else {
         parseString(body, function(err, result){
+          if(err) return res.status(500).end();
 
           // create the comment array that to be return
           var comments = [];
@@ -474,6 +493,7 @@ router.post('/comments', isAuth, function(req, res, next){
 
   request.get(options, function(error, response, body){
     if(error) return res.status(500).end();
+    if(response.statusCode === 403) return res.status(403).end();
 
     var nonce = body;
 
@@ -499,7 +519,9 @@ router.post('/comments', isAuth, function(req, res, next){
 
     request.post(options, function(error, response, body){
       if(error) return res.status(500).end();
+      if(response.statusCode === 403) return res.status(403).end();
       parseString(body, function(err, result){
+        if(err) return res.status(500).end();
         var comment = {};
         var entry = result.entry;
         comment.uid = entry.author[0]['snx:userid'][0];
@@ -528,6 +550,7 @@ router.put('/comments', isAuth, function(req, res, next){
   }
 
   request.get(options, function(error, response, body){
+    if(response.statusCode === 403) return res.status(403).end();
     var nonce = body;
 
     var url = FILES_API + 'userlibrary/' + req.query.uid + '/document/' + req.query.pid + '/comment/' + req.query.cid + '/entry';
@@ -549,6 +572,7 @@ router.put('/comments', isAuth, function(req, res, next){
 
     request.put(options, function(error, response, body){
       if(error) return res.status(500).end();
+      if(response.statusCode === 403) return res.status(403).end();
       return res.status(200).end();
     });
   });
@@ -571,7 +595,8 @@ router.delete('/comments', isAuth, function(req, res, next){
   }
 
   request.get(options, function(error, response, body){
-    if(error) return res.status(412).end();
+    if(error) return res.status(500).end();
+    if(response.statusCode === 403) return res.status(403).end();
 
     var nonce = body;
 
@@ -590,6 +615,7 @@ router.delete('/comments', isAuth, function(req, res, next){
 
     request.del(options, function(error, response, body){
       if(error) return res.status(500).end()
+      if(response.statusCode === 403) return res.status(403).end();
       return res.status(200).end();
     });
   });
@@ -619,6 +645,7 @@ router.post('/upload', isAuth, function(req, res, next){
 
     // return 400 if there was an error
     if(error) return res.status(500).end()
+    if(response.statusCode === 403) return res.status(403).end();
     else {
       var nonce = body;
 
@@ -653,7 +680,9 @@ router.post('/upload', isAuth, function(req, res, next){
         file.pipe(request.post(options, function(error, response, body){
           // return 500 if there was an error
           if(error) return res.status(500).end();
+          if(response.statusCode === 403) return res.status(403).end();
           parseString(body, function(err, result){
+            if(err) return res.status(500).end();
             var entry = result.entry;
             var pid = entry['td:uuid'];
             var lid = entry['td:libraryId'];
@@ -698,8 +727,10 @@ router.get('/profile', isAuth, function(req, res, next){
 
       // return 500 if there was an error
       if(error) return res.status(500).end();
+      if(response.statusCode === 403) return res.status(403).end();
 
       parseString(body, function(err, result){
+        if(err) return res.status(500).end();
 
         var entry = result.feed.entry;
 
@@ -731,6 +762,28 @@ router.get('/profile', isAuth, function(req, res, next){
       });
     });
   }
+});
+
+router.get('/searchTags', isAuth, function(req, res, next){
+
+  if(isEmpty(req.query.q)) return res.status(412).end();
+
+  var url = 'https://' + config.server.domain + '/files/oauth/api/tags/feed?format=json&scope=document&pageSize=16&filter=' + req.query.q
+
+  var headers = {
+    'Authorization' : 'Bearer ' + req.user.accessToken
+  }
+
+  var options = {
+    url : url,
+    headers : headers
+  }
+
+  request.get(options, function(error, response, body){
+    if(error) return res.status(500);
+    if(response.statusCode === 403) return res.status(403).end();
+    res.send(body);
+  })
 });
 
 var hasOwnProperty = Object.prototype.hasOwnProperty;
