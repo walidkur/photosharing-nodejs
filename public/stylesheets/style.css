@@ -236,6 +236,7 @@ body{
 
 /* Photo column */
 #clickedPhoto {
+  margin-top: 20px;
   float: right;
 }
 
@@ -282,6 +283,7 @@ div.photo button
 
 /* Comment column */
 #commentColumn {
+  margin-top: 20px;
   max-height: 750px;
   max-width: 450px;
 }
@@ -403,6 +405,38 @@ tag {
 
 #uploadText {
   display: inline;
+}
+
+.glyphicon-refresh {
+  margin-left: 5px;
+}
+
+.successfulEdit{
+  background: inherit;
+  border: none;
+}
+
+.glyphicon-ok-sign {
+  margin-left: 5px;
+  color: #4F8A10;
+}
+
+.failedEdit{
+  background: inherit;
+  border: none;
+}
+
+.glyphicon-exclamation-sign {
+  margin-right: 5px;
+  color: #D8000C;
+}
+
+.tooltip.bottom .tooltip-arrow {
+  top: 0;
+  left: 50%;
+  margin-left: -5px;
+  border-bottom-color: #000000; /* black */
+  border-width: 0 5px 5px;
 }
 
 /* ANIMATIONS
