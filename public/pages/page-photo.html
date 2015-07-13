@@ -5,18 +5,20 @@
 
   <div class="row">
 
-    <!--Displays the photo to the right of the screen-->
-    <div class="col-lg-8 col-md-12">
+    <!--Adds responsiveness to the page-->
+    <div class="col-lg-8 col-md-12 col-sm-12 col-xs-12">
       <div class="photo">
         <img class="img-responsive" id="clickedPhoto" ng-src="{{photo.link}}"/>
 
         <!--Allows the user to delete photo-->
-        <button class="deletePhotoButton" ng-click="deletePhoto()"><span class="glyphicon glyphicon-trash"></span></button>
+        <button ng-if="uid == photo.uid" class="deletePhotoButton" ng-click="deletePhoto()">
+          <span class="glyphicon glyphicon-trash"></span>
+        </button>
       </div>
     </div>
 
-    <!--Displays what is left of the screen-->
-    <div id="commentColumn" class="col-lg-4 col-md-12">
+    <!--Adds responsiveness to the page-->
+    <div id="commentColumn" class="col-lg-4 col-md-12 col-sm-12 col-xs-12">
 
       <!--Displays the photo's information-->
       <div class="photoInfo">
@@ -35,7 +37,9 @@
 
         <!--Displays the tags for the file-->
         <h5 class="tagField">
-          <button ng-click="meta = !meta;" class="tagButton"><span class="glyphicon glyphicon-tag"></span></button>
+          <button ng-click="meta = !meta;" class="tagButton">
+            <span class="glyphicon glyphicon-tag"></span>
+          </button>
           <span ng-if="photo.tags.length !== 0">
             <span ng-repeat="tag in photo.tags">
               <tag><a href="/#/public?tags={{tag}}">{{tag}}</a><span ng-hide="$last">, </span><tag>
@@ -44,17 +48,25 @@
           <span ng-if="photo.tags.length === 0">
             <tag>Add tags<tag>
           </span>
+
+          <!--Allows photographer to add tags to file-->
+          <div ng-if="uid == photo.uid" class="addTags">
+            <br ng-show="meta">
+            <br ng-show="meta">
+            <div ng-show="meta" class="input-group">
+              <input type="text" ng-model="newMeta" class="form-control" placeholder="Enter new tags (separated by spaces)">
+              <span class="input-group-btn">
+                <button ng-click="meta = !meta; editPhoto(newMeta);" class="btn btn-primary" type="button">Submit</button>
+              </span>
+            </div>
+          </div>
+
+
         </h5>
+
       </div>
 
-      <!--Allows photographer to add tags to file-->
-      <br ng-show="meta">
-      <br ng-show="meta">
-      <div ng-show="meta" class="input-group">
-      <input type="text" ng-model="newMeta" class="form-control" placeholder="Enter new tags (separated by spaces)">
-      <span class="input-group-btn"><button ng-click="meta = !meta; editPhoto(newMeta);" class="btn btn-primary" type="button">Submit</button>
-      </span>
-      </div>
+
 
       <!--Displays the like button and number of likes-->
       <div id="photoBar">
@@ -163,30 +175,8 @@
         </form>
       </div>
 
-      <!--Adds responsiveness to the page-->
-      <script>
-      $(document).ready(function(){
-        if ($(window).width() < 1270){
-          $("#commentColumn").
 
-          $scope.mediumScreen = false;
-        }
-        if ($(window).width() >= 1270){
-          $scope.mediumScreen = true;
-        }
-      });
 
-      $(window).resize(function() {
-        if ($(window).width() < 1148 || $(window).width() > 767){
-          $scope.mediumScreen = false;
-        }
-        $scope.$apply();
-        if ($(window).width() >= 1127 || $(window).width() <= 746){
-          $scope.mediumScreen = true;
-        }
-        $scope.$apply();
-      });
-      </script>
 
     </div>
 
