@@ -255,7 +255,6 @@ photoApp.controller('photoController', function($location, $scope, $rootScope, $
   }
 
   $scope.editPhoto = function(content){
-    console.log($scope.photo.editurl);
     var tags = content.replace(/ /g, ",");
     apiService.editPhoto($scope.photo.editurl, $scope.photo.id, '?pid=' + $scope.photo.pid + '&q=' + tags, editPhotoCallback, errorCallback);
 
@@ -580,6 +579,8 @@ photoApp.controller('ModalInstanceController', function($window, $http, $scope, 
       var tagArray = tags.split(' ');
       url = url + '&q=' + tagArray.join();
     }
+
+    url += '&title=' + $scope.title;
 
     $http.post(url, fd, {
       headers: { 'Content-Type' : undefined, 'X-Content-Length' : $scope.files[0].size},
