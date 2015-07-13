@@ -331,6 +331,10 @@ tag {
   border: none;
 }
 
+.addTags {
+  padding: none;
+  margin: none;
+}
 
 /* Number of likes */
 #divider {
