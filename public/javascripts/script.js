@@ -255,8 +255,9 @@ photoApp.controller('photoController', function($location, $scope, $rootScope, $
   }
 
   $scope.editPhoto = function(content){
+    console.log($scope.photo.editurl);
     var tags = content.replace(/ /g, ",");
-    apiService.editPhoto('?pid=' + $scope.photo.pid + '&q=' + tags, editPhotoCallback, errorCallback);
+    apiService.editPhoto($scope.photo.editurl, $scope.photo.id, '?pid=' + $scope.photo.pid + '&q=' + tags, editPhotoCallback, errorCallback);
 
     function editPhotoCallback(data, status) {
 
@@ -534,6 +535,22 @@ photoApp.controller('ModalInstanceController', function($window, $http, $scope, 
   $scope.selected = {
     item: $scope.items[0]
   };
+  $scope.loading = false;
+
+  $scope.initiateSearch = function(param) {
+    $http.get("/api/searchTags?q="+param).then(function(response){
+      $scope.tagsList = response.data.items;
+    });
+  }
+
+  $scope.search = function(){
+    if($scope.tags == ''){
+      $scope.tagsList = [];
+      clearTimeout($scope.lastSent);
+    }
+    clearTimeout($scope.lastSent);
+    $scope.lastSent = setTimeout(function(){$scope.initiateSearch($scope.tags)}, 100);
+  }
 
   $scope.ok = function () {
     $modalInstance.close($scope.selected.item);

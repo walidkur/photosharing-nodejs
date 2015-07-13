@@ -126,7 +126,12 @@
         <!-- Creates ability to make tags for photos -->
         <div class="form-group">
           <label for="tag">Tags:</label>
-          <input ng-model="tags" type="text" class="form-control" id="tag">
+          <div style="position: relative">
+              <input ng-change="search($viewValue)" ng-model="tags" type="text" class="form-control" id="tag">
+              <ul ng-show="tagsList" class="dropdown-menu" style="display: block">
+                <li ng-repeat="tag in tagsList">{{tag.name}}</li>
+              </ul>
+          </div>
         </div>
 
         <div class="form-group">
