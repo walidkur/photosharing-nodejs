@@ -15,7 +15,6 @@ var config = require('../config/server');
 var parseString = require('xml2js').parseString;
 var request = require('request');
 var Busboy = require('busboy');
-var fs = require('fs');
 
 // main api url
 var FILES_API = 'https://' + config.server.domain + '/files/oauth/api/';
@@ -152,7 +151,7 @@ router.get('/feed', isAuth, function(req, res, next){
           photo.uid = entry.author[0]['snx:userid'][0];
 
           // add the title of the file
-          photo.title = entry.title[0]['_'];
+          photo.title = entry.title[0]['_'].split(".")[0];
 
           // add the publish date of the file
           photo.published = entry.published[0];
@@ -217,10 +216,9 @@ router.get('/photo', isAuth, function(req, res, next){
       // see get feed for more details
       parseString(body, function(err, result){
         if(err) return res.status(500).end();
-        fs.writeFile('getphotojson.json', JSON.stringify(result));
         var photo = {};
         var entry = result.entry;
-        photo.id = entry.id;
+        photo.id = entry.id[0];
         photo.liked = false;
         photo.pid = entry['td:uuid'][0];
         var tags = [];
@@ -245,7 +243,7 @@ router.get('/photo', isAuth, function(req, res, next){
         }
         photo.photographer = entry.author[0].name[0];
         photo.uid = entry.author[0]['snx:userid'][0];
-        photo.title = entry.title[0]['_'];
+        photo.title = entry.title[0]['_'].split(".")[0];
         photo.published = entry.published[0];
         var socialx = entry['snx:rank'];
         for(var i = 0; i < socialx.length; i++){
@@ -625,7 +623,7 @@ router.delete('/comments', isAuth, function(req, res, next){
 router.post('/upload', isAuth, function(req, res, next){
 
   // return 412 if the necessary queries are not passed
-  if(isEmpty(req.query.visibility)) return res.status(412).end();
+  if(isEmpty(req.query.visibility) || isEmpty(req.query.title)) return res.status(412).end();
 
   // create a new Busboy instance which is used to obtain the stream of
   // the files
@@ -661,7 +659,12 @@ router.post('/upload', isAuth, function(req, res, next){
         if(!isEmpty(req.query.share)) url = url + '&shareWith=' + req.query.share + '&shared=true';
 
         // assign the slug (identifier) to the filename of the uploaded file
-        var slug = filename;
+        var slug;
+        if(!isEmpty(req.query.title)){
+          slug = req.query.title + '.' + filename.split(".")[1];
+        } else {
+          slug = filename;
+        }
 
         var headers = {
           'Authorization': 'Bearer ' + req.user.accessToken,
