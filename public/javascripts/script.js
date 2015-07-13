@@ -6,7 +6,7 @@ photoApp.config(function($routeProvider) {
 
   // route for the home page
   .when('/:type', {
-    templateUrl : 'pages/page-home.html',
+    templateUrl : '/partials/page-home',
     resolve     : {
       feedData  : function($rootScope, $route, apiService){
 
@@ -47,7 +47,7 @@ photoApp.config(function($routeProvider) {
 
   // route for the about page
   .when('/photo/:lid/:pid', {
-    templateUrl : 'pages/page-photo.html',
+    templateUrl : '/partials/page-photo',
 
     resolve     :  {
     photoData : function($route, apiService){
@@ -115,7 +115,7 @@ photoApp.config(function($routeProvider) {
 
   // route for the contact page
   .when('/profile/:uid', {
-    templateUrl : 'pages/page-profile.html',
+    templateUrl : 'partials/page-profile',
     resolve     :  {
       profileData : function($route, apiService){
         var resolveData = {};
