@@ -27,6 +27,10 @@ function commentFormat(content){
   return '<?xml version="1.0" encoding="UTF-8"?><entry xmlns="http://www.w3.org/2005/Atom" xmlns:app="http://www.w3.org/2007/app" xmlns:snx="http://www.ibm.com/xmlns/prod/sn"><category scheme="tag:ibm.com,2006:td/type" term="comment" label="comment"/><content type="text">' + content + '</content></entry>';
 }
 
+function updatePhotoFormat(id){
+  return '<?xml version="1.0" encoding="UTF-8"?><entry xmlns="http://www.w3.org/2005/Atom"><category term="document" label="document" scheme="tag:ibm.com,2006:td/type"/><id>' + id + '</id></entry>';
+}
+
 // check whether a session exists for the request
 function isAuth(req, res, next){
   if(!req.user) return res.status(401).end();
@@ -297,7 +301,7 @@ router.put('/photo', isAuth, function(req, res, next){
 
     var url = 'https://' + config.server.domain + '/files/basic/api/' + 'myuserlibrary/document/' + req.query.pid + '/entry?';
 
-    var body = '<?xml version="1.0" encoding="UTF-8"?><entry xmlns="http://www.w3.org/2005/Atom"><category term="document" label="document" scheme="tag:ibm.com,2006:td/type"/><id>' + req.body.id + '</id></entry>';
+    var body = updatePhotoFormat(req.body.id);
 
     if(!isEmpty(req.query.q)) url = url + '&tag=' + req.query.q;
 
