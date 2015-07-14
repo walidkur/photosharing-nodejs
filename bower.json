@@ -22,7 +22,6 @@
     "Justified-Gallery": "~3.5.4",
     "angular-cookies": "~1.4.1",
     "angular-bootstrap": "~0.13.0",
-    "webcomponentsjs": "~0.7.5",
     "ngInfiniteScroll": "~1.2.1"
   }
 }

@@ -15,7 +15,6 @@ var config = require('../config/server');
 var parseString = require('xml2js').parseString;
 var request = require('request');
 var Busboy = require('busboy');
-var fs = require('fs');
 
 // main api url
 var FILES_API = 'https://' + config.server.domain + '/files/oauth/api/';
@@ -26,6 +25,10 @@ var RECOMMENDATION_STRING = '<?xml version="1.0" encoding="UTF-8"?><entry xmlns=
 // formatter for comment content
 function commentFormat(content){
   return '<?xml version="1.0" encoding="UTF-8"?><entry xmlns="http://www.w3.org/2005/Atom" xmlns:app="http://www.w3.org/2007/app" xmlns:snx="http://www.ibm.com/xmlns/prod/sn"><category scheme="tag:ibm.com,2006:td/type" term="comment" label="comment"/><content type="text">' + content + '</content></entry>';
+}
+
+function updatePhotoFormat(id){
+  return '<?xml version="1.0" encoding="UTF-8"?><entry xmlns="http://www.w3.org/2005/Atom"><category term="document" label="document" scheme="tag:ibm.com,2006:td/type"/><id>' + id + '</id></entry>';
 }
 
 // check whether a session exists for the request
@@ -111,13 +114,18 @@ router.get('/feed', isAuth, function(req, res, next){
     var photos = [];
 
     // return 500 if there is an error
-    if(error) return res.status(500).end();
-    else {
+    if(error){
+      console.log('Error occurred: ' + JSON.stringify(error));
+      return res.status(500).end();
+    } else {
 
       // convert the xml that is returned to a JSON for easier parsing
       parseString(body, function(err, result){
 
-        if(err) return res.status(500).end();
+        if(err){
+          console.log('Error occurred: ' + JSON.stringify(err));
+          return res.status(500).end();
+        }
 
         // get the entries from the response
         var entries = result.feed.entry;
@@ -152,7 +160,7 @@ router.get('/feed', isAuth, function(req, res, next){
           photo.uid = entry.author[0]['snx:userid'][0];
 
           // add the title of the file
-          photo.title = entry.title[0]['_'];
+          photo.title = entry.title[0]['_'].split(".")[0];
 
           // add the publish date of the file
           photo.published = entry.published[0];
@@ -212,15 +220,20 @@ router.get('/photo', isAuth, function(req, res, next){
     };
 
     request.get(options, function(error, response, body){
-      if(error) res.status(500).end();
+      if(error){
+        console.log('Error occurred: ' + JSON.stringify(error));
+        return res.status(500).end();
+      }
       if(response.statusCode === 403) return res.status(403).end();
       // see get feed for more details
       parseString(body, function(err, result){
-        if(err) return res.status(500).end();
-        fs.writeFile('getphotojson.json', JSON.stringify(result));
+        if(err){
+          console.log('Error occurred: ' + JSON.stringify(err));
+          return res.status(500).end();
+        }
         var photo = {};
         var entry = result.entry;
-        photo.id = entry.id;
+        photo.id = entry.id[0];
         photo.liked = false;
         photo.pid = entry['td:uuid'][0];
         var tags = [];
@@ -230,6 +243,7 @@ router.get('/photo', isAuth, function(req, res, next){
           tags.push(tag);
         }
         photo.tags = tags;
+        photo.visibility = entry['td:visibility'][0];
         for(var j = 0; j < entry.link.length; j++){
           var link = entry.link[j];
           var type = link.$.type;
@@ -245,7 +259,7 @@ router.get('/photo', isAuth, function(req, res, next){
         }
         photo.photographer = entry.author[0].name[0];
         photo.uid = entry.author[0]['snx:userid'][0];
-        photo.title = entry.title[0]['_'];
+        photo.title = entry.title[0]['_'].split(".")[0];
         photo.published = entry.published[0];
         var socialx = entry['snx:rank'];
         for(var i = 0; i < socialx.length; i++){
@@ -278,14 +292,17 @@ router.put('/photo', isAuth, function(req, res, next){
 
   // perform request to get a nonce from the server
   request.get(options, function(error, response, body){
-    if(error) return res.status(500).end();
+    if(error){
+      console.log('Error occurred: ' + JSON.stringify(error));
+      return res.status(500).end();
+    }
     if(response.statusCode === 403) return res.status(403).end();
 
     var nonce = body;
 
     var url = 'https://' + config.server.domain + '/files/basic/api/' + 'myuserlibrary/document/' + req.query.pid + '/entry?';
 
-    var body = '<?xml version="1.0" encoding="UTF-8"?><entry xmlns="http://www.w3.org/2005/Atom"><category term="document" label="document" scheme="tag:ibm.com,2006:td/type"/><id>' + req.body.id + '</id></entry>';
+    var body = updatePhotoFormat(req.body.id);
 
     if(!isEmpty(req.query.q)) url = url + '&tag=' + req.query.q;
 
@@ -307,7 +324,10 @@ router.put('/photo', isAuth, function(req, res, next){
     };
 
     request.put(options, function(error, response, body){
-      if(error) return res.status(500).end();
+      if(error){
+        console.log('Error occurred: ' + JSON.stringify(error));
+        return res.status(500).end();
+      }
       if(response.statusCode === 402) return res.status(403).end();
       return res.status(200).end();
     });
@@ -332,7 +352,10 @@ router.delete('/photo', isAuth, function(req, res, next){
 
   // perform request to get a nonce from the server
   request.get(options, function(error, response, body){
-    if(error) return res.status(500).end();
+    if(error){
+      console.log('Error occurred: ' + JSON.stringify(error));
+      return res.status(500).end();
+    }
     if(response.statusCode === 403) return res.status(403).end();
 
     var nonce = body;
@@ -351,7 +374,10 @@ router.delete('/photo', isAuth, function(req, res, next){
     };
 
     request.del(options, function(error, response, body){
-      if(error) return res.status(500).end();
+      if(error){
+        console.log('Error occurred: ' + JSON.stringify(error));
+        return res.status(500).end();
+      }
       return res.status(200).end();
     });
   });
@@ -374,6 +400,10 @@ router.post('/like', isAuth, function(req, res, next){
   }
 
   request.get(options, function(error, response, body){
+    if(error){
+      console.log('Error occurred: ' + error);
+      return res.status(500).end();
+    }
     if(response.statusCode === 403) return res.status(403).end();
     var nonce = body;
 
@@ -398,7 +428,10 @@ router.post('/like', isAuth, function(req, res, next){
     };
 
     request.post(options, function(error, response, body){
-      if(error) return res.status(500).end();
+      if(error){
+        console.log('Error occurred: ' + JSON.stringify(error));
+        return res.status(500).end();
+      }
       if(response.statusCode === 403) return res.status(403).end();
       return res.status(200).end();
     });
@@ -423,54 +456,58 @@ router.get('/comments', isAuth, function(req, res, next){
     };
 
     request.get(options, function(error, response, body){
-      if(error) return res.status(500).end();
-      if(response.statusCode === 403) return res.status(403).end();
-      else {
-        parseString(body, function(err, result){
-          if(err) return res.status(500).end();
-
-          // create the comment array that to be return
-          var comments = [];
-
-          // get the entries from the response object
-          var entries = result.feed.entry;
-
-          // return the empty comment array if there are no entries
-          if(isEmpty(entries))  return res.send(comments);
-
-          // iterate through the comments creating new objects and pushing them
-          // to the array
-          for(var i = 0; i < entries.length; i++){
-
-            // obtain the entry
-            var entry = entries[i];
-
-            // create the comment to be added to the array
-            var comment = {};
-
-            // add the user id of the author to the comment object
-            comment.uid = entry.author[0]['snx:userid'][0];
-
-            // add the author of the comment to the comment object
-            comment.author = entry.author[0].name[0];
-
-            // add the publish date of the comment
-            comment.date = entry.published[0];
-
-            // add the content of the comment
-            comment.content = entry.content[0]['_'];
-
-            // add the id of the comment
-            comment.cid = entry['td:uuid'][0];
-
-            // push the comment to the array
-            comments.push(comment);
-          }
-
-          // return the array of comments
-          res.send(comments);
-        });
+      if(error){
+        console.log('Error occurred: ' + JSON.stringify(error));
+        return res.status(500).end();
       }
+      if(response.statusCode === 403) return res.status(403).end();
+      parseString(body, function(err, result){
+        if(err){
+          console.log('Error occurred: ' + JSON.stringify(err));
+          return res.status(500).end();
+        }
+
+        // create the comment array that to be return
+        var comments = [];
+
+        // get the entries from the response object
+        var entries = result.feed.entry;
+
+        // return the empty comment array if there are no entries
+        if(isEmpty(entries))  return res.send(comments);
+
+        // iterate through the comments creating new objects and pushing them
+        // to the array
+        for(var i = 0; i < entries.length; i++){
+
+          // obtain the entry
+          var entry = entries[i];
+
+          // create the comment to be added to the array
+          var comment = {};
+
+          // add the user id of the author to the comment object
+          comment.uid = entry.author[0]['snx:userid'][0];
+
+          // add the author of the comment to the comment object
+          comment.author = entry.author[0].name[0];
+
+          // add the publish date of the comment
+          comment.date = entry.published[0];
+
+          // add the content of the comment
+          comment.content = entry.content[0]['_'];
+
+          // add the id of the comment
+          comment.cid = entry['td:uuid'][0];
+
+          // push the comment to the array
+          comments.push(comment);
+        }
+
+        // return the array of comments
+        res.send(comments);
+      });
     });
   }
 });
@@ -492,7 +529,10 @@ router.post('/comments', isAuth, function(req, res, next){
   }
 
   request.get(options, function(error, response, body){
-    if(error) return res.status(500).end();
+    if(error){
+      console.log('Error occurred: ' + JSON.stringify(error));
+      return res.status(500).end();
+    }
     if(response.statusCode === 403) return res.status(403).end();
 
     var nonce = body;
@@ -518,10 +558,16 @@ router.post('/comments', isAuth, function(req, res, next){
     };
 
     request.post(options, function(error, response, body){
-      if(error) return res.status(500).end();
+      if(error){
+        console.log('Error occurred: ' + JSON.stringify(error));
+        return res.status(500).end();
+      }
       if(response.statusCode === 403) return res.status(403).end();
       parseString(body, function(err, result){
-        if(err) return res.status(500).end();
+        if(err){
+          console.log('Error occurred: ' + JSON.stringify(err));
+          return res.status(500).end();
+        }
         var comment = {};
         var entry = result.entry;
         comment.uid = entry.author[0]['snx:userid'][0];
@@ -550,6 +596,10 @@ router.put('/comments', isAuth, function(req, res, next){
   }
 
   request.get(options, function(error, response, body){
+    if(error){
+      console.log('Error occurred: ' + JSON.stringify(error));
+      return res.status(500).end();
+    }
     if(response.statusCode === 403) return res.status(403).end();
     var nonce = body;
 
@@ -571,7 +621,10 @@ router.put('/comments', isAuth, function(req, res, next){
     };
 
     request.put(options, function(error, response, body){
-      if(error) return res.status(500).end();
+      if(error){
+        console.log('Error occurred: ' + JSON.stringify(error));
+        return res.status(500).end();
+      }
       if(response.statusCode === 403) return res.status(403).end();
       return res.status(200).end();
     });
@@ -595,7 +648,10 @@ router.delete('/comments', isAuth, function(req, res, next){
   }
 
   request.get(options, function(error, response, body){
-    if(error) return res.status(500).end();
+    if(error){
+      console.log('Error occurred: ' + JSON.stringify(error));
+      return res.status(500).end();
+    }
     if(response.statusCode === 403) return res.status(403).end();
 
     var nonce = body;
@@ -614,7 +670,10 @@ router.delete('/comments', isAuth, function(req, res, next){
     };
 
     request.del(options, function(error, response, body){
-      if(error) return res.status(500).end()
+      if(error){
+        console.log('Error occurred: ' + JSON.stringify(error));
+        return res.status(500).end()
+      }
       if(response.statusCode === 403) return res.status(403).end();
       return res.status(200).end();
     });
@@ -625,7 +684,7 @@ router.delete('/comments', isAuth, function(req, res, next){
 router.post('/upload', isAuth, function(req, res, next){
 
   // return 412 if the necessary queries are not passed
-  if(isEmpty(req.query.visibility)) return res.status(412).end();
+  if(isEmpty(req.query.visibility) || isEmpty(req.query.title)) return res.status(412).end();
 
   // create a new Busboy instance which is used to obtain the stream of
   // the files
@@ -644,65 +703,75 @@ router.post('/upload', isAuth, function(req, res, next){
   request.get(options, function(error, response, body){
 
     // return 400 if there was an error
-    if(error) return res.status(500).end()
-    if(response.statusCode === 403) return res.status(403).end();
-    else {
-      var nonce = body;
-
-      // process the file to be uploaded
-      busboy.on('file', function(fieldname, file, filename, encoding, mimetype){
-        var j = request.jar();
-        var url = FILES_API + 'myuserlibrary/feed?visibility=' + req.query.visibility;
-
-        // add tags to the url
-        if(!isEmpty(req.query.q)) url = url + '&tag=' + req.query.q;
-
-        // add shares to the url
-        if(!isEmpty(req.query.share)) url = url + '&shareWith=' + req.query.share + '&shared=true';
-
-        // assign the slug (identifier) to the filename of the uploaded file
-        var slug = filename;
-
-        var headers = {
-          'Authorization': 'Bearer ' + req.user.accessToken,
-          'Slug': slug,
-          'Content-Length': req.headers['x-content-length'],
-          //the nonce is the nonce we obtained before
-          'X-Update-Nonce': nonce
-        };
-
-        var options = {
-          url: url,
-          headers: headers
-        };
-
-        // pipe the file to the request
-        file.pipe(request.post(options, function(error, response, body){
-          // return 500 if there was an error
-          if(error) return res.status(500).end();
-          if(response.statusCode === 403) return res.status(403).end();
-          parseString(body, function(err, result){
-            if(err) return res.status(500).end();
-            var entry = result.entry;
-            var pid = entry['td:uuid'];
-            var lid = entry['td:libraryId'];
-            var photo = {};
-            photo.pid = pid;
-            photo.lid = lid;
-            return res.send(photo);
-          });
-        }));
-
-      });
-
-
-      // return 200 when busboy finishes processing the file
-      busboy.on('finish', function(){
-      });
-
-      // pipe the request to busboy
-      req.pipe(busboy);
+    if(error){
+      console.log('Error occurred: ' + JSON.stringify(error));
+      return res.status(500).end()
     }
+    if(response.statusCode === 403) return res.status(403).end();
+    var nonce = body;
+
+    // process the file to be uploaded
+    busboy.on('file', function(fieldname, file, filename, encoding, mimetype){
+      var j = request.jar();
+      var url = FILES_API + 'myuserlibrary/feed?visibility=' + req.query.visibility;
+
+      // add tags to the url
+      if(!isEmpty(req.query.q)) url = url + '&tag=' + req.query.q;
+
+      // add shares to the url
+      if(!isEmpty(req.query.share)) url = url + '&shareWith=' + req.query.share + '&shared=true';
+
+      // assign the slug (identifier) to the filename of the uploaded file
+      var slug;
+      if(!isEmpty(req.query.title)){
+        slug = req.query.title + '.' + filename.split(".")[1];
+      } else {
+        slug = filename;
+      }
+
+      var headers = {
+        'Authorization': 'Bearer ' + req.user.accessToken,
+        'Slug': slug,
+        'Content-Length': req.headers['x-content-length'],
+        //the nonce is the nonce we obtained before
+        'X-Update-Nonce': nonce
+      };
+
+      var options = {
+        url: url,
+        headers: headers
+      };
+
+      // pipe the file to the request
+      file.pipe(request.post(options, function(error, response, body){
+        // return 500 if there was an error
+        if(error){
+          console.log('Error occurred: ' + JSON.stringify(error));
+          return res.status(500).end();
+        }
+        if(response.statusCode === 403) return res.status(403).end();
+        parseString(body, function(err, result){
+          if(err){
+            console.log('Error occurred: ' + JSON.stringify(err));
+            return res.status(500).end();
+          }
+          var entry = result.entry;
+          var pid = entry['td:uuid'];
+          var lid = entry['td:libraryId'];
+          var photo = {};
+          photo.pid = pid;
+          photo.lid = lid;
+          return res.send(photo);
+        });
+      }));
+    });
+
+    // return 200 when busboy finishes processing the file
+    busboy.on('finish', function(){
+    });
+
+    // pipe the request to busboy
+    req.pipe(busboy);
   });
 });
 
@@ -711,57 +780,61 @@ router.get('/profile', isAuth, function(req, res, next){
 
   // return 412 if the necessary queryies are not passed
   if(isEmpty(req.query.uid))  return req.status(412).end()
-  else {
 
-    // url to search for a profile by id
-    var url = 'https://' + config.server.domain + '/profiles/atom/profile.do?userid=' + req.query.uid;
+  // url to search for a profile by id
+  var url = 'https://' + config.server.domain + '/profiles/atom/profile.do?userid=' + req.query.uid;
 
-    var headers = {'Authorization' : 'Bearer ' + req.user.accessToken};
+  var headers = {'Authorization' : 'Bearer ' + req.user.accessToken};
 
-    var options = {
-      url : url,
-      headers : headers
-    };
+  var options = {
+    url : url,
+    headers : headers
+  };
 
-    request.get(options, function(error, response, body){
+  request.get(options, function(error, response, body){
 
-      // return 500 if there was an error
-      if(error) return res.status(500).end();
-      if(response.statusCode === 403) return res.status(403).end();
+    // return 500 if there was an error
+    if(error){
+      console.log('Error occurred: ' + JSON.stringify(error));
+      return res.status(500).end();
+    }
+    if(response.statusCode === 403) return res.status(403).end();
 
-      parseString(body, function(err, result){
-        if(err) return res.status(500).end();
+    parseString(body, function(err, result){
+      if(err){
+        console.log('Error occurred: ' + JSON.stringify(err));
+        return res.status(500).end();
+      }
 
-        var entry = result.feed.entry;
+      var entry = result.feed.entry;
 
-        // send back "no user found" if the entry is empty
-        if(isEmpty(entry))  return res.send("User does not exist.");
+      // send back "no user found" if the entry is empty
+      if(isEmpty(entry))  return res.send("User does not exist.");
 
-        // get the entry form the response
-        entry = result.feed.entry[0];
+      // get the entry form the response
+      entry = result.feed.entry[0];
 
-        // create the object to be sent back
-        var profile = {};
+      // create the object to be sent back
+      var profile = {};
 
-        // add the name of the user
-        profile.name = entry.contributor[0].name[0];
+      // add the name of the user
+      profile.name = entry.contributor[0].name[0];
 
-        // add the email of the user
-        profile.email = entry.contributor[0].email[0];
+      // add the email of the user
+      profile.email = entry.contributor[0].email[0];
 
-        // iterate through the links to find the profile picture
-        for(var i = 0; i < entry.link.length; i++){
-          if(entry.link[i].$.type.indexOf('image') > -1){
-            profile.img = entry.link[i].$.href;
-            break;
-          }
+      // iterate through the links to find the profile picture
+      for(var i = 0; i < entry.link.length; i++){
+        if(entry.link[i].$.type.indexOf('image') > -1){
+          profile.img = entry.link[i].$.href;
+          break;
         }
+      }
 
-        //send back the profile
-        res.send(profile);
-      });
+      //send back the profile
+      res.send(profile);
     });
-  }
+  });
 });
 
 router.get('/searchTags', isAuth, function(req, res, next){
@@ -780,7 +853,10 @@ router.get('/searchTags', isAuth, function(req, res, next){
   }
 
   request.get(options, function(error, response, body){
-    if(error) return res.status(500);
+    if(error){
+      console.log('Error occurred: ' + JSON.stringify(error));
+      return res.status(500);
+    }
     if(response.statusCode === 403) return res.status(403).end();
     res.send(body);
   })

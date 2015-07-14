@@ -6,7 +6,7 @@ photoApp.config(function($routeProvider) {
 
   // route for the home page
   .when('/:type', {
-    templateUrl : 'pages/page-home.html',
+    templateUrl : '/partials/page-home',
     resolve     : {
       feedData  : function($rootScope, $route, apiService){
 
@@ -47,7 +47,7 @@ photoApp.config(function($routeProvider) {
 
   // route for the about page
   .when('/photo/:lid/:pid', {
-    templateUrl : 'pages/page-photo.html',
+    templateUrl : '/partials/page-photo',
 
     resolve     :  {
     photoData : function($route, apiService){
@@ -115,7 +115,7 @@ photoApp.config(function($routeProvider) {
 
   // route for the contact page
   .when('/profile/:uid', {
-    templateUrl : 'pages/page-profile.html',
+    templateUrl : 'partials/page-profile',
     resolve     :  {
       profileData : function($route, apiService){
         var resolveData = {};
@@ -255,7 +255,6 @@ photoApp.controller('photoController', function($location, $scope, $rootScope, $
   }
 
   $scope.editPhoto = function(content){
-    console.log($scope.photo.editurl);
     var tags = content.replace(/ /g, ",");
     apiService.editPhoto($scope.photo.editurl, $scope.photo.id, '?pid=' + $scope.photo.pid + '&q=' + tags, editPhotoCallback, errorCallback);
 
@@ -552,6 +551,7 @@ photoApp.controller('navbarController', function($location, $scope, $rootScope, 
 
 photoApp.controller('ModalInstanceController', function($window, $http, $scope, $modalInstance, items) {
 
+  $scope.appliedTags = [];
   $scope.items = items;
   $scope.shares = '';
   $scope.tags = '';
@@ -583,6 +583,16 @@ photoApp.controller('ModalInstanceController', function($window, $http, $scope, 
     $modalInstance.dismiss('cancel');
   };
 
+  $scope.removeTag = function(index){
+    $scope.appliedTags.splice(index, 1);
+  }
+
+  $scope.addTag = function(index) {
+    $scope.appliedTags.push($scope.tagsList[index]);
+    $scope.tags = '';
+    $scope.tagsList = [];
+  }
+
   $scope.uploadFile = function(){
     $('#uploadButton').attr('disabled', '');
     $('#uploadText').css('display', 'none')
@@ -603,6 +613,8 @@ photoApp.controller('ModalInstanceController', function($window, $http, $scope, 
       var tagArray = tags.split(' ');
       url = url + '&q=' + tagArray.join();
     }
+
+    url += '&title=' + $scope.title;
 
     $http.post(url, fd, {
       headers: { 'Content-Type' : undefined, 'X-Content-Length' : $scope.files[0].size},
