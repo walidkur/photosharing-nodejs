@@ -243,6 +243,7 @@ router.get('/photo', isAuth, function(req, res, next){
           tags.push(tag);
         }
         photo.tags = tags;
+        photo.visibility = entry['td:visibility'][0];
         for(var j = 0; j < entry.link.length; j++){
           var link = entry.link[j];
           var type = link.$.type;
