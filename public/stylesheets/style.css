@@ -322,6 +322,21 @@ div.photo button
   color: #9d9d9d;
 }
 
+.dot {
+  padding-left: 7px;
+  padding-right: 5px;
+  font-weight: bold;
+}
+
+.visibilityButton {
+  background-color: inherit;
+  border: none;
+}
+
+.visibility {
+  font-weight: bold;
+}
+
 tag {
   font-family: "Ariel", sans-serif;
 }
@@ -384,9 +399,21 @@ tag {
   margin-top: 5px;
   margin-bottom: 5px;
   float: left;
-  width: 400px;
 }
 
+#addComment {
+  height: 35px;
+}
+
+textarea {
+
+  resize: none;
+}
+
+#addButton {
+  padding-top: 0px;
+  padding-bottom: 0px;
+}
 
 /* Edit comments */
 .editCommentButton {
@@ -395,6 +422,9 @@ tag {
   font-size: 10px;
 }
 
+#commentText {
+  height:35px;
+}
 
 /* Delete comments */
 .deleteCommentButton {
