@@ -266,7 +266,9 @@ router.get('/photo', isAuth, function(req, res, next){
           var x = socialx[i];
           if(x.$.scheme.indexOf('recommendations') > -1){
             photo.likes = parseInt(x['_']);
-            break;
+          }
+          if(x.$.scheme.indexOf('share') > -1){
+            photo.shares = parseInt(x['_']);
           }
         }
         photo.lid = entry['td:libraryId'][0];
