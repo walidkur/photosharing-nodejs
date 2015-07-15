@@ -31,35 +31,35 @@
           <div class="media-body">
             <h4 class="photographer"><a href="#/profile/{{photo.uid}}">{{photo.photographer}}</a></h4>
 
-            <div>
 
-                <span>{{photo.published}}</span>
+
+            <div style="position: absolute;">
+              <span class="published">{{photo.published}}
                 <span class="dot">·</span>
-
-                <span class="dropdown" style="position: absolute;">
-                  <button class="visibilityButton dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
+                <span class="dropdown">
+                  <button class="visibilityButton dropdown-toggle" data-toggle="dropdown">
                     <span class="glyphicon glyphicon-eye-open"></span>
+                    <span class="visibility" ng-if="uid === photo.uid">
+                      Public
+                    </span>
+                    <span class="visibility" ng-if="uid !== photo.uid">
+                      Private
+                    </span>
                   </button>
-                  <ul ng-if="uid === photo.uid" class="dropdown-menu" aria-labelledby="dropdownMenu1">
+                  <ul ng-if="uid === photo.uid" class="dropdown-menu">
                     <li><a href="">Public</a></li>
                     <li><a href="">Private</a></li>
                   </ul>
-                  <span class="visibility" ng-if="uid === photo.uid">
-                    Public
-                  </span>
-                  <span class="visibility" ng-if="uid !== photo.uid">
-                    Private
-                  </span>
                 </span>
 
+
+              </span>
 
 
             </div>
 
-
-
-
-              <h5>{{photo.title}}</h5>
+            <br>
+            <h5>{{photo.title}}</h5>
 
           </div>
         </div>
