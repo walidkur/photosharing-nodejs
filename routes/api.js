@@ -681,7 +681,40 @@ router.delete('/comments', isAuth, function(req, res, next){
 });
 
 // upload a file
-router.post('/upload', isAuth, function(req, res, next){
+router.post('/upload', isAuth, function(req, res, next) {
+  // return 412 if the necessary queries are not passed
+  if(isEmpty(req.query.visibility) || isEmpty(req.query.title)) return res.status(412).end();
+
+  var url = FILES_API + 'myuserlibrary/feed?includeCount=true&search=' + req.query.title;
+
+  var headers = { 'Authorization' : 'Bearer ' + req.user.accessToken };
+
+  var options = {
+    url: url,
+    headers: headers
+  };
+
+  request.get(options, function(error, response, body){
+    if(error){
+      console.log('Error occurred: ' + JSON.stringify(error));
+      return res.status(500).end();
+    }
+
+    parseString(body, function(err, result){
+      if(err){
+        console.log('Error occurred: ' + JSON.stringify(err));
+        return res.status(500).end();
+      }
+      var feed = result.feed;
+      var searchCount = parseInt(feed['opensearch:totalResults'][0]);
+      if(searchCount > 0){
+        next();
+      } else {
+        res.status(400).end();
+      }
+    })
+  })
+}, function(req, res, next){
 
   // return 412 if the necessary queries are not passed
   if(isEmpty(req.query.visibility) || isEmpty(req.query.title)) return res.status(412).end();
