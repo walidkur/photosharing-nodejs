@@ -174,9 +174,10 @@ photoApp.controller('homeController', function($animate, $scope, $routeParams, $
       if(phase === 'close'){
         animateCount = 0;
         angular.element(document).ready(function(){
-          $('#homeGallery').justifiedGallery(galleryConfig);
+          $('#homeGallery').justifiedGallery(galleryConfig).on('jg.complete', function(e){
+            $scope.loading = false;
+          });
           $('#homeGallery').removeClass('hidden');
-          $scope.loading = false;
         });
       }
     }
@@ -210,8 +211,9 @@ photoApp.controller('homeController', function($animate, $scope, $routeParams, $
     if(data.length != 0){
       $scope.data = $scope.data.concat(data);
       angular.element(document).ready(function(){
-        $('#homeGallery').justifiedGallery('norewind');
-        $scope.loading = false;
+        $('#homeGallery').justifiedGallery('norewind').on('jg.complete', function(e){
+          $scope.loading = false;
+        });
       });
     }
   }
@@ -372,7 +374,7 @@ photoApp.controller('photoController', function($location, $scope, $rootScope, $
 });
 
 
-photoApp.controller('profileController', function($scope, $http, $routeParams, $window, apiService, profileData) {
+photoApp.controller('profileController', function($animate, $scope, $http, $routeParams, $window, apiService, profileData) {
 
 
   var index = 21;
@@ -380,12 +382,22 @@ photoApp.controller('profileController', function($scope, $http, $routeParams, $
   $scope.profile = profileData.profile;
   $scope.data = profileData.feed;
   $scope.loading = true;
+  var animateCount = 1;
 
   var galleryConfig = { rowHeight: window.screen.height * .25,  margins: 10 };
 
-  angular.element(document).ready(function(){
-    $('#profileGallery').justifiedGallery(galleryConfig);
-    $scope.loading = false;
+  $animate.on('enter', $('body'), function (element, phase){
+    if(animateCount > 0){
+      if(phase === 'close'){
+        animateCount = 0;
+        angular.element(document).ready(function(){
+          $('#profileGallery').justifiedGallery(galleryConfig).on('jg.complete', function(e){
+            $scope.loading = false;
+          });
+          $('#profileGallery').removeClass('hidden');
+        });
+      }
+    }
   });
 
   $scope.loadMore = function(){
@@ -411,8 +423,9 @@ photoApp.controller('profileController', function($scope, $http, $routeParams, $
     if(data.length != 0) {
       $scope.data = $scope.data.concat(data);
       angular.element(document).ready(function(){
-        $('#profileGallery').justifiedGallery('norewind');
-        $scope.loading = false;
+        $('#profileGallery').justifiedGallery('norewind').on('jg.complete', function(e){
+          $scope.loading = false;
+        });
       });
     }
   }
@@ -571,9 +584,10 @@ photoApp.controller('ModalInstanceController', function($window, $http, $scope, 
   }
 
   $scope.uploadFile = function(){
+    $scope.message = '';
     $('#uploadButton').attr('disabled', '');
-    $('#uploadText').css('display', 'none')
-    $('#uploadSpinner').css('display', 'inline')
+    $('#uploadText').css('display', 'none');
+    $('#uploadSpinner').css('display', 'inline');
     var fd = new FormData();
     fd.append("file", $scope.files[0]);
 
@@ -599,6 +613,13 @@ photoApp.controller('ModalInstanceController', function($window, $http, $scope, 
     }).success(function(data, status){
       $scope.ok();
       $window.location.assign('/#/photo/' + data.lid + '/' + data.pid);
+    }).error(function(data, status){
+      if(status === 400){
+        $scope.message = 'You already have a photo with this name; please select another name.';
+        $('#uploadButton').removeAttr('disabled');
+        $('#uploadText').css('display', 'inline');
+        $('#uploadSpinner').css('display', 'none');
+      }
     });
   }
 });
