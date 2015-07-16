@@ -584,9 +584,10 @@ photoApp.controller('ModalInstanceController', function($window, $http, $scope, 
   }
 
   $scope.uploadFile = function(){
+    $scope.message = '';
     $('#uploadButton').attr('disabled', '');
-    $('#uploadText').css('display', 'none')
-    $('#uploadSpinner').css('display', 'inline')
+    $('#uploadText').css('display', 'none');
+    $('#uploadSpinner').css('display', 'inline');
     var fd = new FormData();
     fd.append("file", $scope.files[0]);
 
@@ -612,6 +613,13 @@ photoApp.controller('ModalInstanceController', function($window, $http, $scope, 
     }).success(function(data, status){
       $scope.ok();
       $window.location.assign('/#/photo/' + data.lid + '/' + data.pid);
+    }).error(function(data, status){
+      if(status === 400){
+        $scope.message = 'You already have a photo with this name; please select another name.';
+        $('#uploadButton').removeAttr('disabled');
+        $('#uploadText').css('display', 'inline');
+        $('#uploadSpinner').css('display', 'none');
+      }
     });
   }
 });

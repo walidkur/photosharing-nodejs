@@ -709,7 +709,7 @@ router.post('/upload', isAuth, function(req, res, next) {
       }
       var feed = result.feed;
       var searchCount = parseInt(feed['opensearch:totalResults'][0]);
-      if(searchCount > 0){
+      if(searchCount == 0){
         next();
       } else {
         res.status(400).end();
