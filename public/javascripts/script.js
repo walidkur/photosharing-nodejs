@@ -371,6 +371,29 @@ photoApp.controller('photoController', function($location, $scope, $rootScope, $
       }
     )
   }
+
+  var setting = false;
+
+  $scope.editListener = function () {
+    $(document).ready(function(){
+      if (setting === false) {
+          setting = true;
+          $("#addCommentText").css("display", "none");
+          console.log("Hide");
+
+      }
+      else {
+        setting = false;
+        $("#addCommentText").css("display", "block");
+        console.log("Show");
+      }
+
+    });
+
+
+  }
+
+
 });
 
 

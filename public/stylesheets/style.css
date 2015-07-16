@@ -318,8 +318,35 @@ div.photo button
   text-decoration: inherit;
 }
 
-.date {
-  color: #9d9d9d;
+.published {
+
+  font-weight: bold;
+  font-size: 12px;
+}
+
+.dot {
+
+  padding-left: 7px;
+  padding-right: 5px;
+  font-weight: bold;
+  font-size: 12px;
+}
+
+.visibilityButton {
+
+  background-color: inherit;
+  border: none;
+}
+
+.glyphicon-eye-open {
+  font-size: 12px;
+}
+
+.visibility {
+
+  padding-left: 0px;
+  margin-right: 0px;
+  font-size: 12px;
 }
 
 tag {
@@ -381,13 +408,28 @@ tag {
   margin-left: 50px;
 }
 
+.date {
+  color: #9d9d9d;
+}
+
 .addCommentBox {
   margin-top: 5px;
   margin-bottom: 5px;
   float: left;
-  width: 400px;
 }
 
+#addComment {
+  height: 35px;
+}
+
+textarea {
+  resize: none;
+}
+
+#addButton {
+  padding-top: 0px;
+  padding-bottom: 0px;
+}
 
 /* Edit comments */
 .editCommentButton {
@@ -396,6 +438,9 @@ tag {
   font-size: 10px;
 }
 
+#commentText {
+  height:35px;
+}
 
 /* Delete comments */
 .deleteCommentButton {
