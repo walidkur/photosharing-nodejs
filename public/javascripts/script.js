@@ -374,7 +374,7 @@ photoApp.controller('photoController', function($location, $scope, $rootScope, $
 });
 
 
-photoApp.controller('profileController', function($scope, $http, $routeParams, $window, apiService, profileData) {
+photoApp.controller('profileController', function($animate, $scope, $http, $routeParams, $window, apiService, profileData) {
 
 
   var index = 21;
@@ -382,13 +382,22 @@ photoApp.controller('profileController', function($scope, $http, $routeParams, $
   $scope.profile = profileData.profile;
   $scope.data = profileData.feed;
   $scope.loading = true;
+  var animateCount = 1;
 
   var galleryConfig = { rowHeight: window.screen.height * .25,  margins: 10 };
 
-  angular.element(document).ready(function(){
-    $('#profileGallery').justifiedGallery(galleryConfig).on('jg.complete', function(e){
-      $scope.loading = false;
-    });
+  $animate.on('enter', $('body'), function (element, phase){
+    if(animateCount > 0){
+      if(phase === 'close'){
+        animateCount = 0;
+        angular.element(document).ready(function(){
+          $('#profileGallery').justifiedGallery(galleryConfig).on('jg.complete', function(e){
+            $scope.loading = false;
+          });
+          $('#profileGallery').removeClass('hidden');
+        });
+      }
+    }
   });
 
   $scope.loadMore = function(){
