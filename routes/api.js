@@ -712,7 +712,7 @@ router.post('/upload', isAuth, function(req, res, next) {
       if(searchCount == 0){
         next();
       } else {
-        res.status(400).end();
+        res.status(409).end();
       }
     })
   })

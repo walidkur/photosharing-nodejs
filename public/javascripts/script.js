@@ -637,7 +637,7 @@ photoApp.controller('ModalInstanceController', function($window, $http, $scope, 
       $scope.ok();
       $window.location.assign('/#/photo/' + data.lid + '/' + data.pid);
     }).error(function(data, status){
-      if(status === 400){
+      if(status === 409){
         $scope.message = 'You already have a photo with this name; please select another name.';
         $('#uploadButton').removeAttr('disabled');
         $('#uploadText').css('display', 'inline');
