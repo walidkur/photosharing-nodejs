@@ -123,17 +123,17 @@ photoApp.factory('apiService', function($http, $q){
       return promise;
     },
 
-    editPhoto: function(params, successCallback, errorCallback){
-      console.log("Request?");
+    editPhoto: function(url, id, params, successCallback, errorCallback){
       var promise = $http({
         method:'PUT',
-        url:'/api/photo' + params
+        url:'/api/photo' + params,
+        data: {url: url,
+               id: id}
       }).success(function(data, status){
         successCallback(data, status);
       }).error(function(data, status){
         errorCallback(data, status);
       });
-      console.log("Request made");
       return promise;
     },
 

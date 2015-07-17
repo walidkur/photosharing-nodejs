@@ -227,6 +227,7 @@ body{
 
 /* Photo column */
 #clickedPhoto {
+  margin-top: 20px;
   float: right;
 }
 
@@ -273,6 +274,7 @@ div.photo button
 
 /* Comment column */
 #commentColumn {
+  margin-top: 20px;
   max-height: 750px;
   max-width: 450px;
 }
@@ -307,12 +309,40 @@ div.photo button
   text-decoration: inherit;
 }
 
-.date {
-  color: #9d9d9d;
+.published {
+
+  font-weight: bold;
+  font-size: 12px;
+}
+
+.dot {
+
+  padding-left: 7px;
+  padding-right: 5px;
+  font-weight: bold;
+  font-size: 12px;
+}
+
+.visibilityButton {
+
+  background-color: inherit;
+  border: none;
+}
+
+.glyphicon-eye-open {
+  font-size: 12px;
+}
+
+.visibility {
+
+  padding-left: 0px;
+  margin-right: 0px;
+  font-size: 12px;
 }
 
 tag {
   font-family: "Ariel", sans-serif;
+  display: inline;
 }
 
 .tagButton {
@@ -320,6 +350,10 @@ tag {
   border: none;
 }
 
+.addTags {
+  padding: none;
+  margin: none;
+}
 
 /* Number of likes */
 #divider {
@@ -365,13 +399,28 @@ tag {
   margin-left: 50px;
 }
 
+.date {
+  color: #9d9d9d;
+}
+
 .addCommentBox {
   margin-top: 5px;
   margin-bottom: 5px;
   float: left;
-  width: 400px;
 }
 
+#addComment {
+  height: 35px;
+}
+
+textarea {
+  resize: none;
+}
+
+#addButton {
+  padding-top: 0px;
+  padding-bottom: 0px;
+}
 
 /* Edit comments */
 .editCommentButton {
@@ -380,6 +429,9 @@ tag {
   font-size: 10px;
 }
 
+#commentText {
+  height:35px;
+}
 
 /* Delete comments */
 .deleteCommentButton {
@@ -395,7 +447,6 @@ tag {
 #uploadText {
   display: inline;
 }
-
 
 .brandPageNode {
   font-size: 86px;
@@ -415,10 +466,40 @@ tag {
   margin-top: 25%;
 }
 
-
-
 .brandPhoto {
   margin-top: 8%;
+}
+
+.glyphicon-refresh {
+  margin-left: 5px;
+}
+
+.successfulEdit{
+  background: inherit;
+  border: none;
+}
+
+.glyphicon-ok-sign {
+  margin-left: 5px;
+  color: #4F8A10;
+}
+
+.failedEdit{
+  background: inherit;
+  border: none;
+}
+
+.glyphicon-exclamation-sign {
+  margin-right: 5px;
+  color: #D8000C;
+}
+
+.tooltip.bottom .tooltip-arrow {
+  top: 0;
+  left: 50%;
+  margin-left: -5px;
+  border-bottom-color: #000000; /* black */
+  border-width: 0 5px 5px;
 }
 
 /* ANIMATIONS

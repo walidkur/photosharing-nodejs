@@ -38,6 +38,10 @@ router.get('/', function(req, res, next) {
 // if the user was not found in the request, authenticate the user using oauth2
 });
 
+router.get('/partials/:fileName', function(req, res, next){
+  res.render('partials/' + req.params.fileName);
+});
+
 router.post('/login', passport.authenticate('ibm-connections-cloud'));
 
 // logout route
