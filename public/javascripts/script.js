@@ -231,6 +231,28 @@ photoApp.controller('photoController', function($location, $scope, $rootScope, $
   $scope.profile = photoData.profile;
   $scope.comments = photoData.comments;
   $scope.liked = $scope.photo.liked;
+  $scope.visibility = {};
+  $scope.visibility.loading = false;
+  $scope.visibility.success = false;
+  $scope.visibility.failure = false;
+
+  $scope.updateVisibility = function(visibility){
+    $scope.visibility.loading = true;
+    apiService.editPhoto($scope.photo.editurl, $scope.photo.id, '?pid=' + $scope.photo.pid + '&visibility=' + visibility, successCallback, errorCallback);
+
+    function successCallback(data, status){
+      $scope.visibility.loading = false;
+      $scope.visibility.success = true;
+      $scope.visibility.failure = false;
+      $scope.photo.visibility = visibility;
+    }
+
+    function errorCallback(data, status){
+      $scope.visibility.loading = false;
+      $scope.visibility.success = false;
+      $scope.visibility.failure = true;
+    }
+  }
 
   $scope.editComment = function(content, cid){
     var comment = $scope.comments.filter(function(el){
