@@ -9,7 +9,7 @@
 <!--Implemented Justified Gallery-->
 <div infinite-scroll="loadMore()" infinite-scroll-distance="1" class="gallery hidden" id="homeGallery">
   <div ng-repeat="entry in data">
-    <a href="#/photo/{{entry.lid}}/{{entry.pid}}">
+    <a ng-href="/#/photo/{{entry.lid}}/{{entry.pid}}">
       <img ng-src="{{entry.thumbnail}}"/>
     </a>
     <div class="caption">

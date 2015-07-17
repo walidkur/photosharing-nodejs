@@ -71,8 +71,20 @@ photoApp.config(function($routeProvider) {
 
                     .then(function(){
 
-                        return resolveData;
+                      var images = [];
+                      images.push(resolveData.photo.link);
+                      images.push(resolveData.profile.img);
+                      angular.forEach(resolveData.comments, function(comment){
+                        images.push(comment.profileImg);
+                      });
 
+                      return apiService.resolveImages(images)
+
+                        .then(function(){
+
+                          return resolveData;
+
+                          });
                         });
                       });
                     });
@@ -105,7 +117,7 @@ photoApp.config(function($routeProvider) {
         }
 
         function errorCallback(data, status){
-          console.log("Error");
+
         }
 
       }
@@ -155,8 +167,10 @@ photoApp.config(function($routeProvider) {
 });
 
 
-photoApp.controller('homeController', function($animate, $scope, $routeParams, $window, apiService, feedData) {
+photoApp.controller('homeController', function($animate,$rootScope, $scope, $routeParams, $window, apiService, feedData) {
 
+
+  $rootScope.loading = false;
   //Class for ng-view in index.html
   $scope.pageClass = 'page-home';
 
@@ -224,11 +238,21 @@ photoApp.controller('homeController', function($animate, $scope, $routeParams, $
 
 photoApp.controller('photoController', function($location, $scope, $rootScope, $http, $routeParams, $window, $cookies, apiService, photoData) {
 
+  $rootScope.loading = false;
   $scope.pageClass = 'page-photo';
   $scope.photo = photoData.photo;
   $scope.profile = photoData.profile;
   $scope.comments = photoData.comments;
   $scope.liked = $scope.photo.liked;
+
+  console.log(isCached($scope.photo.link));
+
+  function isCached(src){
+    var image = new Image();
+    image.src = src;
+
+    return image.complete;
+  }
 
   $scope.editComment = function(content, cid){
     var comment = $scope.comments.filter(function(el){
@@ -429,11 +453,27 @@ photoApp.controller('navbarController', function($location, $scope, $rootScope, 
   $rootScope.uid = $scope.cookie.uid;
   $rootScope.state = 'public';
 
+
+  $rootScope.loading = false;
+  $rootScope.loadingHues = ['#fdc162', '#7bb7fa', '#60d7a9', '#fd6a62'];
+  $rootScope.hueIndex = 0;
+
   $scope.searchQuery = '';
 
   $scope.items = ['item1', 'item2', 'item3'];
 
   $scope.animationsEnabled = false;
+
+  $scope.$on('$locationChangeStart', function(event, next, current){
+    $rootScope.loading = true;
+    console.log("Index: " + $rootScope.hueIndex + " Color: " + $rootScope.loadingHues[$rootScope.hueIndex]);
+    if($rootScope.hueIndex > 2){
+      $rootScope.hueIndex = 0;
+    }
+    else{
+      $rootScope.hueIndex++;
+    }
+  });
 
   $scope.logout = function() {
     apiService.logout(errorCallback);

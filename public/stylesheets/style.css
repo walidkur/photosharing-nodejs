@@ -13,10 +13,6 @@ body {
   font: 14px "Lucida Grande", Helvetica, Arial, sans-serif;
 }
 
-a {
-  color: #00B7FF;
-}
-
 /* Styling for home gallery */
 .gallery .caption {
   background-color: black;
@@ -51,42 +47,37 @@ a {
 /*------- Styling for navbar -------*/
 
 #navStyle {
-  background-color: #162338;
-}
-#navStyle > a{
-  background-color: inherit;
-  color: #D1D6E9;
+  background-color: white;
+  color: #004266;
 }
 
 #navStyle > a:hover{
-  color: white;
+  /*color: white;*/
 }
 
 #navStyle > a:focus{
-  color: white;
+  /*color: white;*/
 }
 
 #navStyle > .navbar-collapse > ul > li > a {
-  color: #D1D6E9;
+  color: #004266;
 }
 #navStyle > .navbar-collapse > ul > li > a:hover {
-  color: white;
+  color: #004266;
   background-color: inherit;
 }
 
 #navStyle > .navbar-collapse > ul > li > a:focus {
-  color: white;
+  color: #004266;
   background-color: inherit;
 }
 
 .navbar-brand {
-  font-size: 30px;
+  color:#004266;
+  font-size:24px;
   position: absolute;
   width: 100%;
-  left: 0;
-  top: 0;
   text-align: center;
-  margin: auto;
 }
 
 .navbar-nav > li > a {
@@ -405,6 +396,31 @@ tag {
   display: inline;
 }
 
+
+.brandPageNode {
+  font-size: 86px;
+  font-weight: bolder;
+}
+
+.brandPagePhoto {
+  font-size: 86px;
+}
+
+.brandPageLogo {
+  font-size: 72px;
+  color:white;
+}
+
+.photoNode {
+  margin-top: 25%;
+}
+
+
+
+.brandPhoto {
+  margin-top: 8%;
+}
+
 /* ANIMATIONS
 ============================================================================= */
 .spin{
@@ -483,14 +499,14 @@ tag {
 
 /* page specific animations ------------------------ */
 
-/* home -------------------------- */
-.page-home.ng-enter         { animation:slideInLeft 0.5s both ease-in; transition-delay: 0.5s; }
-.page-home.ng-leave         { animation:slideOutRight 0.5s both ease-in; }
+/* loading -------------------------- */
+.loadingSplash                     { animation:slideInLeft 0.5s both ease-in;}
+.loadingSplash.ng-hide             { animation:slideOutRight 0.5s both ease-in;}
 
 /* about ------------------------ */
-.page-photo.ng-enter        { animation:slideInDown 0.5s both ease-in; transition-delay: 0.5s; }
-.page-photo.ng-leave        { animation:slideOutDown 0.5s both ease-in; }
+/*.page-photo.ng-enter        { animation:slideInDown 0.5s both ease-in; transition-delay: 0.5s; }
+.page-photo.ng-leave        { animation:slideOutDown 0.5s both ease-in; }*/
 
 /* contact ---------------------- */
-.page-profile.ng-enter      { animation:slideInRight 0.5s both ease-in; transition-delay: 0.5s; }
-.page-profile.ng-leave      { animation:slideOutLeft 0.5s both ease-in; }
+/*.page-profile.ng-enter      { animation:slideInRight 0.5s both ease-in; transition-delay: 0.5s; }
+.page-profile.ng-leave      { animation:slideOutLeft 0.5s both ease-in; }*/
