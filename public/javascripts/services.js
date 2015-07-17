@@ -148,11 +148,43 @@ photoApp.factory('apiService', function($http, $q){
         url: '/api/photo' + params
       });
       return promise;
+    },
+
+    resolveImages: function(images){
+
+        var promises = [];
+
+        angular.forEach(images, function(img){
+          var deferred = $q.defer();
+          var image = new Image();
+
+          image.src = img
+
+          if(image.completed){
+            console.log("Completed");
+            deferred.resolve();
+          }
+
+          image.addEventListener('load', function(){
+            console.log("Loaded!" + image.src);
+            deferred.resolve();
+          });
+
+          image.addEventListener('error', function(e){
+            console.log("Error: " + e.error.message);
+            deferred.reject();
+          });
+
+          promises.push(deferred.promise);
+
+        });
+
+        console.log(promises.length)
+
+        return $q.all(promises);
+
     }
-
-
   };
-
-  return apiService;
+    return apiService;
 
 });
