@@ -203,8 +203,6 @@ router.get('/feed', isAuth, function(req, res, next){
               photo.shares = parseInt(x['_']);
             }
           }
-          console.log(photo.likes);
-          console.log(photo.shares);
 
           // add the library id of the photo for later api calls
           photo.lid = entry['td:libraryId'][0];
