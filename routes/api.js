@@ -192,6 +192,20 @@ router.get('/feed', isAuth, function(req, res, next){
             }
           }
 
+          var socialx = entry['snx:rank'];
+          console.log(socialx.length)
+          for(var j = 0; j < socialx.length; j++){
+            var x = socialx[j];
+            if(x.$.scheme.indexOf('recommendations') > -1){
+              photo.likes = parseInt(x['_']);
+            }
+            if(x.$.scheme.indexOf('share') > - 1){
+              photo.shares = parseInt(x['_']);
+            }
+          }
+          console.log(photo.likes);
+          console.log(photo.shares);
+
           // add the library id of the photo for later api calls
           photo.lid = entry['td:libraryId'][0];
 
