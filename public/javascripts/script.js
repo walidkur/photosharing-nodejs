@@ -235,6 +235,31 @@ photoApp.controller('photoController', function($location, $scope, $rootScope, $
   $scope.visibility.loading = false;
   $scope.visibility.success = false;
   $scope.visibility.failure = false;
+  $scope.title = {};
+  $scope.title.loading = false;
+  $scope.title.success = false;
+  $scope.title.failure = false;
+
+  $scope.editTitle = function(){
+    $scope.title.loading = true;
+
+    apiService.editPhoto($scope.photo.editurl, $scope.photo.id, '?pid=' + $scope.pid + '&title=' + $scope.photo.title, successCallback, errorCallback);
+
+    function successCallback(data, status){
+      $scope.title.loading = false;
+      $scope.title.success = true;
+      $scope.title.failure = false;
+      console.log(data);
+    }
+
+    function errorCallback(data, status){
+      $scope.title.loading = false;
+      $scope.title.success = false;
+      $scope.title.failure = true;
+      console.log(data);
+    }
+
+  }
 
   $scope.updateVisibility = function(visibility){
     $scope.visibility.loading = true;
