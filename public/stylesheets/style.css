@@ -108,7 +108,7 @@ body {
 
 
 /* Styling for profile picture */
-.profileButton {
+.profile {
   font-weight: bold;
   padding-top: 6px;
   padding-left: 10px
@@ -540,6 +540,14 @@ textarea {
     transform: rotate(360deg);
   }
 }
+
+/* navbar state animation */
+
+@keyframes navSelected {
+  to {
+    box-shadow: 0px 2px 0px #004266;
+    }
+  }
 
 /* leaving animations ----------------------------------------- */
 

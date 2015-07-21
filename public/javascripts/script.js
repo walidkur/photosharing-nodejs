@@ -28,7 +28,14 @@ photoApp.config(function($routeProvider) {
 
         return apiService.getFeed('?type=' + type + '&q=' + tags + '&ps=20&si=1', successCallback, errorCallback)
         .then(function(){
-          return feed;
+          var images = [];
+          angular.forEach(feed, function(image){
+            images.push(image.image);
+          });
+          return apiService.resolveImages(images)
+            .then(function(){
+              return feed;
+            });
         });
 
 
@@ -167,7 +174,32 @@ photoApp.config(function($routeProvider) {
 });
 
 
-photoApp.controller('homeController', function($animate,$rootScope, $scope, $routeParams, $window, apiService, feedData) {
+photoApp.controller('homeController', function($animate, $rootScope, $scope, $routeParams, $window, apiService, feedData) {
+
+  switch ($routeParams.type){
+    case 'public':
+      angular.forEach($rootScope.buttons, function(btn){
+        $(btn).css("animation", "");
+        $(btn).css("box-shadow", "");
+      });
+      $(".publicButton").css("box-shadow", "0px 2px 0px #004266");
+    break;
+    case 'private':
+      angular.forEach($rootScope.buttons, function(btn){
+        $(btn).css("animation", "");
+        $(btn).css("box-shadow", "");
+      });
+      $(".privateButton").css("box-shadow", "0px 2px 0px #004266");
+    break;
+    case 'myphotos':
+      angular.forEach($rootScope.buttons, function(btn){
+        $(btn).css("animation", "");
+        $(btn).css("box-shadow", "");
+      });
+      $(".personalButton").css("box-shadow", "0px 2px 0px #004266");
+    break;
+  }
+
 
 
   $rootScope.loading = false;
@@ -240,6 +272,10 @@ photoApp.controller('homeController', function($animate,$rootScope, $scope, $rou
 
 photoApp.controller('photoController', function($location, $scope, $rootScope, $http, $routeParams, $window, $cookies, apiService, photoData) {
 
+  angular.forEach($rootScope.buttons, function(btn){
+    $(btn).css("animation", "");
+    $(btn).css("box-shadow", "");
+  });
   $rootScope.loading = false;
   $scope.pageClass = 'page-photo';
   $scope.photo = photoData.photo;
@@ -443,9 +479,14 @@ photoApp.controller('photoController', function($location, $scope, $rootScope, $
 });
 
 
-photoApp.controller('profileController', function($animate, $scope, $http, $routeParams, $window, apiService, profileData) {
+photoApp.controller('profileController', function($animate, $rootScope, $scope, $http, $routeParams, $window, apiService, profileData) {
 
-
+  angular.forEach($rootScope.buttons, function(btn){
+    $(btn).css("animation", "");
+    $(btn).css("box-shadow", "");
+  });
+  $(".profileButton").css("box-shadow", "0px 2px 0px #004266");
+  $rootScope.loading = false;
   var index = 21;
   $scope.pageClass = 'page-profile';
   $scope.profile = profileData.profile;
@@ -511,10 +552,20 @@ photoApp.controller('navbarController', function($location, $scope, $rootScope, 
   $rootScope.uid = $scope.cookie.uid;
   $rootScope.state = 'public';
 
-
   $rootScope.loading = false;
   $rootScope.loadingHues = ['#fdc162', '#7bb7fa', '#60d7a9', '#fd6a62'];
   $rootScope.hueIndex = 0;
+
+  $rootScope.buttons = [".profileButton", ".publicButton", ".privateButton", ".personalButton", ".uploadButton"];
+
+  $scope.select = function(button){
+    angular.forEach($rootScope.buttons, function(btn){
+      $(btn).css("animation", "");
+      $(btn).css("box-shadow", "");
+    });
+    $(button).css("animation", "navSelected .5s forwards");
+
+  }
 
   $scope.searchQuery = '';
 
@@ -524,7 +575,8 @@ photoApp.controller('navbarController', function($location, $scope, $rootScope, 
 
   $scope.$on('$locationChangeStart', function(event, next, current){
     $rootScope.loading = true;
-    console.log("Index: " + $rootScope.hueIndex + " Color: " + $rootScope.loadingHues[$rootScope.hueIndex]);
+    console.log("Route Changed!");
+
     if($rootScope.hueIndex > 2){
       $rootScope.hueIndex = 0;
     }

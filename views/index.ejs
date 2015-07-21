@@ -10,7 +10,7 @@
 <!--Calls back to navbarController, and creates the navbar fixed at the top of the screen-->
 <nav id="navStyle" class="navbar navbar-fixed-top" role="navigation">
     <!--Displays brand in center of navbar-->
-    <a style="line-height:15px;" class="navbar-brand" ng-show="!loading" href="#">
+    <a style="line-height:15px;" class="navbar-brand" ng-click="select();" ng-show="!loading" href="#/public">
       Photo<span style="font-weight:bolder">Node</span>
       <span style="line-height:15px;" class="glyphicon glyphicon-picture"></span>
     </a>
@@ -39,40 +39,32 @@
       <ul class="nav navbar-nav">
 
         <!--Displays the profile button-->
-        <li class="profileButton">
+        <li class="profile" ng-click="select('.profileButton')">
           <a href="#/profile/{{uid}}"><img id="profilePic" ng-src="{{$root.avatar}}" height=40p>
             <!--Display on glyphicon when screen gets smaller-->
-            <text ng-show="mediumScreen">{{$root.displayName}}</text>
-          </a>
-        </li>
-
-        <!--Displays the upload button-->
-        <li class="navbarButton">
-          <a ng-click="open()" href=""><span class="glyphicon glyphicon-upload"></span>
-            <!--Display on glyphicon when screen gets smaller-->
-            <text ng-show="mediumScreen">Upload</text>
+            <text class="profileButton" ng-show="mediumScreen">{{$root.displayName}}</text>
           </a>
         </li>
 
         <!--Displays the public button-->
-        <li class="navbarButton">
+        <li class="navbarButton" ng-click="select('.publicButton')">
           <a href="#/public"><span class="glyphicon glyphicon-globe"></span>
             <!--Display on glyphicon when screen gets smaller-->
-            <text ng-show="mediumScreen">Public</text>
+            <text class="publicButton" ng-show="mediumScreen">Public</text>
           </a>
         </li>
 
         <!--Displays the private button-->
-        <li class="navbarButton">
+        <li class="navbarButton" ng-click="select('.privateButton')">
           <a href="#/private"><span class="glyphicon glyphicon-envelope"></span>
             <!--Display on glyphicon when screen gets smaller-->
-            <text ng-show="mediumScreen">Private</text>
+            <text class="privateButton" ng-show="mediumScreen">Private</text>
           </a>
         </li>
 
-        <li class="navbarButton">
+        <li class="navbarButton" ng-click="select('.personalButton')">
           <a href="#/myphotos"><span class="glyphicon glyphicon-user"></span>
-            <text nh-show="mediumScreen">Personal</text>
+            <text class="personalButton" ng-show="mediumScreen">Personal</text>
           </a>
         </li>
 
@@ -80,6 +72,15 @@
 
       <!--Places the following to the right of the navbar-->
       <ul class="nav navbar-nav navbar-right">
+
+        <!--Displays the upload button-->
+        <li class="navbarButton" ng-click="select('.uploadButton');">
+          <a ng-click="open()" href=""><span class="glyphicon glyphicon-upload"></span>
+            <!--Display on glyphicon when screen gets smaller-->
+            <text class="uploadButton" ng-show="mediumScreen">Upload</text>
+          </a>
+        </li>
+
         <li>
           <!--Displays the search bar and defines its functionality-->
           <form class="searchBar navbar-form" role="search">
