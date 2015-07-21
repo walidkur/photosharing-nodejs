@@ -27,8 +27,12 @@ function commentFormat(content){
   return '<?xml version="1.0" encoding="UTF-8"?><entry xmlns="http://www.w3.org/2005/Atom" xmlns:app="http://www.w3.org/2007/app" xmlns:snx="http://www.ibm.com/xmlns/prod/sn"><category scheme="tag:ibm.com,2006:td/type" term="comment" label="comment"/><content type="text">' + content + '</content></entry>';
 }
 
-function updatePhotoFormat(id){
-  return '<?xml version="1.0" encoding="UTF-8"?><entry xmlns="http://www.w3.org/2005/Atom"><category term="document" label="document" scheme="tag:ibm.com,2006:td/type"/><id>' + id + '</id></entry>';
+function updatePhotoFormat(id, title){
+  if(title) {
+    return '<?xml version="1.0" encoding="UTF-8"?><entry xmlns="http://www.w3.org/2005/Atom"><category term="document" label="document" scheme="tag:ibm.com,2006:td/type"/><id>' + id + '</id><label xmlns="urn:ibm.com/td">' + title + '</label></entry>';
+  } else {
+    return '<?xml version="1.0" encoding="UTF-8"?><entry xmlns="http://www.w3.org/2005/Atom"><category term="document" label="document" scheme="tag:ibm.com,2006:td/type"/><id>' + id + '</id></entry>';
+  }
 }
 
 // check whether a session exists for the request
@@ -188,6 +192,18 @@ router.get('/feed', isAuth, function(req, res, next){
             }
           }
 
+          var socialx = entry['snx:rank'];
+          console.log(socialx.length)
+          for(var j = 0; j < socialx.length; j++){
+            var x = socialx[j];
+            if(x.$.scheme.indexOf('recommendations') > -1){
+              photo.likes = parseInt(x['_']);
+            }
+            if(x.$.scheme.indexOf('share') > - 1){
+              photo.shares = parseInt(x['_']);
+            }
+          }
+
           // add the library id of the photo for later api calls
           photo.lid = entry['td:libraryId'][0];
 
@@ -304,7 +320,7 @@ router.put('/photo', isAuth, function(req, res, next){
 
     var url = 'https://' + config.server.domain + '/files/basic/api/' + 'myuserlibrary/document/' + req.query.pid + '/entry?';
 
-    var body = updatePhotoFormat(req.body.id);
+    var body = updatePhotoFormat(req.body.id, req.body.title);
 
     if(!isEmpty(req.query.q)) url = url + '&tag=' + req.query.q;
 
@@ -316,7 +332,8 @@ router.put('/photo', isAuth, function(req, res, next){
       'Authorization': 'Bearer ' + req.user.accessToken,
       'X-Update-Nonce': nonce,
       'Content-Length' : body.length,
-      'Content-Type' : 'application/atom+xml'
+      'Content-Type' : 'application/atom+xml',
+      'X-METHOD-OVERRIDE': 'PUT'
     };
 
     var options = {
@@ -325,7 +342,9 @@ router.put('/photo', isAuth, function(req, res, next){
       body: body
     };
 
-    request.put(options, function(error, response, body){
+    console.log(JSON.stringify(options));
+
+    request.post(options, function(error, response, body){
       if(error){
         console.log('Error occurred: ' + JSON.stringify(error));
         return res.status(500).end();

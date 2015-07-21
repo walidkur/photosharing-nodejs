@@ -34,7 +34,7 @@
               <span class="published">{{photo.published}}
                 <span class="dot">·</span>
                 <span class="dropdown">
-                  <button class="visibilityButton dropdown-toggle" data-toggle="dropdown">
+                  <button ng-mouseover="visibility.hover = true" ng-mouseleave="visibility.hover = false" class="visibilityButton dropdown-toggle" data-toggle="dropdown">
                     <span class="glyphicon glyphicon-eye-open"></span>
                     <span class="visibility" ng-show="photo.visibility == 'public'">
                       Public
@@ -49,7 +49,6 @@
                   </ul>
                   <span ng-show="visibility.success && !visibility.loading">
                     <span class="glyphicon glyphicon-ok-sign"></span>
-
                   </span>
 
                   <span ng-show="visibility.failure && !visibility.loading">
@@ -63,7 +62,44 @@
               </span>
             </div>
             <br>
-            <h5>{{photo.title}}</h5>
+            <br>
+            <div ng-show="!titleEdit">
+              <span>
+                <h5 style="display: inline">{{photo.title}}</h5>
+              </span>
+              <span ng-show="!title.loading && $root.uid == photo.uid">
+                <button id="edit" class="editCommentButton" ng-click="titleEdit = !titleEdit">
+                  <span style="color: grey" class="glyphicon glyphicon-edit"></span>
+                </button>
+              </span>
+              <span ng-show="title.success && !title.loading">
+                <span class="glyphicon glyphicon-ok-sign"></span>
+              </span>
+
+              <span ng-show="title.failure && !title.loading">
+                <span class="glyphicon glyphicon-exclamation-sign"></span>
+              </span>
+
+              <span ng-show="title.loading">
+                <span class="glyphicon glyphicon-refresh spin"></span>
+              </span>
+            </div>
+            <div ng-show="titleEdit">
+
+              <!--This form allows user to hit enter to submit comment-->
+              <form>
+
+                <!--Displays the "Add comment" box-->
+                  <div class="input-group stylish-input-group">
+                      <input id="commentText" class="form-control" ng-model="photo.title">
+                      <span class="input-group-addon">
+                        <button type="submit" id="editTitleButton" ng-click="titleEdit = !titleEdit; editTitle()">
+                          <span class="glyphicon glyphicon-share-alt"></span>
+                        </button>
+                      </span>
+                  </div>
+              </form>
+            </div>
           </div>
         </div>
 

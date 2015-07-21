@@ -12,9 +12,17 @@
     <a ng-href="/#/photo/{{entry.lid}}/{{entry.pid}}">
       <img ng-src="{{entry.thumbnail}}"/>
     </a>
-    <div class="caption">
-      <a href="#/photo/{{entry.lid}}/{{entry.pid}}">{{entry.title}}</a>
-      <div id="author"><a href="#/profile/{{entry.uid}}">{{entry.photographer}}</a></div>
+    <div style="width: 100%" class="caption media">
+      <div class="media-left">
+        <a href="#/photo/{{entry.lid}}/{{entry.pid}}">{{entry.title}}</a>
+        <div id="author"><a href="#/profile/{{entry.uid}}">{{entry.photographer}}</a></div>
+      </div>
+      <div class="media-right media-top">
+        <span class="glyphicon glyphicon-thumbs-up"></span><span>{{entry.likes}}</span>
+      </div>
+      <div class="media-right media-top">
+        <span class="glyphicon glyphicon-share-alt"></span><span style="margin-left: 5px">{{entry.shares}}</span>
+      </div>
     </div>
   </div>
 </div>
