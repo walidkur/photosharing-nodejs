@@ -5,3 +5,4 @@
       host: photonode
       command: bower install; node bin/www
       buildpack: nodejs_buildpack
+      timeout: 180

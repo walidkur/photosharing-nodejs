@@ -1,5 +1,5 @@
 {
-  "name": "ConnectionsTest",
+  "name": "PhotoNode",
   "version": "0.0.0",
   "private": true,
   "scripts": {
@@ -19,6 +19,7 @@
     "passport-ibm-connections-cloud": "^1.0.0",
     "request": "^2.56.0",
     "serve-favicon": "~2.2.1",
+    "sync-request": "^2.0.1",
     "tough-cookie": "^1.2.0",
     "xml2js": "^0.4.9"
   },
