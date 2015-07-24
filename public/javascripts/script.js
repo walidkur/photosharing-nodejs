@@ -294,7 +294,7 @@ photoApp.controller('photoController', function($location, $scope, $rootScope, $
   $scope.editTitle = function(){
     $scope.title.loading = true;
 
-    apiService.editPhoto($scope.photo.editurl, $scope.photo.id, '?pid=' + $scope.pid + '&title=' + $scope.photo.title, successCallback, errorCallback);
+    apiService.editPhoto($scope.photo.editurl, $scope.photo.id, '?pid=' + $scope.photo.pid + '&title=' + $scope.photo.title, successCallback, errorCallback);
 
     function successCallback(data, status){
       $scope.title.loading = false;

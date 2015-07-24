@@ -193,7 +193,6 @@ router.get('/feed', isAuth, function(req, res, next){
           }
 
           var socialx = entry['snx:rank'];
-          console.log(socialx.length)
           for(var j = 0; j < socialx.length; j++){
             var x = socialx[j];
             if(x.$.scheme.indexOf('recommendations') > -1){
@@ -320,7 +319,13 @@ router.put('/photo', isAuth, function(req, res, next){
 
     var url = 'https://' + config.server.domain + '/files/basic/api/' + 'myuserlibrary/document/' + req.query.pid + '/entry?';
 
-    var body = updatePhotoFormat(req.body.id, req.body.title);
+    var title;
+
+    if(req.query.title){
+      title = req.query.title + '.jpg';
+    }
+
+    var body = updatePhotoFormat(req.body.id, title);
 
     if(!isEmpty(req.query.q)) url = url + '&tag=' + req.query.q;
 
@@ -332,8 +337,7 @@ router.put('/photo', isAuth, function(req, res, next){
       'Authorization': 'Bearer ' + req.user.accessToken,
       'X-Update-Nonce': nonce,
       'Content-Length' : body.length,
-      'Content-Type' : 'application/atom+xml',
-      'X-METHOD-OVERRIDE': 'PUT'
+      'Content-Type' : 'application/atom+xml'
     };
 
     var options = {
@@ -344,11 +348,14 @@ router.put('/photo', isAuth, function(req, res, next){
 
     console.log(JSON.stringify(options));
 
-    request.post(options, function(error, response, body){
+    request.put(options, function(error, response, body){
       if(error){
         console.log('Error occurred: ' + JSON.stringify(error));
         return res.status(500).end();
       }
+      parseString(body, function(err, result){
+        console.log(JSON.stringify(result));
+      })
       if(response.statusCode === 402) return res.status(403).end();
       return res.status(200).end();
     });
