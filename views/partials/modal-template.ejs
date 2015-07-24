@@ -1,0 +1,62 @@
+<!-- Upload header/title -->
+  <div class="modal-header">
+    <h3 class="modal-title">Upload your photos!</h3>
+  </div>
+  <!-- The modal's body -->
+  <div class="modal-body">
+
+    <!-- Declares the form as a file-uploader -->
+      <div style="position:relative;">
+        <a class='btn btn-primary' href='javascript:;'>
+          Choose File...
+          <input type="file" file-input="files" style='position:absolute;z-index:2;top:0;left:0;filter: alpha(opacity=0);opacity:0;background-color:transparent;color:transparent;' name="file_source" size="40"  onchange='$("#upload-file-info").html($(this).val());'>
+        </a>
+        &nbsp;
+        <span class='label label-info' id="upload-file-info"></span>
+      </div>
+
+      <div ng-show="message.length > 0" class="alert alert-danger">
+          <p>{{message}}</p>
+      </div>
+      <div class="form-group">
+          <label for="title">Title:</label>
+          <input ng-model="title" type="text" class="form-control" id="title">
+      </div>
+
+      <!-- Creates ability to make tags for photos -->
+      <div class="form-group">
+        <label for="tag">Tags:</label>
+        <div style="position: relative">
+            <tag ng-click="removeTag($index)" class="tag" ng-repeat="tag in appliedTags">{{tag.name}}</tag>
+            <input ng-change="search($viewValue)" ng-model="tags" type="text" class="form-control" id="tag">
+            <ul ng-show="tagsList.length > 0" class="dropdown-menu" style="display: block">
+              <li ng-click="addTag($index)" ng-repeat="tag in tagsList"><a href="">{{tag.name}}</a></li>
+            </ul>
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label for="shares">Share with:</label>
+        <input ng-model="shares" type="text" class="form-control" id="shares">
+      </div>
+
+      <div class="form-group">
+        <label>
+          <input type="radio" ng-model="visibility" value="private">
+          Private
+        </label>
+        <label>
+          <input type="radio" ng-model="visibility" value="public">
+          Public
+        </label>
+      </div>
+
+  </div>
+
+  <!-- The modal's footer -->
+  <div class="modal-footer">
+
+    <!-- Creates the submit/"Upload" and "Close" buttons -->
+    <button id="uploadButton" type="submit" class="btn btn-info" ng-click="uploadFile()"><span id="uploadSpinner" class="glyphicon glyphicon-refresh spin"></span><span id="uploadText">Upload</span></button>
+    <button class="btn btn-warning" ng-click="cancel()">Close</button>
+  </div>
