@@ -648,7 +648,7 @@ photoApp.controller('navbarController', function($location, $scope, $rootScope, 
   $scope.open = function (size) {
 
     var modalInstance = $modal.open({
-      templateUrl: 'myModalContent.html',
+      templateUrl: '/partials/modal-template',
       controller: 'ModalInstanceController',
       size: size,
       resolve: {
