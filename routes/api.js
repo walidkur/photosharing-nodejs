@@ -59,26 +59,26 @@ router.get('/feed', isAuth, function(req, res, next){
     // config.server.domain is the domain name of the server (without the
     // https or the directory, for example: example.com).
     // the url to return a feed of public files
-    url = FILES_API + 'documents/feed?visibility=public&includeTags=true';
+    url = FILES_API + 'documents/feed?visibility=public&includeTags=true&includeRecommendation=true';
     break;
 
     case 'user':
     if(isEmpty(req.query.uid)) return res.status(412).end();
 
     // the url to return a feed of a user's files
-    url = FILES_API + 'userlibrary/' + req.query.uid + '/feed?visibility=public&includeTags=true';
+    url = FILES_API + 'userlibrary/' + req.query.uid + '/feed?visibility=public&includeTags=true&includeRecommendation=true';
     break;
 
     case 'private':
 
     // the url to return a feed of files shared with the user
-    url = FILES_API + 'documents/shared/feed?includeTags=true&direction=inbound'
+    url = FILES_API + 'documents/shared/feed?includeTags=true&direction=inbound&includeRecommendation=true'
     break;
 
     case 'myphotos':
 
     // url to return the user's photos
-    url = FILES_API + 'myuserlibrary/feed?includeTags=true'
+    url = FILES_API + 'myuserlibrary/feed?includeTags=true&includeRecommendation=true'
     break;
 
     default:
@@ -131,6 +131,8 @@ router.get('/feed', isAuth, function(req, res, next){
           return res.status(500).end();
         }
 
+        console.log(JSON.stringify(result));
+
         // get the entries from the response
         var entries = result.feed.entry;
 
@@ -154,6 +156,8 @@ router.get('/feed', isAuth, function(req, res, next){
             tags.push(tag);
           }
 
+          photo.liked = false;
+
           // add the tag array to the photo
           photo.tags = tags;
 
@@ -175,6 +179,8 @@ router.get('/feed', isAuth, function(req, res, next){
           for(var j = 0; j < entry.link.length; j++){
             var link = entry.link[j];
             var type = link.$.type;
+            var rel = link.$.rel;
+            if(!(rel === undefined) && (rel.indexOf('recommendation') > -1))  photo.liked = true;
             if(!(type === undefined) && (type.indexOf('image') > -1)){
               photo.image = link.$.href;
               for(var x = 0; x < entry.link.length; x++){
@@ -345,8 +351,6 @@ router.put('/photo', isAuth, function(req, res, next){
       headers: headers,
       body: body
     };
-
-    console.log(JSON.stringify(options));
 
     request.put(options, function(error, response, body){
       if(error){

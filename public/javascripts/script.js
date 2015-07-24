@@ -253,6 +253,33 @@ photoApp.controller('homeController', function($animate, $rootScope, $scope, $ro
     });
   }
 
+  $scope.like = function(index){
+    var photo = $scope.data[index];
+    console.log(photo);
+    var params = '?lid=' + photo.lid + '&pid=' + photo.pid;
+    if(photo.liked){
+      params += '&r=off';
+    } else {
+      params += '&r=on';
+    }
+    apiService.postLike(params).then(
+      function(data, status){
+        if(photo.liked){
+          photo.liked = false;
+          photo.likes -= 1;
+        } else {
+          photo.liked = true;
+          photo.likes += 1;
+        }
+      },
+      function(data, status){
+        if(status === 401){
+          $window.location.assign('/');
+        }
+      }
+    )
+  }
+
   function feedCallback(data, status){
     if(data.length != 0){
       $scope.data = $scope.data.concat(data);
@@ -621,7 +648,6 @@ photoApp.controller('navbarController', function($location, $scope, $rootScope, 
   $scope.open = function (size) {
 
     var modalInstance = $modal.open({
-      animation: $scope.animationsEnabled,
       templateUrl: 'myModalContent.html',
       controller: 'ModalInstanceController',
       size: size,
