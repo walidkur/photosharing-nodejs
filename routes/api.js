@@ -299,7 +299,40 @@ router.get('/photo', isAuth, function(req, res, next){
   }
 });
 
-router.put('/photo', isAuth, function(req, res, next){
+router.put('/photo', isAuth, function(req, res, next) {
+  // return 412 if the necessary queries are not passed
+  if(isEmpty(req.query.title)) next();
+
+  var url = FILES_API + 'myuserlibrary/feed?includeCount=true&search=' + req.query.title;
+
+  var headers = { 'Authorization' : 'Bearer ' + req.user.accessToken };
+
+  var options = {
+    url: url,
+    headers: headers
+  };
+
+  request.get(options, function(error, response, body){
+    if(error){
+      console.log('Error occurred: ' + JSON.stringify(error));
+      return res.status(500).end();
+    }
+
+    parseString(body, function(err, result){
+      if(err){
+        console.log('Error occurred: ' + JSON.stringify(err));
+        return res.status(500).end();
+      }
+      var feed = result.feed;
+      var searchCount = parseInt(feed['opensearch:totalResults'][0]);
+      if(searchCount == 0){
+        next();
+      } else {
+        res.status(409).end();
+      }
+    })
+  })
+}, function(req, res, next){
 
   if(isEmpty(req.query.pid) || isEmpty(req.body.url) || isEmpty(req.body.id)) return res.status(412).end();
 
@@ -357,9 +390,6 @@ router.put('/photo', isAuth, function(req, res, next){
         console.log('Error occurred: ' + JSON.stringify(error));
         return res.status(500).end();
       }
-      parseString(body, function(err, result){
-        console.log(JSON.stringify(result));
-      })
       if(response.statusCode === 402) return res.status(403).end();
       return res.status(200).end();
     });
