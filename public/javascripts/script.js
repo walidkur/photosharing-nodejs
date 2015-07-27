@@ -299,10 +299,29 @@ photoApp.controller('homeController', function($animate, $rootScope, $scope, $ro
 
 photoApp.controller('photoController', function($location, $scope, $rootScope, $http, $routeParams, $window, $cookies, apiService, photoData) {
 
+  $(document).ready(function(){
+    $('#addComment').keypress(function(event){
+      if((event.keyCode == 13 || event.keyCode == 10) && (event.shiftKey != 1)){
+        $scope.addComment();
+        event.preventDefault();
+      }
+    })
+    console.log($('#addTagInput'));
+    $('#addTagInput').keypress(function(event){
+      console.log(event.keyCode);
+      if(event.keyCode == 13 || event.keyCode == 10){
+        console.log("Editing tag");
+        $scope.meta != $scope.meta;
+        editPhoto($('#addTagInput').val());
+      }
+    })
+  })
+
   angular.forEach($rootScope.buttons, function(btn){
     $(btn).css("animation", "");
     $(btn).css("box-shadow", "");
   });
+
   $rootScope.loading = false;
   $scope.pageClass = 'page-photo';
   $scope.photo = photoData.photo;

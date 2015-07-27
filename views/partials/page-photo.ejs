@@ -122,7 +122,7 @@
             <br ng-show="meta">
             <br ng-show="meta">
             <div ng-show="meta" class="input-group">
-              <input type="text" ng-model="newMeta" class="form-control" placeholder="Enter new tags (separated by spaces)">
+              <input id="addTagInput" type="text" ng-model="newMeta" class="form-control" placeholder="Enter new tags (separated by spaces)">
               <span class="input-group-btn">
                 <button ng-click="meta = !meta; editPhoto(newMeta);" class="btn btn-primary" type="button">Submit</button>
               </span>
@@ -233,7 +233,7 @@
       <div>
 
         <!--This form allows user to hit enter to submit comment-->
-        <form ng-submit="submit()">
+        <form>
 
           <!--Displays the "Add comment" box-->
           <div class="addCommentBox" id="addCommentText">
