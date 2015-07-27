@@ -390,9 +390,6 @@ router.put('/photo', isAuth, function(req, res, next) {
         console.log('Error occurred: ' + JSON.stringify(error));
         return res.status(500).end();
       }
-      parseString(body, function(err, result){
-        console.log(JSON.stringify(result));
-      })
       if(response.statusCode === 402) return res.status(403).end();
       return res.status(200).end();
     });
