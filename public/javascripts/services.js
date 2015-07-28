@@ -172,6 +172,8 @@ photoApp.factory('apiService', function($http, $q){
 
           image.addEventListener('error', function(e){
             console.log("Error: " + e.message);
+            console.log("with: " + img);
+
             deferred.reject();
           });
 
