@@ -299,24 +299,6 @@ photoApp.controller('homeController', function($animate, $rootScope, $scope, $ro
 
 photoApp.controller('photoController', function($location, $scope, $rootScope, $http, $routeParams, $window, $cookies, apiService, photoData) {
 
-  $(document).ready(function(){
-    $('#addComment').keypress(function(event){
-      if((event.keyCode == 13 || event.keyCode == 10) && (event.shiftKey != 1)){
-        $scope.addComment();
-        event.preventDefault();
-      }
-    })
-    console.log($('#addTagInput'));
-    $('#addTagInput').keypress(function(event){
-      console.log(event.keyCode);
-      if(event.keyCode == 13 || event.keyCode == 10){
-        console.log("Editing tag");
-        $scope.meta != $scope.meta;
-        editPhoto($('#addTagInput').val());
-      }
-    })
-  })
-
   angular.forEach($rootScope.buttons, function(btn){
     $(btn).css("animation", "");
     $(btn).css("box-shadow", "");
@@ -336,6 +318,25 @@ photoApp.controller('photoController', function($location, $scope, $rootScope, $
   $scope.title.loading = false;
   $scope.title.success = false;
   $scope.title.failure = false;
+
+  $scope.change = function(event, type, content, cid, toggle){
+    if((event.keyCode == 13 || event.keyCode == 10) && (event.shiftKey != 1)){
+      if(type === 'tags'){
+        console.log("New tags are: " + content);
+        $scope.meta = !$scope.meta;
+        $scope.editPhoto(content);
+      }
+      if(type === 'comment'){
+        console.log("New comment is: " + content);
+        $scope.addComment();
+      }
+      if(type === 'edit'){
+        console.log("New Edit is: " + content);
+        toggle.edit = !toggle.edit;
+        $scope.editComment(content, cid);
+      }
+    }
+  }
 
   $scope.editTitle = function(){
     $scope.title.loading = true;
@@ -414,7 +415,7 @@ photoApp.controller('photoController', function($location, $scope, $rootScope, $
     apiService.editPhoto($scope.photo.editurl, $scope.photo.id, '?pid=' + $scope.photo.pid + '&q=' + tags, editPhotoCallback, errorCallback);
 
     function editPhotoCallback(data, status) {
-
+      $scope.photo.tags.push(content);
     }
   }
 
