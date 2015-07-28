@@ -68,13 +68,20 @@
           </a>
         </li>
 
+        <li ng-show="!uploadSideA" class="navbarButton" ng-click="select('.uploadButton');">
+          <a ng-click="open()" href=""><span class="glyphicon glyphicon-upload"></span>
+            <!--Display on glyphicon when screen gets smaller-->
+            <text class="uploadButton" ng-show="mediumScreen">Upload</text>
+          </a>
+        </li>
+
       </ul>
 
       <!--Places the following to the right of the navbar-->
       <ul class="nav navbar-nav navbar-right">
 
         <!--Displays the upload button-->
-        <li class="navbarButton" ng-click="select('.uploadButton');">
+        <li ng-show="uploadSideA" class="navbarButton" ng-click="select('.uploadButton');">
           <a ng-click="open()" href=""><span class="glyphicon glyphicon-upload"></span>
             <!--Display on glyphicon when screen gets smaller-->
             <text class="uploadButton" ng-show="mediumScreen">Upload</text>

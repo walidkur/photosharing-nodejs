@@ -148,7 +148,6 @@ body {
     display: block;
 }
 
-
 /* Styling for public button */
 .glyphicon-globe {
   margin-right: 5px;
@@ -162,10 +161,6 @@ body {
 
 
 /* Styling for search bar */
-.searchBar {
-  margin-left: 5px;
-}
-
 .stylish-input-group .input-group-addon {
   background: white !important;
 }
@@ -216,6 +211,10 @@ body{
 
 .profileContainer {
   color: #070B19;
+}
+
+#searchText {
+  width: 100px;
 }
 
 /*------- Styling for page-photo.html -------*/

@@ -199,6 +199,21 @@ router.get('/feed', isAuth, function(req, res, next){
             continue;
           }
 
+          var tags = [];
+
+          for(var j = 1; j < entry.category.length; j++){
+            var category = entry.category[j];
+            var tag = category.$.label;
+            tags.push(tag);
+          }
+
+          console.log(entry);
+
+          if(tags.indexOf("photonode") == -1){
+            console.log(tags);
+            continue;
+          }
+
           var socialx = entry['snx:rank'];
           for(var j = 0; j < socialx.length; j++){
             var x = socialx[j];

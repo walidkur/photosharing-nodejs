@@ -702,21 +702,32 @@ photoApp.controller('navbarController', function($location, $scope, $rootScope, 
 
   $scope.mediumScreen = true;
   $(document).ready(function(){
-    if ($(window).width() < 1148 || $(window).width() > 767){
+    if ($(window).width() < 1218 || $(window).width() > 767){
       $scope.mediumScreen = false;
     }
-    if ($(window).width() >= 1148 || $(window).width() <= 767){
+    if ($(window).width() >= 1218 || $(window).width() <= 767){
       $scope.mediumScreen = true;
+    }
+    if($(window).width() < 905){
+      $scope.uploadSideA = false
+    } else {
+      $scope.uploadSideA = true;
     }
   });
 
   $(window).resize(function() {
-    if ($(window).width() < 1148 || $(window).width() > 767){
+    if ($(window).width() < 1218 || $(window).width() > 767){
       $scope.mediumScreen = false;
     }
     $scope.$apply();
-    if ($(window).width() >= 1127 || $(window).width() <= 746){
+    if ($(window).width() >= 1218 || $(window).width() <= 746){
       $scope.mediumScreen = true;
+    }
+    $scope.$apply();
+    if($(window).width() < 905){
+      $scope.uploadSideA = false
+    } else {
+      $scope.uploadSideA = true;
     }
     $scope.$apply();
   });
