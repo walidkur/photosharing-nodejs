@@ -44,7 +44,9 @@ photoApp.config(function($routeProvider) {
         }
 
         function errorCallback(data, status){
-          console.log("Error!");
+          if(status === 401){
+            $window.location.assign('/');
+          }
         }
 
       }
@@ -124,7 +126,9 @@ photoApp.config(function($routeProvider) {
         }
 
         function errorCallback(data, status){
-
+          if(status === 401){
+            $window.location.assign('/');
+          }
         }
 
       }
@@ -161,7 +165,9 @@ photoApp.config(function($routeProvider) {
           resolveData.feed = data;
         }
         function errorCallback(data, status){
-          console.log("Error!");
+          if(status === 401){
+            $window.location.assign('/');
+          }
         }
       }
     },
@@ -292,7 +298,9 @@ photoApp.controller('homeController', function($animate, $rootScope, $scope, $ro
   }
 
   function errorCallback(data, status){
-    console.log("Error!");
+    if(status === 401){
+      $window.location.assign('/');
+    }
   }
 
 });
@@ -355,6 +363,9 @@ photoApp.controller('photoController', function($location, $scope, $rootScope, $
       $scope.title.success = false;
       $scope.title.failure = true;
       console.log(data);
+      if(status === 401){
+        $window.location.assign('/');
+      }
     }
 
   }
@@ -374,7 +385,11 @@ photoApp.controller('photoController', function($location, $scope, $rootScope, $
       $scope.visibility.loading = false;
       $scope.visibility.success = false;
       $scope.visibility.failure = true;
+      if(status === 401){
+        $window.location.assign('/');
+      }
     }
+
   }
 
   console.log(isCached($scope.photo.link));
@@ -486,6 +501,9 @@ photoApp.controller('photoController', function($location, $scope, $rootScope, $
   }
 
   function errorCallback(data, status){
+    if(status === 401){
+      $window.location.assign('/');
+    }
     console.log("Error!");
   }
 
@@ -613,7 +631,9 @@ photoApp.controller('profileController', function($animate, $rootScope, $scope, 
   }
 
   function errorCallback(data, status){
-    console.log("Error!");
+    if(status === 401){
+      $window.location.assign('/');
+    }
   }
 });
 
