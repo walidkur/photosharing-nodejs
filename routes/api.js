@@ -131,8 +131,6 @@ router.get('/feed', isAuth, function(req, res, next){
           return res.status(500).end();
         }
 
-        console.log(JSON.stringify(result));
-
         // get the entries from the response
         var entries = result.feed.entry;
 
@@ -194,8 +192,11 @@ router.get('/feed', isAuth, function(req, res, next){
                   break;
                 }
               }
-              break;
             }
+          }
+
+          if(isEmpty(photo.thumbnail)){
+            continue;
           }
 
           var socialx = entry['snx:rank'];
@@ -215,6 +216,8 @@ router.get('/feed', isAuth, function(req, res, next){
           // push the photo to our photos array
           photos.push(photo);
         }
+
+        console.log(photos);
 
         // return our photos array
         res.send(photos);

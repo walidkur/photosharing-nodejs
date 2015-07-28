@@ -30,7 +30,7 @@ photoApp.config(function($routeProvider) {
         .then(function(){
           var images = [];
           angular.forEach(feed, function(image){
-            images.push(image.image);
+            images.push(image.thumbnail);
           });
           return apiService.resolveImages(images)
             .then(function(){
