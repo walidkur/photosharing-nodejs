@@ -44,7 +44,9 @@ photoApp.config(function($routeProvider) {
         }
 
         function errorCallback(data, status){
-          console.log("Error!");
+          if(status === 401){
+            $window.location.assign('/');
+          }
         }
 
       }
@@ -124,7 +126,9 @@ photoApp.config(function($routeProvider) {
         }
 
         function errorCallback(data, status){
-
+          if(status === 401){
+            $window.location.assign('/');
+          }
         }
 
       }
@@ -161,7 +165,9 @@ photoApp.config(function($routeProvider) {
           resolveData.feed = data;
         }
         function errorCallback(data, status){
-          console.log("Error!");
+          if(status === 401){
+            $window.location.assign('/');
+          }
         }
       }
     },
@@ -292,30 +298,14 @@ photoApp.controller('homeController', function($animate, $rootScope, $scope, $ro
   }
 
   function errorCallback(data, status){
-    console.log("Error!");
+    if(status === 401){
+      $window.location.assign('/');
+    }
   }
 
 });
 
 photoApp.controller('photoController', function($location, $scope, $rootScope, $http, $routeParams, $window, $cookies, apiService, photoData) {
-
-  $(document).ready(function(){
-    $('#addComment').keypress(function(event){
-      if((event.keyCode == 13 || event.keyCode == 10) && (event.shiftKey != 1)){
-        $scope.addComment();
-        event.preventDefault();
-      }
-    })
-    console.log($('#addTagInput'));
-    $('#addTagInput').keypress(function(event){
-      console.log(event.keyCode);
-      if(event.keyCode == 13 || event.keyCode == 10){
-        console.log("Editing tag");
-        $scope.meta != $scope.meta;
-        editPhoto($('#addTagInput').val());
-      }
-    })
-  })
 
   angular.forEach($rootScope.buttons, function(btn){
     $(btn).css("animation", "");
@@ -337,6 +327,25 @@ photoApp.controller('photoController', function($location, $scope, $rootScope, $
   $scope.title.success = false;
   $scope.title.failure = false;
 
+  $scope.change = function(event, type, content, cid, toggle){
+    if((event.keyCode == 13 || event.keyCode == 10) && (event.shiftKey != 1)){
+      if(type === 'tags'){
+        console.log("New tags are: " + content);
+        $scope.meta = !$scope.meta;
+        $scope.editPhoto(content);
+      }
+      if(type === 'comment'){
+        console.log("New comment is: " + content);
+        $scope.addComment();
+      }
+      if(type === 'edit'){
+        console.log("New Edit is: " + content);
+        toggle.edit = !toggle.edit;
+        $scope.editComment(content, cid);
+      }
+    }
+  }
+
   $scope.editTitle = function(){
     $scope.title.loading = true;
 
@@ -354,6 +363,9 @@ photoApp.controller('photoController', function($location, $scope, $rootScope, $
       $scope.title.success = false;
       $scope.title.failure = true;
       console.log(data);
+      if(status === 401){
+        $window.location.assign('/');
+      }
     }
 
   }
@@ -373,7 +385,11 @@ photoApp.controller('photoController', function($location, $scope, $rootScope, $
       $scope.visibility.loading = false;
       $scope.visibility.success = false;
       $scope.visibility.failure = true;
+      if(status === 401){
+        $window.location.assign('/');
+      }
     }
+
   }
 
   console.log(isCached($scope.photo.link));
@@ -414,7 +430,7 @@ photoApp.controller('photoController', function($location, $scope, $rootScope, $
     apiService.editPhoto($scope.photo.editurl, $scope.photo.id, '?pid=' + $scope.photo.pid + '&q=' + tags, editPhotoCallback, errorCallback);
 
     function editPhotoCallback(data, status) {
-
+      $scope.photo.tags.push(content);
     }
   }
 
@@ -485,6 +501,9 @@ photoApp.controller('photoController', function($location, $scope, $rootScope, $
   }
 
   function errorCallback(data, status){
+    if(status === 401){
+      $window.location.assign('/');
+    }
     console.log("Error!");
   }
 
@@ -612,7 +631,9 @@ photoApp.controller('profileController', function($animate, $rootScope, $scope, 
   }
 
   function errorCallback(data, status){
-    console.log("Error!");
+    if(status === 401){
+      $window.location.assign('/');
+    }
   }
 });
 

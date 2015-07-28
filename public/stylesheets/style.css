@@ -280,7 +280,7 @@ div.photo button
 
 /* Photo information */
 .photoInfo {
-  height: 20%;
+  min-height: 20%;
   overflow: auto;
 }
 
