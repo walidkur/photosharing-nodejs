@@ -713,6 +713,11 @@ photoApp.controller('navbarController', function($location, $scope, $rootScope, 
     } else {
       $scope.uploadSideA = true;
     }
+    if($(window).width() < 746){
+      $('#searchText').css('width', '100%');
+    } else {
+      $('#searchText').css('width', '100px');
+    }
   });
 
   $(window).resize(function() {
@@ -728,6 +733,12 @@ photoApp.controller('navbarController', function($location, $scope, $rootScope, 
       $scope.uploadSideA = false
     } else {
       $scope.uploadSideA = true;
+    }
+    $scope.$apply();
+    if($(window).width() < 746){
+      $('#searchText').css('width', '100%');
+    } else {
+      $('#searchText').css('width', '100px');
     }
     $scope.$apply();
   });
