@@ -800,6 +800,16 @@ photoApp.controller('ModalInstanceController', function($window, $http, $scope, 
   };
   $scope.loading = false;
 
+  $scope.checkPress = function(event){
+    if(event.keyCode == 10 || event.keyCode == 13){
+      console.log($scope.tags);
+      $scope.appliedTags.push($scope.tags);
+      console.log($scope.appliedTags);
+      $scope.tags = '';
+      $scope.tagsList = [];
+    }
+  }
+
   $scope.initiateSearch = function(param) {
     $http.get("/api/searchTags?q="+param).then(function(response){
       $scope.tagsList = response.data.items;
@@ -828,7 +838,8 @@ photoApp.controller('ModalInstanceController', function($window, $http, $scope, 
   }
 
   $scope.addTag = function(index) {
-    $scope.appliedTags.push($scope.tagsList[index]);
+    $scope.appliedTags.push($scope.tagsList[index].name);
+    console.log($scope.appliedTags);
     $scope.tags = '';
     $scope.tagsList = [];
   }
@@ -849,10 +860,8 @@ photoApp.controller('ModalInstanceController', function($window, $http, $scope, 
       url = url + '&share=' + shareArray.join();
     }
 
-    if($scope.tags != ''){
-      var tags = $scope.tags;
-      var tagArray = tags.split(' ');
-      url = url + '&q=' + tagArray.join();
+    if($scope.appliedTags.length > 0){
+      url = url + '&q=' + $scope.appliedTags.join();
     }
 
     url += '&title=' + $scope.title;

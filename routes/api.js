@@ -207,10 +207,7 @@ router.get('/feed', isAuth, function(req, res, next){
             tags.push(tag);
           }
 
-          console.log(entry);
-
           if(tags.indexOf("photonode") == -1){
-            console.log(tags);
             continue;
           }
 
