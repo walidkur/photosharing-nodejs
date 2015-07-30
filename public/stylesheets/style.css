@@ -1,4 +1,9 @@
-/*------- Styling for page-home.html -------*/
+/*------- Styling for landing.ejs-------*/
+#loginButton {
+  text-align: center  !important;
+}
+
+/*------- Styling for page-home.ejs -------*/
 
 .hidden {
   visibility: hidden;
@@ -192,7 +197,7 @@ body {
 }
 
 
-/* Styling for page-profile.html */
+/*----- Styling for page-profile.ejs ------*/
 .container-full {
   width: 100%;
   margin: 0 auto;
@@ -226,7 +231,7 @@ body{
   width: 100px;
 }
 
-/*------- Styling for page-photo.html -------*/
+/*------- Styling for page-photo.ejs -------*/
 
 #photoPage {
   margin-top: 40px;
