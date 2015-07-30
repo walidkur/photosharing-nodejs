@@ -37,7 +37,7 @@ function updatePhotoFormat(id, title){
 
 // check whether a session exists for the request
 function isAuth(req, res, next){
-  if(!req.user) return res.status(401).end();
+  if(!req.user) return res.status(403).end();
   else next();
 }
 
@@ -112,8 +112,6 @@ router.get('/feed', isAuth, function(req, res, next){
   };
 
   request.get(options, function(error, response, body){
-    if(response.statusCode === 403) return res.status(403).end();
-    if(response.statusCode === 401) return res.status(401).end();
 
     // initialize the array of photos to be returned
     var photos = [];
@@ -122,118 +120,126 @@ router.get('/feed', isAuth, function(req, res, next){
     if(error){
       console.log('Error occurred: ' + JSON.stringify(error));
       return res.status(500).end();
-    } else {
+    }
+    if(response.statusCode === 403) {
+      res.clearCookie('user');
+      req.logout();
+      req.session.destroy();
+      return res.status(403).end();
+    }
+    if(response.statusCode === 401) {
+      return res.status(401).end();
+    }
 
-      // convert the xml that is returned to a JSON for easier parsing
-      parseString(body, function(err, result){
+    // convert the xml that is returned to a JSON for easier parsing
+    parseString(body, function(err, result){
 
-        if(err){
-          console.log('Error occurred: ' + JSON.stringify(err));
-          return res.status(500).end();
+      if(err){
+        console.log('Error occurred: ' + JSON.stringify(err));
+        return res.status(500).end();
+      }
+
+      // get the entries from the response
+      var entries = result.feed.entry;
+
+      // return the empty array if entries is empty
+      if(isEmpty(entries)) return res.send(photos);
+
+      // iterate over the entries, building a photo object for each entry
+      for(var i = 0; i < entries.length; i++){
+        var photo = {};
+        var entry = entries[i];
+
+        // store the id of the photo for furture requests
+        photo.pid = entry['td:uuid'][0];
+
+        // iterate through the tags in the entry and build an array of these
+        // tags
+        var tags = [];
+        for(var j = 1; j < entry.category.length; j ++){
+          var category = entry.category[j];
+          var tag = category.$.label;
+          tags.push(tag);
         }
 
-        // get the entries from the response
-        var entries = result.feed.entry;
+        photo.liked = false;
 
-        // return the empty array if entries is empty
-        if(isEmpty(entries)) return res.send(photos);
+        // add the tag array to the photo
+        photo.tags = tags;
 
-        // iterate over the entries, building a photo object for each entry
-        for(var i = 0; i < entries.length; i++){
-          var photo = {};
-          var entry = entries[i];
+        // add the author of the file to the object
+        photo.photographer = entry.author[0].name[0];
 
-          // store the id of the photo for furture requests
-          photo.pid = entry['td:uuid'][0];
+        // add the author uid to the file
+        photo.uid = entry.author[0]['snx:userid'][0];
 
-          // iterate through the tags in the entry and build an array of these
-          // tags
-          var tags = [];
-          for(var j = 1; j < entry.category.length; j ++){
-            var category = entry.category[j];
-            var tag = category.$.label;
-            tags.push(tag);
-          }
+        // add the title of the file
+        photo.title = entry.title[0]['_'].split(".")[0];
 
-          photo.liked = false;
+        // add the publish date of the file
+        photo.published = entry.published[0];
 
-          // add the tag array to the photo
-          photo.tags = tags;
-
-          // add the author of the file to the object
-          photo.photographer = entry.author[0].name[0];
-
-          // add the author uid to the file
-          photo.uid = entry.author[0]['snx:userid'][0];
-
-          // add the title of the file
-          photo.title = entry.title[0]['_'].split(".")[0];
-
-          // add the publish date of the file
-          photo.published = entry.published[0];
-
-          // iterate over the links provided by the api to obtain the image and
-          // thumbnail of the file. These can be found by using the type and rel
-          // fields respectively
-          for(var j = 0; j < entry.link.length; j++){
-            var link = entry.link[j];
-            var type = link.$.type;
-            var rel = link.$.rel;
-            if(!(rel === undefined) && (rel.indexOf('recommendation') > -1))  photo.liked = true;
-            if(!(type === undefined) && (type.indexOf('image') > -1)){
-              photo.image = link.$.href;
-              for(var x = 0; x < entry.link.length; x++){
-                var link = entry.link[x];
-                var rel = link.$.rel;
-                if(!(rel === undefined) && (rel.indexOf('thumbnail') > -1)){
-                  photo.thumbnail = link.$.href;
-                  // convert the link stored to a large sized thumbnail by
-                  // replacing medium in the link with large
-                  photo.thumbnail = photo.thumbnail.replace(/medium/i, 'large');
-                  break;
-                }
+        // iterate over the links provided by the api to obtain the image and
+        // thumbnail of the file. These can be found by using the type and rel
+        // fields respectively
+        for(var j = 0; j < entry.link.length; j++){
+          var link = entry.link[j];
+          var type = link.$.type;
+          var rel = link.$.rel;
+          if(!(rel === undefined) && (rel.indexOf('recommendation') > -1))  photo.liked = true;
+          if(!(type === undefined) && (type.indexOf('image') > -1)){
+            photo.image = link.$.href;
+            for(var x = 0; x < entry.link.length; x++){
+              var link = entry.link[x];
+              var rel = link.$.rel;
+              if(!(rel === undefined) && (rel.indexOf('thumbnail') > -1)){
+                photo.thumbnail = link.$.href;
+                // convert the link stored to a large sized thumbnail by
+                // replacing medium in the link with large
+                photo.thumbnail = photo.thumbnail.replace(/medium/i, 'large');
+                break;
               }
             }
           }
-
-          if(isEmpty(photo.thumbnail)){
-            continue;
-          }
-
-          var tags = [];
-
-          for(var j = 1; j < entry.category.length; j++){
-            var category = entry.category[j];
-            var tag = category.$.label;
-            tags.push(tag);
-          }
-
-          if(tags.indexOf("photonode") == -1){
-            continue;
-          }
-
-          var socialx = entry['snx:rank'];
-          for(var j = 0; j < socialx.length; j++){
-            var x = socialx[j];
-            if(x.$.scheme.indexOf('recommendations') > -1){
-              photo.likes = parseInt(x['_']);
-            }
-            if(x.$.scheme.indexOf('share') > - 1){
-              photo.shares = parseInt(x['_']);
-            }
-          }
-
-          // add the library id of the photo for later api calls
-          photo.lid = entry['td:libraryId'][0];
-
-          // push the photo to our photos array
-          photos.push(photo);
         }
 
-        // return our photos array
-        res.send(photos);
-      });
-    }
+        if(isEmpty(photo.thumbnail)){
+          continue;
+        }
+
+        var tags = [];
+
+        for(var j = 1; j < entry.category.length; j++){
+          var category = entry.category[j];
+          var tag = category.$.label;
+          tags.push(tag);
+        }
+
+        if(tags.indexOf("photonode") == -1){
+          continue;
+        }
+
+        var socialx = entry['snx:rank'];
+        for(var j = 0; j < socialx.length; j++){
+          var x = socialx[j];
+          if(x.$.scheme.indexOf('recommendations') > -1){
+            photo.likes = parseInt(x['_']);
+          }
+          if(x.$.scheme.indexOf('share') > - 1){
+            photo.shares = parseInt(x['_']);
+          }
+        }
+
+        // add the library id of the photo for later api calls
+        photo.lid = entry['td:libraryId'][0];
+
+        // push the photo to our photos array
+        photos.push(photo);
+      }
+
+      // return our photos array
+      res.send(photos);
+    });
   });
 });
 
@@ -259,7 +265,12 @@ router.get('/photo', isAuth, function(req, res, next){
         console.log('Error occurred: ' + JSON.stringify(error));
         return res.status(500).end();
       }
-      if(response.statusCode === 403) return res.status(403).end();
+      if(response.statusCode === 403) {
+        res.clearCookie('user');
+        req.logout();
+        req.session.destroy();
+        return res.status(403).end();
+      }
       if(response.statusCode === 401) return res.status(401).end();
       // see get feed for more details
       parseString(body, function(err, result){
@@ -332,7 +343,12 @@ router.put('/photo', isAuth, function(req, res, next) {
       console.log('Error occurred: ' + JSON.stringify(error));
       return res.status(500).end();
     }
-    if(response.statusCode === 403) return res.status(403).end();
+    if(response.statusCode === 403) {
+      res.clearCookie('user');
+      req.logout();
+      req.session.destroy();
+      return res.status(403).end();
+    }
     if(response.statusCode === 401) return res.status(401).end();
 
     parseString(body, function(err, result){
@@ -369,7 +385,12 @@ router.put('/photo', isAuth, function(req, res, next) {
       console.log('Error occurred: ' + JSON.stringify(error));
       return res.status(500).end();
     }
-    if(response.statusCode === 403) return res.status(403).end();
+    if(response.statusCode === 403) {
+      res.clearCookie('user');
+      req.logout();
+      req.session.destroy();
+      return res.status(403).end();
+    }
     if(response.statusCode === 401) return res.status(401).end();
 
     var nonce = body;
@@ -408,7 +429,12 @@ router.put('/photo', isAuth, function(req, res, next) {
         console.log('Error occurred: ' + JSON.stringify(error));
         return res.status(500).end();
       }
-      if(response.statusCode === 403) return res.status(403).end();
+      if(response.statusCode === 403) {
+        res.clearCookie('user');
+        req.logout();
+        req.session.destroy();
+        return res.status(403).end();
+      }
       if(response.statusCode === 401) return res.status(401).end();
       return res.status(200).end();
     });
@@ -437,7 +463,12 @@ router.delete('/photo', isAuth, function(req, res, next){
       console.log('Error occurred: ' + JSON.stringify(error));
       return res.status(500).end();
     }
-    if(response.statusCode === 403) return res.status(403).end();
+    if(response.statusCode === 403) {
+      res.clearCookie('user');
+      req.logout();
+      req.session.destroy();
+      return res.status(403).end();
+    }
     if(response.statusCode === 401) return res.status(401).end();
 
     var nonce = body;
@@ -460,7 +491,12 @@ router.delete('/photo', isAuth, function(req, res, next){
         console.log('Error occurred: ' + JSON.stringify(error));
         return res.status(500).end();
       }
-      if(response.statusCode === 403) return res.status(403).end();
+      if(response.statusCode === 403) {
+        res.clearCookie('user');
+        req.logout();
+        req.session.destroy();
+        return res.status(403).end();
+      }
       if(response.statusCode === 401) return res.status(401).end();
       return res.status(200).end();
     });
@@ -488,7 +524,12 @@ router.post('/like', isAuth, function(req, res, next){
       console.log('Error occurred: ' + error);
       return res.status(500).end();
     }
-    if(response.statusCode === 403) return res.status(403).end();
+    if(response.statusCode === 403) {
+      res.clearCookie('user');
+      req.logout();
+      req.session.destroy();
+      return res.status(403).end();
+    }
     if(response.statusCode === 401) return res.status(401).end();
     var nonce = body;
 
@@ -517,7 +558,12 @@ router.post('/like', isAuth, function(req, res, next){
         console.log('Error occurred: ' + JSON.stringify(error));
         return res.status(500).end();
       }
-      if(response.statusCode === 403) return res.status(403).end();
+      if(response.statusCode === 403) {
+        res.clearCookie('user');
+        req.logout();
+        req.session.destroy();
+        return res.status(403).end();
+      }
       if(response.statusCode === 401) return res.status(401).end();
       return res.status(200).end();
     });
@@ -546,7 +592,12 @@ router.get('/comments', isAuth, function(req, res, next){
         console.log('Error occurred: ' + JSON.stringify(error));
         return res.status(500).end();
       }
-      if(response.statusCode === 403) return res.status(403).end();
+      if(response.statusCode === 403) {
+        res.clearCookie('user');
+        req.logout();
+        req.session.destroy();
+        return res.status(403).end();
+      }
       if(response.statusCode === 401) return res.status(401).end();
       parseString(body, function(err, result){
         if(err){
@@ -620,7 +671,12 @@ router.post('/comments', isAuth, function(req, res, next){
       console.log('Error occurred: ' + JSON.stringify(error));
       return res.status(500).end();
     }
-    if(response.statusCode === 403) return res.status(403).end();
+    if(response.statusCode === 403) {
+      res.clearCookie('user');
+      req.logout();
+      req.session.destroy();
+      return res.status(403).end();
+    }
     if(response.statusCode === 401) return res.status(401).end();
 
     var nonce = body;
@@ -650,7 +706,12 @@ router.post('/comments', isAuth, function(req, res, next){
         console.log('Error occurred: ' + JSON.stringify(error));
         return res.status(500).end();
       }
-      if(response.statusCode === 403) return res.status(403).end();
+      if(response.statusCode === 403) {
+        res.clearCookie('user');
+        req.logout();
+        req.session.destroy();
+        return res.status(403).end();
+      }
       if(response.statusCode === 401) return res.status(401).end();
       parseString(body, function(err, result){
         if(err){
@@ -689,7 +750,12 @@ router.put('/comments', isAuth, function(req, res, next){
       console.log('Error occurred: ' + JSON.stringify(error));
       return res.status(500).end();
     }
-    if(response.statusCode === 403) return res.status(403).end();
+    if(response.statusCode === 403) {
+      res.clearCookie('user');
+      req.logout();
+      req.session.destroy();
+      return res.status(403).end();
+    }
     if(response.statusCode === 401) return res.status(401).end();
     var nonce = body;
 
@@ -715,7 +781,12 @@ router.put('/comments', isAuth, function(req, res, next){
         console.log('Error occurred: ' + JSON.stringify(error));
         return res.status(500).end();
       }
-      if(response.statusCode === 403) return res.status(403).end();
+      if(response.statusCode === 403) {
+        res.clearCookie('user');
+        req.logout();
+        req.session.destroy();
+        return res.status(403).end();
+      }
       if(response.statusCode === 401) return res.status(401).end();
       return res.status(200).end();
     });
@@ -743,7 +814,12 @@ router.delete('/comments', isAuth, function(req, res, next){
       console.log('Error occurred: ' + JSON.stringify(error));
       return res.status(500).end();
     }
-    if(response.statusCode === 403) return res.status(403).end();
+    if(response.statusCode === 403) {
+      res.clearCookie('user');
+      req.logout();
+      req.session.destroy();
+      return res.status(403).end();
+    }
     if(response.statusCode === 401) return res.status(401).end();
 
     var nonce = body;
@@ -766,7 +842,12 @@ router.delete('/comments', isAuth, function(req, res, next){
         console.log('Error occurred: ' + JSON.stringify(error));
         return res.status(500).end()
       }
-      if(response.statusCode === 403) return res.status(403).end();
+      if(response.statusCode === 403) {
+        res.clearCookie('user');
+        req.logout();
+        req.session.destroy();
+        return res.status(403).end();
+      }
       if(response.statusCode === 401) return res.status(401).end();
       return res.status(200).end();
     });
@@ -792,7 +873,12 @@ router.post('/upload', isAuth, function(req, res, next) {
       console.log('Error occurred: ' + JSON.stringify(error));
       return res.status(500).end();
     }
-    if(response.statusCode === 403) return res.status(403).end();
+    if(response.statusCode === 403) {
+      res.clearCookie('user');
+      req.logout();
+      req.session.destroy();
+      return res.status(403).end();
+    }
     if(response.statusCode === 401) return res.status(401).end();
 
     parseString(body, function(err, result){
@@ -835,7 +921,12 @@ router.post('/upload', isAuth, function(req, res, next) {
       console.log('Error occurred: ' + JSON.stringify(error));
       return res.status(500).end()
     }
-    if(response.statusCode === 403) return res.status(403).end();
+    if(response.statusCode === 403) {
+      res.clearCookie('user');
+      req.logout();
+      req.session.destroy();
+      return res.status(403).end();
+    }
     if(response.statusCode === 401) return res.status(401).end();
     var nonce = body;
 
@@ -878,7 +969,12 @@ router.post('/upload', isAuth, function(req, res, next) {
           console.log('Error occurred: ' + JSON.stringify(error));
           return res.status(500).end();
         }
-        if(response.statusCode === 403) return res.status(403).end();
+        if(response.statusCode === 403) {
+          res.clearCookie('user');
+          req.logout();
+          req.session.destroy();
+          return res.status(403).end();
+        }
         if(response.statusCode === 401) return res.status(401).end();
         parseString(body, function(err, result){
           if(err){
@@ -928,7 +1024,12 @@ router.get('/profile', isAuth, function(req, res, next){
       console.log('Error occurred: ' + JSON.stringify(error));
       return res.status(500).end();
     }
-    if(response.statusCode === 403) return res.status(403).end();
+    if(response.statusCode === 403) {
+      res.clearCookie('user');
+      req.logout();
+      req.session.destroy();
+      return res.status(403).end();
+    }
     if(response.statusCode === 401) return res.status(401).end();
 
     parseString(body, function(err, result){
@@ -988,7 +1089,12 @@ router.get('/searchTags', isAuth, function(req, res, next){
       console.log('Error occurred: ' + JSON.stringify(error));
       return res.status(500);
     }
-    if(response.statusCode === 403) return res.status(403).end();
+    if(response.statusCode === 403) {
+      res.clearCookie('user');
+      req.logout();
+      req.session.destroy();
+      return res.status(403).end();
+    }
     if(response.statusCode === 401) return res.status(401).end();
     res.send(body);
   })
