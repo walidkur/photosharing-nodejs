@@ -113,6 +113,7 @@ router.get('/feed', isAuth, function(req, res, next){
 
   request.get(options, function(error, response, body){
     if(response.statusCode === 403) return res.status(403).end();
+    if(response.statusCode === 401) return res.status(401).end();
 
     // initialize the array of photos to be returned
     var photos = [];
@@ -229,8 +230,6 @@ router.get('/feed', isAuth, function(req, res, next){
           photos.push(photo);
         }
 
-        console.log(photos);
-
         // return our photos array
         res.send(photos);
       });
@@ -261,6 +260,7 @@ router.get('/photo', isAuth, function(req, res, next){
         return res.status(500).end();
       }
       if(response.statusCode === 403) return res.status(403).end();
+      if(response.statusCode === 401) return res.status(401).end();
       // see get feed for more details
       parseString(body, function(err, result){
         if(err){
@@ -332,6 +332,8 @@ router.put('/photo', isAuth, function(req, res, next) {
       console.log('Error occurred: ' + JSON.stringify(error));
       return res.status(500).end();
     }
+    if(response.statusCode === 403) return res.status(403).end();
+    if(response.statusCode === 401) return res.status(401).end();
 
     parseString(body, function(err, result){
       if(err){
@@ -368,6 +370,7 @@ router.put('/photo', isAuth, function(req, res, next) {
       return res.status(500).end();
     }
     if(response.statusCode === 403) return res.status(403).end();
+    if(response.statusCode === 401) return res.status(401).end();
 
     var nonce = body;
 
@@ -405,7 +408,8 @@ router.put('/photo', isAuth, function(req, res, next) {
         console.log('Error occurred: ' + JSON.stringify(error));
         return res.status(500).end();
       }
-      if(response.statusCode === 402) return res.status(403).end();
+      if(response.statusCode === 403) return res.status(403).end();
+      if(response.statusCode === 401) return res.status(401).end();
       return res.status(200).end();
     });
   });
@@ -434,6 +438,7 @@ router.delete('/photo', isAuth, function(req, res, next){
       return res.status(500).end();
     }
     if(response.statusCode === 403) return res.status(403).end();
+    if(response.statusCode === 401) return res.status(401).end();
 
     var nonce = body;
 
@@ -455,6 +460,8 @@ router.delete('/photo', isAuth, function(req, res, next){
         console.log('Error occurred: ' + JSON.stringify(error));
         return res.status(500).end();
       }
+      if(response.statusCode === 403) return res.status(403).end();
+      if(response.statusCode === 401) return res.status(401).end();
       return res.status(200).end();
     });
   });
@@ -482,6 +489,7 @@ router.post('/like', isAuth, function(req, res, next){
       return res.status(500).end();
     }
     if(response.statusCode === 403) return res.status(403).end();
+    if(response.statusCode === 401) return res.status(401).end();
     var nonce = body;
 
     var headers = {
@@ -510,6 +518,7 @@ router.post('/like', isAuth, function(req, res, next){
         return res.status(500).end();
       }
       if(response.statusCode === 403) return res.status(403).end();
+      if(response.statusCode === 401) return res.status(401).end();
       return res.status(200).end();
     });
   });
@@ -538,6 +547,7 @@ router.get('/comments', isAuth, function(req, res, next){
         return res.status(500).end();
       }
       if(response.statusCode === 403) return res.status(403).end();
+      if(response.statusCode === 401) return res.status(401).end();
       parseString(body, function(err, result){
         if(err){
           console.log('Error occurred: ' + JSON.stringify(err));
@@ -611,6 +621,7 @@ router.post('/comments', isAuth, function(req, res, next){
       return res.status(500).end();
     }
     if(response.statusCode === 403) return res.status(403).end();
+    if(response.statusCode === 401) return res.status(401).end();
 
     var nonce = body;
 
@@ -640,6 +651,7 @@ router.post('/comments', isAuth, function(req, res, next){
         return res.status(500).end();
       }
       if(response.statusCode === 403) return res.status(403).end();
+      if(response.statusCode === 401) return res.status(401).end();
       parseString(body, function(err, result){
         if(err){
           console.log('Error occurred: ' + JSON.stringify(err));
@@ -678,6 +690,7 @@ router.put('/comments', isAuth, function(req, res, next){
       return res.status(500).end();
     }
     if(response.statusCode === 403) return res.status(403).end();
+    if(response.statusCode === 401) return res.status(401).end();
     var nonce = body;
 
     var url = FILES_API + 'userlibrary/' + req.query.uid + '/document/' + req.query.pid + '/comment/' + req.query.cid + '/entry';
@@ -703,6 +716,7 @@ router.put('/comments', isAuth, function(req, res, next){
         return res.status(500).end();
       }
       if(response.statusCode === 403) return res.status(403).end();
+      if(response.statusCode === 401) return res.status(401).end();
       return res.status(200).end();
     });
   });
@@ -730,6 +744,7 @@ router.delete('/comments', isAuth, function(req, res, next){
       return res.status(500).end();
     }
     if(response.statusCode === 403) return res.status(403).end();
+    if(response.statusCode === 401) return res.status(401).end();
 
     var nonce = body;
 
@@ -752,6 +767,7 @@ router.delete('/comments', isAuth, function(req, res, next){
         return res.status(500).end()
       }
       if(response.statusCode === 403) return res.status(403).end();
+      if(response.statusCode === 401) return res.status(401).end();
       return res.status(200).end();
     });
   });
@@ -776,6 +792,8 @@ router.post('/upload', isAuth, function(req, res, next) {
       console.log('Error occurred: ' + JSON.stringify(error));
       return res.status(500).end();
     }
+    if(response.statusCode === 403) return res.status(403).end();
+    if(response.statusCode === 401) return res.status(401).end();
 
     parseString(body, function(err, result){
       if(err){
@@ -818,6 +836,7 @@ router.post('/upload', isAuth, function(req, res, next) {
       return res.status(500).end()
     }
     if(response.statusCode === 403) return res.status(403).end();
+    if(response.statusCode === 401) return res.status(401).end();
     var nonce = body;
 
     // process the file to be uploaded
@@ -860,6 +879,7 @@ router.post('/upload', isAuth, function(req, res, next) {
           return res.status(500).end();
         }
         if(response.statusCode === 403) return res.status(403).end();
+        if(response.statusCode === 401) return res.status(401).end();
         parseString(body, function(err, result){
           if(err){
             console.log('Error occurred: ' + JSON.stringify(err));
@@ -909,6 +929,7 @@ router.get('/profile', isAuth, function(req, res, next){
       return res.status(500).end();
     }
     if(response.statusCode === 403) return res.status(403).end();
+    if(response.statusCode === 401) return res.status(401).end();
 
     parseString(body, function(err, result){
       if(err){
@@ -968,6 +989,7 @@ router.get('/searchTags', isAuth, function(req, res, next){
       return res.status(500);
     }
     if(response.statusCode === 403) return res.status(403).end();
+    if(response.statusCode === 401) return res.status(401).end();
     res.send(body);
   })
 });
