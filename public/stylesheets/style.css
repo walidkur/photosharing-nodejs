@@ -1,4 +1,9 @@
-/*------- Styling for page-home.html -------*/
+/*------- Styling for landing.ejs-------*/
+#loginButton {
+  text-align: center  !important;
+}
+
+/*------- Styling for page-home.ejs -------*/
 
 .hidden {
   visibility: hidden;
@@ -9,8 +14,7 @@
 }
 
 tag {
-  padding: 5px;
-  margin: 5px;
+  text-align: center;
   background-color: black;
   color: white;
   display: inline-block;
@@ -141,6 +145,7 @@ body {
     position: relative;
     overflow: hidden;
 }
+
 .btn-file input[type=file] {
     position: absolute;
     top: 0;
@@ -156,6 +161,17 @@ body {
     cursor: inherit;
     display: block;
 }
+
+#uploadTag {
+  margin: 5px;
+  margin-left: 3px;
+  margin-right: 3px;
+  padding-right: 3px;
+  padding-left: 3px;
+  padding-top: 3px;
+  padding-bottom: 3px;
+}
+
 
 /* Styling for public button */
 .glyphicon-globe {
@@ -192,7 +208,8 @@ body {
 }
 
 
-/* Styling for page-profile.html */
+
+/*----- Styling for page-profile.ejs ------*/
 .container-full {
   width: 100%;
   margin: 0 auto;
@@ -226,7 +243,9 @@ body{
   width: 100px;
 }
 
-/*------- Styling for page-photo.html -------*/
+
+
+/*------- Styling for page-photo.ejs -------*/
 
 #photoPage {
   margin-top: 40px;
@@ -283,19 +302,18 @@ div.photo button
 /* Comment column */
 #commentColumn {
   margin-top: 20px;
-  max-height: 750px;
+  max-height: 750px !important;
   max-width: 450px;
 }
 
 /* Photo information */
 .photoInfo {
-  min-height: 20%;
+  min-height: 20%   !important;
   overflow: auto;
 }
 
 #userPhoto {
--webkit-border-radius: 30px;
--moz-border-radius: 30px;
+  border-radius: 30px   !important;
 }
 
 .photographer {
@@ -348,10 +366,10 @@ div.photo button
   font-size: 12px;
 }
 
-tag {
+/*tag {
   font-family: "Ariel", sans-serif;
   display: inline;
-}
+}*/
 
 .tagButton {
   background-color: inherit;
@@ -361,6 +379,11 @@ tag {
 .addTags {
   padding: none;
   margin: none;
+}
+
+#photoTag {
+  padding: 3px;
+  margin: 3px;
 }
 
 /* Number of likes */
