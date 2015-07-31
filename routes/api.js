@@ -59,26 +59,26 @@ router.get('/feed', isAuth, function(req, res, next){
     // config.server.domain is the domain name of the server (without the
     // https or the directory, for example: example.com).
     // the url to return a feed of public files
-    url = FILES_API + 'documents/feed?visibility=public&includeTags=true&includeRecommendation=true';
+    url = FILES_API + 'documents/feed?visibility=public&includeTags=true&includeRecommendation=true&tag=photonode';
     break;
 
     case 'user':
     if(isEmpty(req.query.uid)) return res.status(412).end();
 
     // the url to return a feed of a user's files
-    url = FILES_API + 'userlibrary/' + req.query.uid + '/feed?visibility=public&includeTags=true&includeRecommendation=true';
+    url = FILES_API + 'userlibrary/' + req.query.uid + '/feed?visibility=public&includeTags=true&includeRecommendation=true&tag=photonode';
     break;
 
     case 'private':
 
     // the url to return a feed of files shared with the user
-    url = FILES_API + 'documents/shared/feed?includeTags=true&direction=inbound&includeRecommendation=true'
+    url = FILES_API + 'documents/shared/feed?includeTags=true&direction=inbound&includeRecommendation=true&tag=photonode'
     break;
 
     case 'myphotos':
 
     // url to return the user's photos
-    url = FILES_API + 'myuserlibrary/feed?includeTags=true&includeRecommendation=true'
+    url = FILES_API + 'myuserlibrary/feed?includeTags=true&includeRecommendation=true&tag=photonode'
     break;
 
     default:
@@ -204,18 +204,6 @@ router.get('/feed', isAuth, function(req, res, next){
         }
 
         if(isEmpty(photo.thumbnail)){
-          continue;
-        }
-
-        var tags = [];
-
-        for(var j = 1; j < entry.category.length; j++){
-          var category = entry.category[j];
-          var tag = category.$.label;
-          tags.push(tag);
-        }
-
-        if(tags.indexOf("photonode") == -1){
           continue;
         }
 
@@ -936,7 +924,12 @@ router.post('/upload', isAuth, function(req, res, next) {
       var url = FILES_API + 'myuserlibrary/feed?visibility=' + req.query.visibility;
 
       // add tags to the url
-      if(!isEmpty(req.query.q)) url = url + '&tag=' + req.query.q;
+      if(!isEmpty(req.query.q)){
+        var array = req.query.q.split(',');
+        for(var i = 0; i < array.length; i++){
+          url = url + '&tag=' + array[i];
+        }
+      }
 
       // add shares to the url
       if(!isEmpty(req.query.share)) url = url + '&shareWith=' + req.query.share + '&shared=true';
