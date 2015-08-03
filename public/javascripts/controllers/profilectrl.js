@@ -6,6 +6,7 @@ photoApp.controller('profileController', function($animate, $rootScope, $scope, 
     $(btn).css("animation", "");
     $(btn).css("box-shadow", "");
   });
+
   $(".profileButton").css("box-shadow", "0px 2px 0px #004266");
   $rootScope.loading = false;
   var index = 21;
