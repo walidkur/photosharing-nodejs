@@ -1,6 +1,11 @@
 var photoApp = angular.module('photoApp');
 
-photoApp.controller('homeController', function($animate, $rootScope, $scope, $routeParams, $window, apiService, feedData) {
+photoApp.controller('homeController', function($animate, apiService, feedData, $routeParams, $rootScope, $scope, $window) {
+
+  //load page-home.ejs into index.ejs, remove loading screen, bind preloaded data to scope
+  $scope.pageClass = 'page-home';
+  $rootScope.loading = false;
+  $scope.data = feedData;
 
   switch ($routeParams.type){
     case 'public':
@@ -25,14 +30,6 @@ photoApp.controller('homeController', function($animate, $rootScope, $scope, $ro
       $(".personalButton").css("box-shadow", "0px 2px 0px #004266");
     break;
   }
-
-
-
-  $rootScope.loading = false;
-  //Class for ng-view in index.html
-  $scope.pageClass = 'page-home';
-
-  $scope.data = feedData;
 
   //Configuration for image gallery
   var galleryConfig = { rowHeight: window.screen.height * .25,  margins: 10 };
@@ -81,7 +78,6 @@ photoApp.controller('homeController', function($animate, $rootScope, $scope, $ro
 
   $scope.like = function(index){
     var photo = $scope.data[index];
-    console.log(photo);
     var params = '?lid=' + photo.lid + '&pid=' + photo.pid;
     if(photo.liked){
       params += '&r=off';
@@ -99,7 +95,7 @@ photoApp.controller('homeController', function($animate, $rootScope, $scope, $ro
         }
       },
       function(data, status){
-        if(status === 401){
+        if(status === 401 || status === 403){
           $window.location.assign('/');
         }
       }
@@ -118,7 +114,7 @@ photoApp.controller('homeController', function($animate, $rootScope, $scope, $ro
   }
 
   function errorCallback(data, status){
-    if(status === 401){
+    if(status === 401 || status === 403){
       $window.location.assign('/');
     }
   }
