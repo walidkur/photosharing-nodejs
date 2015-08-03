@@ -78,7 +78,7 @@ router.get('/feed', isAuth, function(req, res, next){
     case 'myphotos':
 
     // url to return the user's photos
-    url = FILES_API + 'myuserlibrary/feed?includeTags=true&includeRecommendation=true&tag=photonode'
+    url = FILES_API + 'myuserlibrary/feed?includeTags=true&includeRecommendation=true'
     break;
 
     default:
@@ -1066,7 +1066,7 @@ router.get('/searchTags', isAuth, function(req, res, next){
 
   if(isEmpty(req.query.q)) return res.status(412).end();
 
-  var url = 'https://' + config.server.domain + '/files/oauth/api/tags/feed?format=json&scope=document&pageSize=16&filter=' + req.query.q
+  var url = 'https://' + config.server.domain + '/files/oauth/api/tags/feed?format=json&scope=document&pageSize=16&filter=' + req.query.q;
 
   var headers = {
     'Authorization' : 'Bearer ' + req.user.accessToken
