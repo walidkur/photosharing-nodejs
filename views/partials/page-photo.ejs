@@ -125,7 +125,8 @@
           </button>
           <span ng-if="photo.tags.length !== 0">
             <span ng-repeat="tag in photo.tags">
-              <tag id="photoTag"><a href="/#/public?tags={{tag}}">{{tag}}</a><span ng-hide="$last">, </span><tag>
+              <a id="photoTag" href="/#/public?tags={{tag}}">{{tag}}</a>
+              <span id="comma" ng-hide="$last">, </span>
             </span>
           </span>
           <span ng-if="photo.tags.length === 0">
