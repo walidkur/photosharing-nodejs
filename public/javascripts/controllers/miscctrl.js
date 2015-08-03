@@ -140,7 +140,7 @@ photoApp.controller('navbarController', function($location, $scope, $rootScope, 
 
     }).error(function(data, status){
 
-      if(status === 401){
+      if(status === 401 || status === 403){
         $window.location.assign('/');
       }
 

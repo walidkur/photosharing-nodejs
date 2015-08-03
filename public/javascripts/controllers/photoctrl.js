@@ -7,11 +7,6 @@ photoApp.controller('photoController', function($location, $scope, $rootScope, $
     $(btn).css("box-shadow", "");
   });
 
-  $scope.log = function(log){
-    console.log(log);
-  }
-
-
   $rootScope.loading = false;
   $scope.add = true;
   $scope.pageClass = 'page-photo';
@@ -65,7 +60,7 @@ photoApp.controller('photoController', function($location, $scope, $rootScope, $
       $scope.title.success = false;
       $scope.title.failure = true;
       console.log(data);
-      if(status === 401){
+      if(status === 401 || status === 403){
         $window.location.assign('/');
       }
     }
@@ -87,7 +82,7 @@ photoApp.controller('photoController', function($location, $scope, $rootScope, $
       $scope.visibility.loading = false;
       $scope.visibility.success = false;
       $scope.visibility.failure = true;
-      if(status === 401){
+      if(status === 401 || status === 403){
         $window.location.assign('/');
       }
     }
@@ -203,7 +198,7 @@ photoApp.controller('photoController', function($location, $scope, $rootScope, $
   }
 
   function errorCallback(data, status){
-    if(status === 401){
+    if(status === 401 || status === 403){
       $window.location.assign('/');
     }
     console.log("Error!");
@@ -227,7 +222,7 @@ photoApp.controller('photoController', function($location, $scope, $rootScope, $
         }
       },
       function(data, status){
-        if(status === 401){
+        if(status === 401 || status === 403){
           $window.location.assign('/');
         }
       }
