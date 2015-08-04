@@ -125,7 +125,8 @@
           </button>
           <span ng-if="photo.tags.length !== 0">
             <span ng-repeat="tag in photo.tags">
-              <tag id="photoTag"><a href="/#/public?tags={{tag}}">{{tag}}</a><span ng-hide="$last">, </span><tag>
+              <a id="photoTag" href="/#/public?tags={{tag}}">{{tag}}</a>
+              <span id="comma" ng-hide="$last">, </span>
             </span>
           </span>
           <span ng-if="photo.tags.length === 0">
@@ -192,7 +193,7 @@
 
               <!--Displays the delete and edit comment buttons-->
               <span ng-show="!comment.loading && $root.uid == comment.uid && comment.hovered" style="float: right">
-                <button id="edit" class="editCommentButton" ng-click="comment.edit = !comment.edit; editListener();">
+                <button id="edit" class="editCommentButton" ng-click="comment.edit = !comment.edit; $parent.add = !$parent.add; log($parent.add);">
                   <span style="color: grey" class="glyphicon glyphicon-edit"></span>
                 </button>
                 <button class="deleteCommentButton" ng-click="deleteComment(comment.cid)">
@@ -228,7 +229,7 @@
                   <div ng-show="comment.edit" class="commentEditField input-group stylish-input-group">
                       <textarea ng-keypress="change($event, 'edit', comment.content, comment.cid, comment)" id="editText" class="form-control" ng-model="comment.content"></textarea>
                         <span class="input-group-addon">
-                          <button type="submit" id="editButton" ng-click="comment.edit = !comment.edit; editComment(comment.content, comment.cid)">
+                          <button type="submit" id="editButton" ng-click="comment.edit = !comment.edit; editComment(comment.content, comment.cid); $parent.add = !$parent.add">
                             <span class="glyphicon glyphicon-share-alt"></span>
                           </button>
                         </span>
@@ -251,7 +252,7 @@
         <form>
 
           <!--Displays the "Add comment" box-->
-          <div class="addCommentBox" id="addCommentText">
+          <div ng-show="add === true" class="addCommentBox" id="addCommentText">
             <div class="input-group stylish-input-group">
                 <textarea ng-keypress="change($event, 'comment', content)" id="commentText" class="form-control" ng-model="content" placeholder="Add comment"></textarea>
                   <span class="input-group-addon">
@@ -262,6 +263,7 @@
             </div>
           </div>
         </form>
+
       </div>
 
 

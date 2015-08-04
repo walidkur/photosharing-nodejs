@@ -43,7 +43,7 @@ photoApp.config(function($routeProvider) {
         }
 
         function errorCallback(data, status){
-          if(status === 401){
+          if(status === 401 || status === 403){
             $window.location.assign('/');
           }
         }
@@ -125,7 +125,7 @@ photoApp.config(function($routeProvider) {
         }
 
         function errorCallback(data, status){
-          if(status === 401){
+          if(status === 401 || status === 403){
             $window.location.assign('/');
           }
         }
@@ -164,7 +164,7 @@ photoApp.config(function($routeProvider) {
           resolveData.feed = data;
         }
         function errorCallback(data, status){
-          if(status === 401){
+          if(status === 401 || status === 403){
             $window.location.assign('/');
           }
         }

@@ -140,7 +140,7 @@ photoApp.controller('navbarController', function($location, $scope, $rootScope, 
 
     }).error(function(data, status){
 
-      if(status === 401){
+      if(status === 401 || status === 403){
         $window.location.assign('/');
       }
 
@@ -153,7 +153,8 @@ photoApp.controller('navbarController', function($location, $scope, $rootScope, 
 
 photoApp.controller('ModalInstanceController', function($window, $http, $scope, $modalInstance, items) {
 
-  $scope.appliedTags = [];
+  $scope.appliedTags = ['photonode'];
+  $scope.visibility = 'public';
   $scope.items = items;
   $scope.shares = '';
   $scope.tags = '';

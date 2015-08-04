@@ -8,6 +8,7 @@ photoApp.controller('photoController', function($location, $scope, $rootScope, $
   });
 
   $rootScope.loading = false;
+  $scope.add = true;
   $scope.pageClass = 'page-photo';
   $scope.photo = photoData.photo;
   $scope.profile = photoData.profile;
@@ -37,6 +38,7 @@ photoApp.controller('photoController', function($location, $scope, $rootScope, $
         console.log("New Edit is: " + content);
         toggle.edit = !toggle.edit;
         $scope.editComment(content, cid);
+        $scope.add = !$scope.add;
       }
     }
   }
@@ -58,7 +60,7 @@ photoApp.controller('photoController', function($location, $scope, $rootScope, $
       $scope.title.success = false;
       $scope.title.failure = true;
       console.log(data);
-      if(status === 401){
+      if(status === 401 || status === 403){
         $window.location.assign('/');
       }
     }
@@ -80,7 +82,7 @@ photoApp.controller('photoController', function($location, $scope, $rootScope, $
       $scope.visibility.loading = false;
       $scope.visibility.success = false;
       $scope.visibility.failure = true;
-      if(status === 401){
+      if(status === 401 || status === 403){
         $window.location.assign('/');
       }
     }
@@ -196,7 +198,7 @@ photoApp.controller('photoController', function($location, $scope, $rootScope, $
   }
 
   function errorCallback(data, status){
-    if(status === 401){
+    if(status === 401 || status === 403){
       $window.location.assign('/');
     }
     console.log("Error!");
@@ -220,7 +222,7 @@ photoApp.controller('photoController', function($location, $scope, $rootScope, $
         }
       },
       function(data, status){
-        if(status === 401){
+        if(status === 401 || status === 403){
           $window.location.assign('/');
         }
       }
@@ -241,24 +243,25 @@ photoApp.controller('photoController', function($location, $scope, $rootScope, $
 
   var setting = false;
 
-  $scope.editListener = function () {
-    $(document).ready(function(){
-      if (setting === false) {
-          setting = true;
-          $("#addCommentText").css("display", "none");
-          console.log("Hide");
-
-      }
-      else {
-        setting = false;
-        $("#addCommentText").css("display", "block");
-        console.log("Show");
-      }
-
-    });
-
-
-  }
+  // $scope.editListener = function () {
+  //
+  //   $(document).ready(function(){
+  //     if (setting === false) {
+  //         setting = true;
+  //         $("#addCommentText").css("display", "none");
+  //         console.log("Hide");
+  //
+  //     }
+  //     else {
+  //       setting = false;
+  //       $("#addCommentText").css("display", "block");
+  //       console.log("Show");
+  //     }
+  //
+  //   });
+  //
+  //
+  // }
 
 
 });
