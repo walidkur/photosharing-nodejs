@@ -153,7 +153,8 @@ photoApp.controller('navbarController', function($location, $scope, $rootScope, 
 
 photoApp.controller('ModalInstanceController', function($window, $http, $scope, $modalInstance, items) {
 
-  $scope.appliedTags = [];
+  $scope.appliedTags = ['photonode'];
+  $scope.visibility = 'public';
   $scope.items = items;
   $scope.shares = '';
   $scope.tags = '';
