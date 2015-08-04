@@ -315,7 +315,7 @@ router.get('/photo', isAuth, function(req, res, next){
 
 router.put('/photo', isAuth, function(req, res, next) {
   // return 412 if the necessary queries are not passed
-  if(isEmpty(req.query.title)) next();
+  if(isEmpty(req.query.title)) return next();
 
   var url = FILES_API + 'myuserlibrary/feed?includeCount=true&search=' + req.query.title;
 
