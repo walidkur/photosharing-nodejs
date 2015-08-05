@@ -1,6 +1,7 @@
 <div id="photoPage" class="container-fluid">
 
-</br>
+<!-- Add necessary spacing -->
+<br>
 
   <div class="row">
 
@@ -18,8 +19,6 @@
 
       <!--Displays the photo's information-->
       <div class="photoInfo">
-
-
         <div class="media">
 
           <!-- Uploader Avatar -->
@@ -56,23 +55,18 @@
                   <span ng-show="visibility.success && !visibility.loading">
                     <span class="glyphicon glyphicon-ok-sign"></span>
                   </span>
-
                   <span ng-show="visibility.failure && !visibility.loading">
                     <span class="glyphicon glyphicon-exclamation-sign"></span>
                   </span>
-
                   <span ng-show="visibility.loading">
                     <span class="glyphicon glyphicon-refresh spin"></span>
                   </span>
                 </span>
-
-
               </span>
-
 
             </div>
 
-
+            <!-- Add necessary spacing -->
             <br>
             <br>
 
@@ -89,11 +83,9 @@
               <span ng-show="title.success && !title.loading">
                 <span class="glyphicon glyphicon-ok-sign"></span>
               </span>
-
               <span ng-show="title.failure && !title.loading">
                 <span class="glyphicon glyphicon-exclamation-sign"></span>
               </span>
-
               <span ng-show="title.loading">
                 <span class="glyphicon glyphicon-refresh spin"></span>
               </span>
@@ -113,22 +105,37 @@
               </form>
             </div>
 
-
           </div>
         </div>
 
         <!--Photo Tags/Edit Tags-->
         <h5 class="tagField">
-
           <button ng-click="meta = !meta;" class="tagButton">
             <span class="glyphicon glyphicon-tag"></span>
           </button>
-          <span ng-if="photo.tags.length !== 0">
+
+          <!-- <span ng-if="photo.tags.length !== 0">
             <span ng-repeat="tag in photo.tags">
               <a id="photoTag" href="/#/public?tags={{tag}}">{{tag}}</a>
-              <span id="comma" ng-hide="$last">, </span>
             </span>
-          </span>
+          </span> -->
+
+            <span ng-if="photo.tags.length !== 0">
+              <div class="tagSlot" ng-repeat="tag in photo.tags">
+                <a id="tagName" href="/#/public?tags={{tag}}">{{tag}}</a>
+                <button class="deleteTagButton">
+                  <span class="glyphicon glyphicon-remove"></span>
+                </button>
+              </div>
+            </span>
+
+          <!-- <div class="photo">
+            <img class="img-responsive" id="clickedPhoto" ng-src="{{photo.link}}"/>
+            <button ng-if="uid == photo.uid" class="deletePhotoButton" ng-click="deletePhoto()">
+              <span class="glyphicon glyphicon-trash"></span>
+            </button>
+          </div> -->
+
           <span ng-if="photo.tags.length === 0">
             <tag>Add tags<tag>
           </span>
@@ -137,34 +144,28 @@
           <div ng-if="uid == photo.uid" class="addTags">
             <br ng-show="meta">
             <br ng-show="meta">
-          <form>
-            <div ng-show="meta" class="input-group">
-              <input ng-keypress="change($event, 'tags', newMeta)" id="tagsText" type="text" ng-model="newMeta" class="form-control" placeholder="Enter new tags (separated by spaces)">
-                <span class="input-group-btn">
-                  <button id="tagsButton" ng-click="meta = !meta; editPhoto(newMeta);" class="btn btn-primary" type="button">Submit</button>
-                </span>
-            </div>
-          </form>
+            <form>
+              <div ng-show="meta" class="input-group">
+                <input ng-keypress="change($event, 'tags', newMeta)" id="tagsText" type="text" ng-model="newMeta" class="form-control" placeholder="Enter new tags (separated by spaces)">
+                  <span class="input-group-btn">
+                    <button id="tagsButton" ng-click="meta = !meta; editPhoto(newMeta);" class="btn btn-primary" type="button">Submit</button>
+                  </span>
+              </div>
+            </form>
           </div>
 
-        </h5>
-
       </div>
-
-
 
       <!--Like Button and Number of Likes-->
       <div id="photoBar">
         <button ng-show="liked" class="likeButton" ng-click="like()"><span style="color: blue" class="glyphicon glyphicon-thumbs-up"></span></button>
         <button ng-show="!liked" class="likeButton" ng-click="like()"><span class="glyphicon glyphicon-thumbs-up"></span></button>
-
         <span ng-if="photo.likes !== 1">
           {{photo.likes}} people
         </span>
         <span ng-if="photo.likes === 1">
           {{photo.likes}} person
         </span>
-
       </div>
 
       <!--Creates a divider before comments-->
@@ -183,7 +184,6 @@
 
           <!--Shows the delete and edit comment buttons when comments are hovered over-->
           <div ng-mouseover="comment.hovered = true" ng-mouseleave="comment.hovered = false" class="media-body">
-
             <h4 class="media-heading">
 
               <!--Displays the name of the comment's author-->
@@ -200,25 +200,17 @@
                   <span style="color: grey" class="glyphicon glyphicon-remove"></span>
                 </button>
               </span>
-
               <span ng-show="comment.success && !comment.loading">
                 <span class="glyphicon glyphicon-ok-sign"></span>
-
               </span>
-
               <span ng-show="comment.failure && !comment.loading">
                 <span class="glyphicon glyphicon-exclamation-sign"></span>
               </span>
-
               <span ng-show="comment.loading">
                 <span class="glyphicon glyphicon-refresh spin"></span>
               </span>
 
-            </h4>
-
             <h5 ng-show="!comment.edit">{{comment.content}}</h5>
-
-
 
             <div>
 
@@ -228,21 +220,21 @@
                 <!--Displays the "Edit comment" box-->
                   <div ng-show="comment.edit" class="commentEditField input-group stylish-input-group">
                       <textarea ng-keypress="change($event, 'edit', comment.content, comment.cid, comment)" id="editText" class="form-control" ng-model="comment.content"></textarea>
-                        <span class="input-group-addon">
-                          <button type="submit" id="editButton" ng-click="comment.edit = !comment.edit; editComment(comment.content, comment.cid); $parent.add = !$parent.add">
-                            <span class="glyphicon glyphicon-share-alt"></span>
-                          </button>
-                        </span>
+                      <span class="input-group-addon">
+                        <button type="submit" id="editButton" ng-click="comment.edit = !comment.edit; editComment(comment.content, comment.cid); $parent.add = !$parent.add">
+                          <span class="glyphicon glyphicon-share-alt"></span>
+                        </button>
+                      </span>
                   </div>
-              </form>
-            </div>
 
+              </form>
+
+            </div>
 
             <!--Displays the date the comment was published-->
             <h5 class="date">{{comment.date}}</h5>
 
           </div>
-
         </div>
       </div>
 
@@ -262,17 +254,11 @@
                   </span>
             </div>
           </div>
+
         </form>
 
       </div>
-
-
-
     </div>
-
   </div>
-
-
-
 
 </div>

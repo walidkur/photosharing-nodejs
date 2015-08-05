@@ -10,19 +10,15 @@
         <a class='btn btn-primary' href='javascript:;'>
           Choose File...
           <input type="file" file-input="files" style='position:absolute;z-index:2;top:0;left:0;filter: alpha(opacity=0);opacity:0;background-color:transparent;color:transparent;' name="file_source" size="40"  onchange='$("#upload-file-info").html($(this).val().replace(/^.*\\/, ""));'>
-
         </a>
         &nbsp;
-
         <span class='label label-info' id="upload-file-info"></span>
-
-
-
       </div>
-
       <div ng-show="message.length > 0" class="alert alert-danger">
           <p>{{message}}</p>
       </div>
+
+      <!-- Creates ability to add a title fo photos-->
       <div class="form-group">
           <label for="title">Title:</label>
           <input ng-model="title" type="text" class="form-control" id="title">
@@ -33,7 +29,7 @@
         <div class="form-group">
           <label for="tag">Tags:</label>
           <div style="position: relative">
-            <tag id="uploadTag" ng-click="removeTag($index)" class="tag" ng-repeat="tag in appliedTags">{{tag}}</tag>
+            <tag id="uploadTag" class="tag" ng-repeat="tag in appliedTags">{{tag}}<button class="removeUploadTag" ng-click="removeTag($index)"><span class="glyphicon glyphicon-remove"></span></button></tag>
               <input ng-keypress="checkPress($event)" id="tagField" ng-change="search($viewValue)" ng-model="tags" type="text" class="form-control">
               <ul ng-show="tagsList.length > 0" class="dropdown-menu" style="display: block">
                 <li ng-click="addTag($index)" ng-repeat="tag in tagsList"><a href=""><{{tag.name}}</a></li>
@@ -42,11 +38,13 @@
         </div>
       </div>
 
+      <!-- Creates ability to share photos to others -->
       <div class="form-group">
         <label for="shares">Share with:</label>
         <input ng-model="shares" type="text" class="form-control" id="shares">
       </div>
 
+      <!-- Creates ability to set photo to public or private visibility -->
       <div class="form-group">
         <label>
           <input type="radio" ng-model="visibility" value="private">
