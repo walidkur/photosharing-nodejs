@@ -16,35 +16,45 @@ limitations under the License. */
 var fs = require('fs');
 var request = require('sync-request');
 
-
+// test to see if a server configuration file already exists
 try {
   fs.openSync('./config/server.js', 'r', function(err, fd){
       if (err && err.code=='ENOENT') { return console.log('Server.js does not exist') }
       resolve();
   });
+
+// if the file is not found, a error is thrown
 } catch (e) {
 
+  // parse out the environment variables that contain the information necessary
+  // to create the file
   var vcapApp = JSON.parse(process.env['VCAP_APPLICATION']);
   var vcapServ = JSON.parse(process.env['VCAP_SERVICES'])['Social File Sharing'][0].credentials;
   var url = "https://filesharingservicebroker.mybluemix.net/v2/initApp/" + vcapServ['instanceId'];
 
+  // make a synchrounous request to create the file sharing organization
   var res = request('PUT', url, {
     json: {callbackurl: 'http://' + vcapApp['application_uris'][0] + '/callback'}
   });
 
+  // if the response is 409, the organization already exists
   if(res.statusCode === 409){
     var url = "https://filesharingservicebroker.mybluemix.net/v2/getAppInfo/" + vcapServ['instanceId'];
 
+    // create a new synchrounous request to get the organization details
     var res = request('GET', url);
 
     var data = JSON.parse(res.getBody('utf8'));
 
+    // create a server config file with the response
     var text = 'var server = {clientID : "' + data['appId'] + '", clientSecret : "52d786a855dd8c6dc20674f527b086145f993ffa5be37761b05d62624b3b11cfb8d4d09c127c9d06feb5624f1221a7a9dba8788d6e34f5338b6fb115a94d2630d65ddafb94ab0c13139549fdb3d1feeaf0675c67af22b31f3e24e683e353af3ab7a78d6440c40418940c740c8147c2c551c47784bd7ca829ac062535f643aae", domain : "' + data['domain'] + '", callback : "' + data['callbackUrl'] + '"}; exports.server = server';
     fs.writeFileSync("./config/server.js", text);
   } else if(res.statusCode === 200){
 
     var data = JSON.parse(res.getBody('utf8'));
 
+    // if the organization was created successfully, create the server config
+    // file with the response
     var text = 'var server = {clientID : "' + data['appId'] + '", clientSecret : "52d786a855dd8c6dc20674f527b086145f993ffa5be37761b05d62624b3b11cfb8d4d09c127c9d06feb5624f1221a7a9dba8788d6e34f5338b6fb115a94d2630d65ddafb94ab0c13139549fdb3d1feeaf0675c67af22b31f3e24e683e353af3ab7a78d6440c40418940c740c8147c2c551c47784bd7ca829ac062535f643aae", domain : "' + data['domain'] + '", callback : "' + data['callbackUrl'] + '"}; exports.server = server';
     fs.writeFileSync("./config/server.js", text);
   }
