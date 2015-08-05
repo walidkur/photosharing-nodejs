@@ -40,6 +40,23 @@ photoApp.controller('photoController', function($location, $scope, $rootScope, $
         $scope.editComment(content, cid);
         $scope.add = !$scope.add;
       }
+      if(type === 'share'){
+        $scope.shareEdit(content);
+        $scope.shareModel = '';
+        $scope.share = false;
+      }
+    }
+  }
+
+  $scope.shareEdit = function(user){
+    apiService.editPhoto($scope.photo.editurl, $scope.photo.id, '?pid=' + $scope.photo.pid + '&share=' + user, successCallback, errorCallback);
+
+    function successCallback(data, status){
+      console.log("SUCCESS!!!!");
+    }
+
+    function errorCallback(data, status){
+      console.log("FIALURE!!!!");
     }
   }
 
