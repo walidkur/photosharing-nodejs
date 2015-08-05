@@ -44,9 +44,22 @@ photoApp.controller('photoController', function($location, $scope, $rootScope, $
         $scope.shareEdit(content);
         $scope.shareModel = '';
         $scope.share = false;
+        // $scope.peopleSearch(content);
       }
     }
   }
+
+  // $scope.peopleSearch = function(content){
+  //   apiService.getPeople('?q=' + content, successCallback, errorCallback);
+  //
+  //   function successCallback(data, status){
+  //     console.log("found people", data);
+  //   }
+  //
+  //   function errorCallback(data, status){
+  //     console.log("Failed", status);
+  //   }
+  // }
 
   $scope.shareEdit = function(user){
     apiService.editPhoto($scope.photo.editurl, $scope.photo.id, '?pid=' + $scope.photo.pid + '&share=' + user, successCallback, errorCallback);

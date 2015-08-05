@@ -23,6 +23,7 @@
     "angular-cookies": "~1.4.1",
     "angular-bootstrap": "~0.13.0",
     "ngInfiniteScroll": "~1.2.1",
-    "spinkit": "~1.0.1"
+    "spinkit": "~1.0.1",
+    "angular-sanitize": "~1.4.3"
   }
 }

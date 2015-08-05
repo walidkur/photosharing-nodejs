@@ -154,6 +154,7 @@ photoApp.controller('navbarController', function($location, $scope, $rootScope, 
 photoApp.controller('ModalInstanceController', function($window, $http, $scope, $modalInstance, items) {
 
   $scope.appliedTags = ['photonode'];
+  $scope.appliedPeople = [];
   $scope.visibility = 'public';
   $scope.items = items;
   $scope.shares = '';
@@ -170,6 +171,20 @@ photoApp.controller('ModalInstanceController', function($window, $http, $scope, 
       console.log($scope.appliedTags);
       $scope.tags = '';
       $scope.tagsList = [];
+    }
+  }
+
+  $scope.peopleSearch = function(){
+    var people = $scope.people;
+    if(people == ''){
+      $scope.peopleList = [];
+    } else {
+      $http.get('/api/searchPeople?q='+people).then(function(response){
+        var people = response.data.persons;
+
+        console.log(people);
+        $scope.peopleList = people;
+      })
     }
   }
 
@@ -200,11 +215,23 @@ photoApp.controller('ModalInstanceController', function($window, $http, $scope, 
     $scope.appliedTags.splice(index, 1);
   }
 
+  $scope.removePerson = function(index){
+    $scope.appliedPeople.splice(index, 1);
+  }
+
   $scope.addTag = function(index) {
     $scope.appliedTags.push($scope.tagsList[index].name);
-    console.log($scope.appliedTags);
     $scope.tags = '';
     $scope.tagsList = [];
+  }
+
+  $scope.addPerson = function(index){
+    var person = $scope.peopleList[index];
+
+    person.name = person.name.replace(/<B>/, "").replace(/<\/B>/, "");
+    $scope.appliedPeople.push(person);
+    $scope.people = '';
+    $scope.peopleList = [];
   }
 
   $scope.uploadFile = function(){
@@ -218,9 +245,11 @@ photoApp.controller('ModalInstanceController', function($window, $http, $scope, 
     var url = '/api/upload?visibility=' + $scope.visibility;
 
     if($scope.shares != ''){
-      var shares = $scope.shares;
-      var shareArray = shares.split(' ');
-      url = url + '&share=' + shareArray.join();
+      var shares = [];
+      angular.forEach($scope.appliedPeople, function(person){
+        shares.push(person.id);
+      })
+      url = url + '&share=' + shares.join();
     }
 
     if($scope.appliedTags.length > 0){

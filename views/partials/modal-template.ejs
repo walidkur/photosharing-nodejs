@@ -42,9 +42,17 @@
         </div>
       </div>
 
-      <div class="form-group">
-        <label for="shares">Share with:</label>
-        <input ng-model="shares" type="text" class="form-control" id="shares">
+      <div class="uploadPerson">
+        <div class="form-group">
+          <label for="person">Share with:</label>
+          <div style="position: relative">
+            <tag id="uploadPerson" ng-click="removePerson($index)" class="person" ng-repeat="person in appliedPeople">{{person.name}}</tag>
+              <input id="peopleField" ng-change="peopleSearch($viewValue)" ng-model="people" type="text" class="form-control">
+              <ul ng-show="peopleList.length > 0" class="dropdown-menu" style="display: block">
+                <li ng-click="addPerson($index)" ng-repeat="person in peopleList"><a ng-bind-html="person.name" href=""></a></li>
+              </ul>
+          </div>
+        </div>
       </div>
 
       <div class="form-group">

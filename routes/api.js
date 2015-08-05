@@ -1354,6 +1354,46 @@ router.get('/searchTags', isAuth, function(req, res, next){
   })
 });
 
+router.get('/searchPeople', isAuth, function(req, res, next){
+  if(isEmpty(req.query.q)) {
+    return res.status(412).end();
+  }
+
+  var url = 'https://' + config.server.domain + '/search/oauth/people/typeahead?query=' + req.query.q;
+
+  var headers = {
+    'Authorization' : 'Bearer ' + req.user.accessToken
+  }
+
+  var options = {
+    url : url,
+    headers : headers
+  }
+
+  request.get(options, function(error, response, body){
+    if(error){
+      console.log('Error occurred: ' + JSON.stringify(error));
+      return res.status(500);
+    }
+
+    // if the response is 403, destroy the session and send back a 403 to obtain
+    // a new token
+    if(response.statusCode === 403) {
+      res.clearCookie('user');
+      req.logout();
+      req.session.destroy();
+      return res.status(403).end();
+    }
+
+    // pass back a 401 if a 401 is received
+    if(response.statusCode === 401) {
+      return res.status(401).end();
+    }
+
+    res.send(body);
+  })
+})
+
 var hasOwnProperty = Object.prototype.hasOwnProperty;
 
 function isEmpty(obj) {
