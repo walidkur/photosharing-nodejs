@@ -68,13 +68,16 @@
 
               <span class="dot">·</span>
 
-              <span class="share">
+              <span ng-show="$root.uid == photo.uid" class="share">
                 <button class="visibilityButton" ng-click="share = !share">
                   <span class="glyphicon glyphicon-plus"></span>
                 </button>
               </span>
-              <span ng-show="share">
-                <input ng-keypress="change($event, 'share', shareModel)" id="shareInput" type="text" placeholder="Share with userid" ng-model="shareModel">
+              <span ng-show="share" style="position: relative">
+                <input ng-change="peopleSearch()" id="shareInput" type="text" placeholder="Share with user" ng-model="shareModel">
+                <ul ng-show="peopleList.length > 0" class="dropdown-menu" style="display: block">
+                  <li ng-click="shareClick($index)" ng-repeat="person in peopleList"><a ng-bind-html="person.name" href=""></a></li>
+                </ul>
               </span>
 
 
