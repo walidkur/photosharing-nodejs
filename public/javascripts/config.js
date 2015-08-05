@@ -1,4 +1,4 @@
-var photoApp = angular.module('photoApp', ['ngRoute', 'ngAnimate', 'ngCookies', 'ui.bootstrap', 'infinite-scroll']);
+var photoApp = angular.module('photoApp', ['ngSanitize', 'ngRoute', 'ngAnimate', 'ngCookies', 'ui.bootstrap', 'infinite-scroll']);
 
 photoApp.config(function($routeProvider) {
   $routeProvider

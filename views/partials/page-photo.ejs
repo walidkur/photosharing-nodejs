@@ -35,38 +35,49 @@
             <div style="position: absolute;">
 
               <!-- Upload Date -->
-              <span class="published">{{photo.published}}
-                <span class="dot">·</span>
+              <span class="published">{{photo.published}}</span>
+              <span class="dot">·</span>
 
-                <!-- Visibility Dropdown -->
-                <span class="dropdown">
-                  <button ng-mouseover="visibility.hover = true" ng-mouseleave="visibility.hover = false" class="visibilityButton dropdown-toggle" data-toggle="dropdown">
-                    <span class="glyphicon glyphicon-eye-open"></span>
-                    <span class="visibility" ng-show="photo.visibility == 'public'">
-                      Public
-                    </span>
-                    <span class="visibility" ng-show="photo.visibility == 'private'">
-                      Private
-                    </span>
-                  </button>
-                  <ul ng-if="uid === photo.uid" class="dropdown-menu">
-                    <li><a ng-click="updateVisibility('public')" href="">Public</a></li>
-                    <li><a ng-click="updateVisibility('private')" href="">Private</a></li>
-                  </ul>
-                  <span ng-show="visibility.success && !visibility.loading">
-                    <span class="glyphicon glyphicon-ok-sign"></span>
+              <!-- Visibility Dropdown -->
+              <span class="dropdown">
+                <button ng-mouseover="visibility.hover = true" ng-mouseleave="visibility.hover = false" class="visibilityButton dropdown-toggle" data-toggle="dropdown">
+                  <span class="glyphicon glyphicon-eye-open"></span>
+                  <span class="visibility" ng-show="photo.visibility == 'public'">
+                    Public
                   </span>
-
-                  <span ng-show="visibility.failure && !visibility.loading">
-                    <span class="glyphicon glyphicon-exclamation-sign"></span>
+                  <span class="visibility" ng-show="photo.visibility == 'private'">
+                    Private
                   </span>
-
-                  <span ng-show="visibility.loading">
-                    <span class="glyphicon glyphicon-refresh spin"></span>
-                  </span>
+                </button>
+                <ul ng-if="uid === photo.uid" class="dropdown-menu">
+                  <li><a ng-click="updateVisibility('public')" href="">Public</a></li>
+                  <li><a ng-click="updateVisibility('private')" href="">Private</a></li>
+                </ul>
+                <span ng-show="visibility.success && !visibility.loading">
+                  <span class="glyphicon glyphicon-ok-sign"></span>
                 </span>
 
+                <span ng-show="visibility.failure && !visibility.loading">
+                  <span class="glyphicon glyphicon-exclamation-sign"></span>
+                </span>
 
+                <span ng-show="visibility.loading">
+                  <span class="glyphicon glyphicon-refresh spin"></span>
+                </span>
+              </span>
+
+              <span class="dot">·</span>
+
+              <span ng-show="$root.uid == photo.uid" class="share">
+                <button class="visibilityButton" ng-click="share = !share">
+                  <span class="glyphicon glyphicon-plus"></span>
+                </button>
+              </span>
+              <span ng-show="share" style="position: relative">
+                <input ng-change="peopleSearch()" id="shareInput" type="text" placeholder="Share with user" ng-model="shareModel">
+                <ul ng-show="peopleList.length > 0" class="dropdown-menu" style="display: block">
+                  <li ng-click="shareClick($index)" ng-repeat="person in peopleList"><a ng-bind-html="person.name" href=""></a></li>
+                </ul>
               </span>
 
 

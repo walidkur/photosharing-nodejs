@@ -23,6 +23,26 @@ photoApp.controller('photoController', function($location, $scope, $rootScope, $
   $scope.title.success = false;
   $scope.title.failure = false;
 
+  $scope.peopleSearch = function(){
+    var people = $scope.shareModel;
+    if(people == ''){
+      $scope.peopleList = [];
+    } else {
+      $http.get('/api/searchPeople?q='+people).then(function(response){
+        var people = response.data.persons;
+
+        $scope.peopleList = people;
+      })
+    }
+  }
+
+  $scope.shareClick = function(index){
+    $scope.shareEdit($scope.peopleList[index].id);
+    $scope.shareModel = '';
+    $scope.peopleList = [];
+    $scope.share = false;
+  }
+
   $scope.change = function(event, type, content, cid, toggle){
     if((event.keyCode == 13 || event.keyCode == 10) && (event.shiftKey != 1)){
       if(type === 'tags'){
@@ -40,6 +60,18 @@ photoApp.controller('photoController', function($location, $scope, $rootScope, $
         $scope.editComment(content, cid);
         $scope.add = !$scope.add;
       }
+    }
+  }
+
+  $scope.shareEdit = function(user){
+    apiService.editPhoto($scope.photo.editurl, $scope.photo.id, '?pid=' + $scope.photo.pid + '&share=' + user, successCallback, errorCallback);
+
+    function successCallback(data, status){
+      console.log("SUCCESS!!!!");
+    }
+
+    function errorCallback(data, status){
+      console.log("FIALURE!!!!");
     }
   }
 
