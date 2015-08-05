@@ -1,4 +1,4 @@
-var photoApp = angular.module('photoApp', ['ngRoute', 'ngAnimate', 'ngCookies', 'ui.bootstrap', 'infinite-scroll']);
+var photoApp = angular.module('photoApp', ['ngSanitize', 'ngRoute', 'ngAnimate', 'ngCookies', 'ui.bootstrap', 'infinite-scroll']);
 
 photoApp.config(function($routeProvider) {
   $routeProvider
@@ -7,7 +7,7 @@ photoApp.config(function($routeProvider) {
   .when('/:type', {
     templateUrl : '/partials/page-home',
     resolve     : {
-      feedData  : function($rootScope, $route, apiService){
+      feedData  : function($rootScope, $route, $window, apiService){
 
         var feed;
         var type = 'public';
@@ -33,6 +33,9 @@ photoApp.config(function($routeProvider) {
           });
           return apiService.resolveImages(images)
             .then(function(){
+              return feed;
+            }, function(){
+              console.log("Done, but with errors, check image source");
               return feed;
             });
         });

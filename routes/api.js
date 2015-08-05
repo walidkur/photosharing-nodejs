@@ -19,7 +19,7 @@ var Busboy = require('busboy');
 // main api url
 var FILES_API = 'https://' + config.server.domain + '/files/oauth/api/';
 
-// string needed to recommendations (like)
+// string needed for recommendations (like)
 var RECOMMENDATION_STRING = '<?xml version="1.0" encoding="UTF-8"?><entry xmlns="http://www.w3.org/2005/Atom"><category term="recommendation" scheme="tag:ibm.com,2006:td/type" label="recommendation"/></entry>';
 
 // formatter for comment content
@@ -27,9 +27,14 @@ function commentFormat(content){
   return '<?xml version="1.0" encoding="UTF-8"?><entry xmlns="http://www.w3.org/2005/Atom" xmlns:app="http://www.w3.org/2007/app" xmlns:snx="http://www.ibm.com/xmlns/prod/sn"><category scheme="tag:ibm.com,2006:td/type" term="comment" label="comment"/><content type="text">' + content + '</content></entry>';
 }
 
+// formatter for updating a photo
 function updatePhotoFormat(id, title){
+
+  // if the title was passed, include a title change in the content
   if(title) {
     return '<?xml version="1.0" encoding="UTF-8"?><entry xmlns="http://www.w3.org/2005/Atom"><category term="document" label="document" scheme="tag:ibm.com,2006:td/type"/><id>' + id + '</id><label xmlns="urn:ibm.com/td">' + title + '</label></entry>';
+
+  // otherwise exclude it
   } else {
     return '<?xml version="1.0" encoding="UTF-8"?><entry xmlns="http://www.w3.org/2005/Atom"><category term="document" label="document" scheme="tag:ibm.com,2006:td/type"/><id>' + id + '</id></entry>';
   }
@@ -37,8 +42,11 @@ function updatePhotoFormat(id, title){
 
 // check whether a session exists for the request
 function isAuth(req, res, next){
-  if(!req.user) return res.status(403).end();
-  else next();
+  if(!req.user) {
+    return res.status(403).end();
+  } else {
+    next();
+  }
 }
 
 // redirect to homepage
@@ -49,7 +57,10 @@ router.get('/', function(req, res, next) {
 // get feed of photos
 router.get('/feed', isAuth, function(req, res, next){
 
-  if(isEmpty(req.query.type)) return res.status(412).end();
+  // ensure the type of feed is passed
+  if(isEmpty(req.query.type)) {
+    return res.status(412).end();
+  }
 
   var url;
 
@@ -89,14 +100,20 @@ router.get('/feed', isAuth, function(req, res, next){
   // append the tags to the url if query parameter exist
   if(!isEmpty(req.query.q)){
     var array = req.query.q.split(",");
-    for(var i = 0; i < array.length; i++) url = url + '&tag=' + array[i];
+    for(var i = 0; i < array.length; i++) {
+      url = url + '&tag=' + array[i];
+    }
   }
 
   // append page size to the url if page size parameter exist
-  if(!isEmpty(req.query.ps))  url = url + '&ps=' + req.query.ps;
+  if(!isEmpty(req.query.ps)) {
+    url = url + '&ps=' + req.query.ps;
+  }
 
   // append start index to the url if start index parameter exists
-  if(!isEmpty(req.query.si))  url = url + '&sI=' + req.query.si;
+  if(!isEmpty(req.query.si)) {
+    url = url + '&sI=' + req.query.si;
+  }
 
   var headers = {};
 
@@ -121,12 +138,17 @@ router.get('/feed', isAuth, function(req, res, next){
       console.log('Error occurred: ' + JSON.stringify(error));
       return res.status(500).end();
     }
+
+    // if the response is 403, destroy the session and send back a 403 to obtain
+    // a new token
     if(response.statusCode === 403) {
       res.clearCookie('user');
       req.logout();
       req.session.destroy();
       return res.status(403).end();
     }
+
+    // pass back a 401 if a 401 is received
     if(response.statusCode === 401) {
       return res.status(401).end();
     }
@@ -143,7 +165,9 @@ router.get('/feed', isAuth, function(req, res, next){
       var entries = result.feed.entry;
 
       // return the empty array if entries is empty
-      if(isEmpty(entries)) return res.send(photos);
+      if(isEmpty(entries)) {
+        return res.send(photos);
+      }
 
       // iterate over the entries, building a photo object for each entry
       for(var i = 0; i < entries.length; i++){
@@ -161,8 +185,6 @@ router.get('/feed', isAuth, function(req, res, next){
           var tag = category.$.label;
           tags.push(tag);
         }
-
-        photo.liked = false;
 
         // add the tag array to the photo
         photo.tags = tags;
@@ -185,8 +207,6 @@ router.get('/feed', isAuth, function(req, res, next){
         for(var j = 0; j < entry.link.length; j++){
           var link = entry.link[j];
           var type = link.$.type;
-          var rel = link.$.rel;
-          if(!(rel === undefined) && (rel.indexOf('recommendation') > -1))  photo.liked = true;
           if(!(type === undefined) && (type.indexOf('image') > -1)){
             photo.image = link.$.href;
             for(var x = 0; x < entry.link.length; x++){
@@ -203,10 +223,12 @@ router.get('/feed', isAuth, function(req, res, next){
           }
         }
 
+        // if no thumbnail was found, do not include it in the response
         if(isEmpty(photo.thumbnail)){
           continue;
         }
 
+        // include the social information for the photo
         var socialx = entry['snx:rank'];
         for(var j = 0; j < socialx.length; j++){
           var x = socialx[j];
@@ -235,8 +257,9 @@ router.get('/feed', isAuth, function(req, res, next){
 router.get('/photo', isAuth, function(req, res, next){
 
   // return 412 if the necessary queries were not passed
-  if(isEmpty(req.query.pid) || isEmpty(req.query.lid))  return res.status(412).end();
-  else {
+  if(isEmpty(req.query.pid) || isEmpty(req.query.lid)) {
+    return res.status(412).end();
+  } else {
 
     // the url to return a photo
     var url = FILES_API + 'library/' + req.query.lid + '/document/' + req.query.pid + '/entry?includeTags=true&includeRecommendation=true';
@@ -253,13 +276,21 @@ router.get('/photo', isAuth, function(req, res, next){
         console.log('Error occurred: ' + JSON.stringify(error));
         return res.status(500).end();
       }
+
+      // if the response is 403, destroy the session and send back a 403 to obtain
+      // a new token
       if(response.statusCode === 403) {
         res.clearCookie('user');
         req.logout();
         req.session.destroy();
         return res.status(403).end();
       }
-      if(response.statusCode === 401) return res.status(401).end();
+
+      // pass back a 401 if a 401 is received
+      if(response.statusCode === 401) {
+        return res.status(401).end();
+      }
+
       // see get feed for more details
       parseString(body, function(err, result){
         if(err){
@@ -283,8 +314,12 @@ router.get('/photo', isAuth, function(req, res, next){
           var link = entry.link[j];
           var type = link.$.type;
           var rel = link.$.rel;
-          if(!(type === undefined) && (type.indexOf('image') > -1)) photo.link = link.$.href;
-          if(!(rel === undefined) && (rel.indexOf('recommendation') > -1))  photo.liked = true;
+          if(!(type === undefined) && (type.indexOf('image') > -1)) {
+            photo.link = link.$.href;
+          }
+          if(!(rel === undefined) && (rel.indexOf('recommendation') > -1)) {
+            photo.liked = true;
+          }
           if(!(rel === undefined) && (rel.indexOf('replies') > -1)){
             photo.commenturl = link.$.href;
           }
@@ -314,9 +349,15 @@ router.get('/photo', isAuth, function(req, res, next){
 });
 
 router.put('/photo', isAuth, function(req, res, next) {
-  // return 412 if the necessary queries are not passed
-  if(isEmpty(req.query.title)) next();
 
+  // continue if a title change wasn't passed
+  if(isEmpty(req.query.title)) {
+    return next();
+  }
+
+  // if it was passed, check to make sure the title does not already exist
+
+  // url for searching for files
   var url = FILES_API + 'myuserlibrary/feed?includeCount=true&search=' + req.query.title;
 
   var headers = { 'Authorization' : 'Bearer ' + req.user.accessToken };
@@ -331,13 +372,20 @@ router.put('/photo', isAuth, function(req, res, next) {
       console.log('Error occurred: ' + JSON.stringify(error));
       return res.status(500).end();
     }
+
+    // if the response is 403, destroy the session and send back a 403 to obtain
+    // a new token
     if(response.statusCode === 403) {
       res.clearCookie('user');
       req.logout();
       req.session.destroy();
       return res.status(403).end();
     }
-    if(response.statusCode === 401) return res.status(401).end();
+
+    // pass back a 401 if a 401 is received
+    if(response.statusCode === 401) {
+      return res.status(401).end();
+    }
 
     parseString(body, function(err, result){
       if(err){
@@ -345,9 +393,14 @@ router.put('/photo', isAuth, function(req, res, next) {
         return res.status(500).end();
       }
       var feed = result.feed;
+
       var searchCount = parseInt(feed['opensearch:totalResults'][0]);
+
+      // if no results were found, continue
       if(searchCount == 0){
         next();
+
+      // otherwise return 409
       } else {
         res.status(409).end();
       }
@@ -355,7 +408,9 @@ router.put('/photo', isAuth, function(req, res, next) {
   })
 }, function(req, res, next){
 
-  if(isEmpty(req.query.pid) || isEmpty(req.body.url) || isEmpty(req.body.id)) return res.status(412).end();
+  if(isEmpty(req.query.pid) || isEmpty(req.body.url) || isEmpty(req.body.id)) {
+    return res.status(412).end();
+  }
 
   // url to return a nonce from the api
   var url = FILES_API + 'nonce';
@@ -373,31 +428,55 @@ router.put('/photo', isAuth, function(req, res, next) {
       console.log('Error occurred: ' + JSON.stringify(error));
       return res.status(500).end();
     }
+
+    // if the response is 403, destroy the session and send back a 403 to obtain
+    // a new token
     if(response.statusCode === 403) {
       res.clearCookie('user');
       req.logout();
       req.session.destroy();
       return res.status(403).end();
     }
-    if(response.statusCode === 401) return res.status(401).end();
+
+    // pass back a 401 if a 401 is received
+    if(response.statusCode === 401) {
+      return res.status(401).end();
+    }
 
     var nonce = body;
 
+    // url for updating a photo
     var url = 'https://' + config.server.domain + '/files/basic/api/' + 'myuserlibrary/document/' + req.query.pid + '/entry?';
 
     var title;
 
+    // adding the title to the request. The extension of the image must be
+    // included so that connections knows to treat it as a photo
     if(req.query.title){
       title = req.query.title + '.jpg';
     }
 
     var body = updatePhotoFormat(req.body.id, title);
 
-    if(!isEmpty(req.query.q)) url = url + '&tag=' + req.query.q;
+    // add tags to the request
+    if(!isEmpty(req.query.q)) {
+      url = url + '&tag=' + req.query.q;
+    }
 
-    if(!isEmpty(req.query.share)) url = url + '&shareWith=' + req.query.share;
+    // add shares to the request
+    if(!isEmpty(req.query.share)) {
+      url = url + '&shareWith=' + req.query.share;
+    }
 
-    if(!isEmpty(req.query.visibility)) url = url + '&visibility=' + req.query.visibility;
+    // add visibility to the request
+    if(!isEmpty(req.query.visibility)) {
+      url = url + '&visibility=' + req.query.visibility;
+    }
+
+    // add tags to be removed to the request
+    if(!isEmpty(req.query.removeTag)) {
+      url = url + '&removeTag' + req.query.removeTag;
+    }
 
     var headers = {
       'Authorization': 'Bearer ' + req.user.accessToken,
@@ -417,13 +496,21 @@ router.put('/photo', isAuth, function(req, res, next) {
         console.log('Error occurred: ' + JSON.stringify(error));
         return res.status(500).end();
       }
+
+      // if the response is 403, destroy the session and send back a 403 to obtain
+      // a new token
       if(response.statusCode === 403) {
         res.clearCookie('user');
         req.logout();
         req.session.destroy();
         return res.status(403).end();
       }
-      if(response.statusCode === 401) return res.status(401).end();
+
+      // pass back a 401 if a 401 is received
+      if(response.statusCode === 401) {
+        return res.status(401).end();
+      }
+
       return res.status(200).end();
     });
   });
@@ -433,7 +520,9 @@ router.put('/photo', isAuth, function(req, res, next) {
 router.delete('/photo', isAuth, function(req, res, next){
 
   // retrn 412 if the necessary queries were not passed
-  if(isEmpty(req.query.pid))  return res.status(412).end();
+  if(isEmpty(req.query.pid)) {
+    return res.status(412).end();
+  }
 
   // url to return a nonce from the api
   var url = FILES_API + 'nonce';
@@ -451,13 +540,20 @@ router.delete('/photo', isAuth, function(req, res, next){
       console.log('Error occurred: ' + JSON.stringify(error));
       return res.status(500).end();
     }
+
+    // if the response is 403, destroy the session and send back a 403 to obtain
+    // a new token
     if(response.statusCode === 403) {
       res.clearCookie('user');
       req.logout();
       req.session.destroy();
       return res.status(403).end();
     }
-    if(response.statusCode === 401) return res.status(401).end();
+
+    // pass back a 401 if a 401 is received
+    if(response.statusCode === 401) {
+      return res.status(401).end();
+    }
 
     var nonce = body;
 
@@ -479,13 +575,21 @@ router.delete('/photo', isAuth, function(req, res, next){
         console.log('Error occurred: ' + JSON.stringify(error));
         return res.status(500).end();
       }
+
+      // if the response is 403, destroy the session and send back a 403 to obtain
+      // a new token
       if(response.statusCode === 403) {
         res.clearCookie('user');
         req.logout();
         req.session.destroy();
         return res.status(403).end();
       }
-      if(response.statusCode === 401) return res.status(401).end();
+
+      // pass back a 401 if a 401 is received
+      if(response.statusCode === 401) {
+        return res.status(401).end();
+      }
+
       return res.status(200).end();
     });
   });
@@ -495,7 +599,9 @@ router.delete('/photo', isAuth, function(req, res, next){
 router.post('/like', isAuth, function(req, res, next){
 
   // return 412 is the necessary queries were not passed
-  if(isEmpty(req.query.lid) || isEmpty(req.query.r) || isEmpty(req.query.pid))  return req.status(412).end();
+  if(isEmpty(req.query.lid) || isEmpty(req.query.r) || isEmpty(req.query.pid)) {
+    return req.status(412).end();
+  }
 
   // url to return a nonce
   var url = FILES_API + 'nonce';
@@ -512,13 +618,21 @@ router.post('/like', isAuth, function(req, res, next){
       console.log('Error occurred: ' + error);
       return res.status(500).end();
     }
+
+    // if the response is 403, destroy the session and send back a 403 to obtain
+    // a new token
     if(response.statusCode === 403) {
       res.clearCookie('user');
       req.logout();
       req.session.destroy();
       return res.status(403).end();
     }
-    if(response.statusCode === 401) return res.status(401).end();
+
+    // pass back a 401 if a 401 is received
+    if(response.statusCode === 401) {
+      return res.status(401).end();
+    }
+
     var nonce = body;
 
     var headers = {
@@ -528,10 +642,14 @@ router.post('/like', isAuth, function(req, res, next){
     };
 
     var url;
+
+    // choose the url depending on the recommendation status
     if(req.query.r === 'off'){
       url = FILES_API + 'library/' + req.query.lid + '/document/' + req.query.pid + '/recommendation/' + req.user.userid + '/entry'
       headers['X-METHOD-OVERRIDE'] = 'delete';
-    } else url = FILES_API + 'library/' + req.query.lid + '/document/' + req.query.pid + '/feed'
+    } else {
+      url = FILES_API + 'library/' + req.query.lid + '/document/' + req.query.pid + '/feed';
+    }
 
     var content = RECOMMENDATION_STRING;
 
@@ -546,13 +664,21 @@ router.post('/like', isAuth, function(req, res, next){
         console.log('Error occurred: ' + JSON.stringify(error));
         return res.status(500).end();
       }
+
+      // if the response is 403, destroy the session and send back a 403 to obtain
+      // a new token
       if(response.statusCode === 403) {
         res.clearCookie('user');
         req.logout();
         req.session.destroy();
         return res.status(403).end();
       }
-      if(response.statusCode === 401) return res.status(401).end();
+
+      // pass back a 401 if a 401 is received
+      if(response.statusCode === 401) {
+        return res.status(401).end();
+      }
+
       return res.status(200).end();
     });
   });
@@ -562,8 +688,9 @@ router.post('/like', isAuth, function(req, res, next){
 router.get('/comments', isAuth, function(req, res, next){
 
   // return 412 if the necessary queries were not passed
-  if(isEmpty(req.query.pid) || isEmpty(req.query.uid))  return res.status(412).end();
-  else {
+  if(isEmpty(req.query.pid) || isEmpty(req.query.uid)) {
+    return res.status(412).end();
+  } else {
 
     // the url to return comments on a file; specify category=comment
     var url = FILES_API + 'userlibrary/' + req.query.uid + '/document/' + req.query.pid + '/feed?category=comment';
@@ -580,13 +707,21 @@ router.get('/comments', isAuth, function(req, res, next){
         console.log('Error occurred: ' + JSON.stringify(error));
         return res.status(500).end();
       }
+
+      // if the response is 403, destroy the session and send back a 403 to obtain
+      // a new token
       if(response.statusCode === 403) {
         res.clearCookie('user');
         req.logout();
         req.session.destroy();
         return res.status(403).end();
       }
-      if(response.statusCode === 401) return res.status(401).end();
+
+      // pass back a 401 if a 401 is received
+      if(response.statusCode === 401) {
+        return res.status(401).end();
+      }
+
       parseString(body, function(err, result){
         if(err){
           console.log('Error occurred: ' + JSON.stringify(err));
@@ -600,7 +735,9 @@ router.get('/comments', isAuth, function(req, res, next){
         var entries = result.feed.entry;
 
         // return the empty comment array if there are no entries
-        if(isEmpty(entries))  return res.send(comments);
+        if(isEmpty(entries)) {
+          return res.send(comments);
+        }
 
         // iterate through the comments creating new objects and pushing them
         // to the array
@@ -642,7 +779,9 @@ router.get('/comments', isAuth, function(req, res, next){
 router.post('/comments', isAuth, function(req, res, next){
 
   // return 412 if the necessary queries were not passed
-  if(isEmpty(req.query.pid) || isEmpty(req.query.uid) || isEmpty(req.body.comment) || isEmpty(req.body.url))  return res.status(412).end();
+  if(isEmpty(req.query.pid) || isEmpty(req.query.uid) || isEmpty(req.body.comment) || isEmpty(req.body.url)) {
+    return res.status(412).end();
+  }
 
   // url to return a nonce
   var url = FILES_API + 'nonce';
@@ -659,13 +798,20 @@ router.post('/comments', isAuth, function(req, res, next){
       console.log('Error occurred: ' + JSON.stringify(error));
       return res.status(500).end();
     }
+
+    // if the response is 403, destroy the session and send back a 403 to obtain
+    // a new token
     if(response.statusCode === 403) {
       res.clearCookie('user');
       req.logout();
       req.session.destroy();
       return res.status(403).end();
     }
-    if(response.statusCode === 401) return res.status(401).end();
+
+    // pass back a 401 if a 401 is received
+    if(response.statusCode === 401) {
+      return res.status(401).end();
+    }
 
     var nonce = body;
 
@@ -694,13 +840,21 @@ router.post('/comments', isAuth, function(req, res, next){
         console.log('Error occurred: ' + JSON.stringify(error));
         return res.status(500).end();
       }
+
+      // if the response is 403, destroy the session and send back a 403 to obtain
+      // a new token
       if(response.statusCode === 403) {
         res.clearCookie('user');
         req.logout();
         req.session.destroy();
         return res.status(403).end();
       }
-      if(response.statusCode === 401) return res.status(401).end();
+
+      // pass back a 401 if a 401 is received
+      if(response.statusCode === 401) {
+        return res.status(401).end();
+      }
+
       parseString(body, function(err, result){
         if(err){
           console.log('Error occurred: ' + JSON.stringify(err));
@@ -708,12 +862,24 @@ router.post('/comments', isAuth, function(req, res, next){
         }
         var comment = {};
         var entry = result.entry;
+
+        // extract the id of the author of the comment
         comment.uid = entry.author[0]['snx:userid'][0];
+
+        // extract the name of the author of the comment
         comment.author = entry.author[0].name[0];
+
+        // extract the published date of the comment
         comment.date = entry.published[0];
+
+        // extract the content of the comment
         comment.content = entry.content[0]['_'];
+
+        // extract the id of the comment
         comment.cid = entry['td:uuid'][0];
-        res.send(comment);
+
+        // send the comment back
+        res.status(200).send(comment);
       });
     });
   });
@@ -721,7 +887,9 @@ router.post('/comments', isAuth, function(req, res, next){
 
 // update a comment
 router.put('/comments', isAuth, function(req, res, next){
-  if(isEmpty(req.query.cid) || isEmpty(req.query.pid) || isEmpty(req.query.uid) || isEmpty(req.body.comment)) return res.status(412).end();
+  if(isEmpty(req.query.cid) || isEmpty(req.query.pid) || isEmpty(req.query.uid) || isEmpty(req.body.comment)) {
+    return res.status(412).end();
+  }
 
   // url to return a nonce
   var url = FILES_API + 'nonce';
@@ -738,17 +906,26 @@ router.put('/comments', isAuth, function(req, res, next){
       console.log('Error occurred: ' + JSON.stringify(error));
       return res.status(500).end();
     }
+
+    // if the response is 403, destroy the session and send back a 403 to obtain
+    // a new token
     if(response.statusCode === 403) {
       res.clearCookie('user');
       req.logout();
       req.session.destroy();
       return res.status(403).end();
     }
-    if(response.statusCode === 401) return res.status(401).end();
+
+    // pass back a 401 if a 401 is received
+    if(response.statusCode === 401) {
+      return res.status(401).end();
+    }
     var nonce = body;
 
+    // url to update a comment
     var url = FILES_API + 'userlibrary/' + req.query.uid + '/document/' + req.query.pid + '/comment/' + req.query.cid + '/entry';
 
+    // format the body of the comment
     var body = commentFormat(req.body.comment);
 
     var headers = {
@@ -769,13 +946,21 @@ router.put('/comments', isAuth, function(req, res, next){
         console.log('Error occurred: ' + JSON.stringify(error));
         return res.status(500).end();
       }
+
+      // if the response is 403, destroy the session and send back a 403 to obtain
+      // a new token
       if(response.statusCode === 403) {
         res.clearCookie('user');
         req.logout();
         req.session.destroy();
         return res.status(403).end();
       }
-      if(response.statusCode === 401) return res.status(401).end();
+
+      // pass back a 401 if a 401 is received
+      if(response.statusCode === 401) {
+        return res.status(401).end();
+      }
+
       return res.status(200).end();
     });
   });
@@ -785,7 +970,9 @@ router.put('/comments', isAuth, function(req, res, next){
 router.delete('/comments', isAuth, function(req, res, next){
 
   // return 412 if the necessary queries are not passed
-  if(isEmpty(req.query.cid) || isEmpty(req.query.pid) || isEmpty(req.query.uid))  return res.status(412).end();
+  if(isEmpty(req.query.cid) || isEmpty(req.query.pid) || isEmpty(req.query.uid)) {
+    return res.status(412).end();
+  }
 
   // url to return a nonce
   var url = FILES_API + 'nonce';
@@ -802,14 +989,22 @@ router.delete('/comments', isAuth, function(req, res, next){
       console.log('Error occurred: ' + JSON.stringify(error));
       return res.status(500).end();
     }
+
+    // if the response is 403, destroy the session and send back a 403 to obtain
+    // a new token
     if(response.statusCode === 403) {
       res.clearCookie('user');
       req.logout();
       req.session.destroy();
       return res.status(403).end();
     }
-    if(response.statusCode === 401) return res.status(401).end();
 
+    // pass back a 401 if a 401 is received
+    if(response.statusCode === 401) {
+      return res.status(401).end();
+    }
+
+    // get the nonce from the body of the response
     var nonce = body;
 
     // url to return a comment
@@ -830,13 +1025,21 @@ router.delete('/comments', isAuth, function(req, res, next){
         console.log('Error occurred: ' + JSON.stringify(error));
         return res.status(500).end()
       }
+
+      // if the response is 403, destroy the session and send back a 403 to obtain
+      // a new token
       if(response.statusCode === 403) {
         res.clearCookie('user');
         req.logout();
         req.session.destroy();
         return res.status(403).end();
       }
-      if(response.statusCode === 401) return res.status(401).end();
+
+      // pass back a 401 if a 401 is received
+      if(response.statusCode === 401) {
+        return res.status(401).end();
+      }
+
       return res.status(200).end();
     });
   });
@@ -845,8 +1048,13 @@ router.delete('/comments', isAuth, function(req, res, next){
 // upload a file
 router.post('/upload', isAuth, function(req, res, next) {
   // return 412 if the necessary queries are not passed
-  if(isEmpty(req.query.visibility) || isEmpty(req.query.title)) return res.status(412).end();
+  if(isEmpty(req.query.visibility) || isEmpty(req.query.title)) {
+    return res.status(412).end();
+  }
 
+  // first check if a file of the same name exists in the user's library
+
+  // url to search for a file
   var url = FILES_API + 'myuserlibrary/feed?includeCount=true&search=' + req.query.title;
 
   var headers = { 'Authorization' : 'Bearer ' + req.user.accessToken };
@@ -861,13 +1069,20 @@ router.post('/upload', isAuth, function(req, res, next) {
       console.log('Error occurred: ' + JSON.stringify(error));
       return res.status(500).end();
     }
+
+    // if the response is 403, destroy the session and send back a 403 to obtain
+    // a new token
     if(response.statusCode === 403) {
       res.clearCookie('user');
       req.logout();
       req.session.destroy();
       return res.status(403).end();
     }
-    if(response.statusCode === 401) return res.status(401).end();
+
+    // pass back a 401 if a 401 is received
+    if(response.statusCode === 401) {
+      return res.status(401).end();
+    }
 
     parseString(body, function(err, result){
       if(err){
@@ -876,8 +1091,12 @@ router.post('/upload', isAuth, function(req, res, next) {
       }
       var feed = result.feed;
       var searchCount = parseInt(feed['opensearch:totalResults'][0]);
+
+      // continue if no results were found
       if(searchCount == 0){
         next();
+
+      // otherwise return 409
       } else {
         res.status(409).end();
       }
@@ -886,7 +1105,9 @@ router.post('/upload', isAuth, function(req, res, next) {
 }, function(req, res, next){
 
   // return 412 if the necessary queries are not passed
-  if(isEmpty(req.query.visibility) || isEmpty(req.query.title)) return res.status(412).end();
+  if(isEmpty(req.query.visibility) || isEmpty(req.query.title)) {
+    return res.status(412).end();
+  }
 
   // create a new Busboy instance which is used to obtain the stream of
   // the files
@@ -909,13 +1130,21 @@ router.post('/upload', isAuth, function(req, res, next) {
       console.log('Error occurred: ' + JSON.stringify(error));
       return res.status(500).end()
     }
+
+    // if the response is 403, destroy the session and send back a 403 to obtain
+    // a new token
     if(response.statusCode === 403) {
       res.clearCookie('user');
       req.logout();
       req.session.destroy();
       return res.status(403).end();
     }
-    if(response.statusCode === 401) return res.status(401).end();
+
+    // pass back a 401 if a 401 is received
+    if(response.statusCode === 401) {
+      return res.status(401).end();
+    }
+
     var nonce = body;
 
     // process the file to be uploaded
@@ -932,7 +1161,9 @@ router.post('/upload', isAuth, function(req, res, next) {
       }
 
       // add shares to the url
-      if(!isEmpty(req.query.share)) url = url + '&shareWith=' + req.query.share + '&shared=true';
+      if(!isEmpty(req.query.share)) {
+        url = url + '&shareWith=' + req.query.share + '&shared=true';
+      }
 
       // assign the slug (identifier) to the filename of the uploaded file
       var slug;
@@ -962,13 +1193,21 @@ router.post('/upload', isAuth, function(req, res, next) {
           console.log('Error occurred: ' + JSON.stringify(error));
           return res.status(500).end();
         }
+
+        // if the response is 403, destroy the session and send back a 403 to obtain
+        // a new token
         if(response.statusCode === 403) {
           res.clearCookie('user');
           req.logout();
           req.session.destroy();
           return res.status(403).end();
         }
-        if(response.statusCode === 401) return res.status(401).end();
+
+        // pass back a 401 if a 401 is received
+        if(response.statusCode === 401) {
+          return res.status(401).end();
+        }
+
         parseString(body, function(err, result){
           if(err){
             console.log('Error occurred: ' + JSON.stringify(err));
@@ -978,7 +1217,10 @@ router.post('/upload', isAuth, function(req, res, next) {
           var pid = entry['td:uuid'];
           var lid = entry['td:libraryId'];
           var photo = {};
+          // extract the id of the photo
           photo.pid = pid;
+
+          // extract the libary id of the photo
           photo.lid = lid;
           return res.send(photo);
         });
@@ -1017,13 +1259,20 @@ router.get('/profile', isAuth, function(req, res, next){
       console.log('Error occurred: ' + JSON.stringify(error));
       return res.status(500).end();
     }
+
+    // if the response is 403, destroy the session and send back a 403 to obtain
+    // a new token
     if(response.statusCode === 403) {
       res.clearCookie('user');
       req.logout();
       req.session.destroy();
       return res.status(403).end();
     }
-    if(response.statusCode === 401) return res.status(401).end();
+
+    // pass back a 401 if a 401 is received
+    if(response.statusCode === 401) {
+      return res.status(401).end();
+    }
 
     parseString(body, function(err, result){
       if(err){
@@ -1034,7 +1283,9 @@ router.get('/profile', isAuth, function(req, res, next){
       var entry = result.feed.entry;
 
       // send back "no user found" if the entry is empty
-      if(isEmpty(entry))  return res.send("User does not exist.");
+      if(isEmpty(entry)) {
+        return res.send("User does not exist.");
+      }
 
       // get the entry form the response
       entry = result.feed.entry[0];
@@ -1064,7 +1315,9 @@ router.get('/profile', isAuth, function(req, res, next){
 
 router.get('/searchTags', isAuth, function(req, res, next){
 
-  if(isEmpty(req.query.q)) return res.status(412).end();
+  if(isEmpty(req.query.q)) {
+    return res.status(412).end();
+  }
 
   var url = 'https://' + config.server.domain + '/files/oauth/api/tags/feed?format=json&scope=document&pageSize=16&filter=' + req.query.q;
 
@@ -1082,28 +1335,83 @@ router.get('/searchTags', isAuth, function(req, res, next){
       console.log('Error occurred: ' + JSON.stringify(error));
       return res.status(500);
     }
+
+    // if the response is 403, destroy the session and send back a 403 to obtain
+    // a new token
     if(response.statusCode === 403) {
       res.clearCookie('user');
       req.logout();
       req.session.destroy();
       return res.status(403).end();
     }
-    if(response.statusCode === 401) return res.status(401).end();
+
+    // pass back a 401 if a 401 is received
+    if(response.statusCode === 401) {
+      return res.status(401).end();
+    }
+
     res.send(body);
   })
 });
+
+router.get('/searchPeople', isAuth, function(req, res, next){
+  if(isEmpty(req.query.q)) {
+    return res.status(412).end();
+  }
+
+  var url = 'https://' + config.server.domain + '/search/oauth/people/typeahead?query=' + req.query.q;
+
+  var headers = {
+    'Authorization' : 'Bearer ' + req.user.accessToken
+  }
+
+  var options = {
+    url : url,
+    headers : headers
+  }
+
+  request.get(options, function(error, response, body){
+    if(error){
+      console.log('Error occurred: ' + JSON.stringify(error));
+      return res.status(500);
+    }
+
+    // if the response is 403, destroy the session and send back a 403 to obtain
+    // a new token
+    if(response.statusCode === 403) {
+      res.clearCookie('user');
+      req.logout();
+      req.session.destroy();
+      return res.status(403).end();
+    }
+
+    // pass back a 401 if a 401 is received
+    if(response.statusCode === 401) {
+      return res.status(401).end();
+    }
+
+    res.send(body);
+  })
+})
 
 var hasOwnProperty = Object.prototype.hasOwnProperty;
 
 function isEmpty(obj) {
 
   // null and undefined are "empty"
-  if (obj == null) return true;
+  if (obj == null) {
+    return true;
+  }
 
   // Assume if it has a length property with a non-zero value
   // that property is correct.
-  if (obj.length > 0)    return false;
-  if (obj.length === 0)  return true;
+  if (obj.length > 0) {
+    return false;
+  }
+
+  if (obj.length === 0) {
+    return true;
+  }
 
   // check to see if the obj has its own properties
   for (var key in obj) {

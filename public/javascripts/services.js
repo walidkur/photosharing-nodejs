@@ -75,6 +75,14 @@ photoApp.factory('apiService', function($http, $q){
         return promise;
     },
 
+    getPeople: function(params, successCallback, errorCallback){
+      var promise = $http({
+        method: 'GET',
+        url: '/api/searchPeople' + params,
+      }).success(successCallback)
+        .error(errorCallback);
+    },
+
     addComment: function(content, params, url, successCallback, errorCallback){
       var promise = $http({
         method:'POST',
