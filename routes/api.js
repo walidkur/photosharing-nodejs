@@ -101,7 +101,7 @@ router.get('/feed', isAuth, function(req, res, next){
   if(!isEmpty(req.query.q)){
     var array = req.query.q.split(",");
     for(var i = 0; i < array.length; i++) {
-      url = url + '&tag=' + array[i];
+      url = url + '&search=' + array[i] + '*';
     }
   }
 
@@ -127,6 +127,8 @@ router.get('/feed', isAuth, function(req, res, next){
     url: url,
     headers: headers
   };
+
+  console.log("options", options);
 
   request.get(options, function(error, response, body){
 
