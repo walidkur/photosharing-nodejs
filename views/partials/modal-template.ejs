@@ -7,10 +7,10 @@
 
     <!-- Declares the form as a file-uploader -->
       <div style="position:relative;">
-        <a class='btn btn-primary' href='javascript:;'>
+        <button class='btn btn-primary' href='javascript:;'>
           Choose File...
           <input type="file" file-input="files" style='position:absolute;z-index:2;top:0;left:0;filter: alpha(opacity=0);opacity:0;background-color:transparent;color:transparent;' name="file_source" size="40"  onchange='$("#upload-file-info").html($(this).val().replace(/^.*\\/, ""));'>
-        </a>
+        </button>
         &nbsp;
         <span class='label label-info' id="upload-file-info"></span>
       </div>
@@ -59,7 +59,7 @@
           Private
         </label>
         <label>
-          <input type="radio" ng-model="visibility" value="public">
+          <input type="radio" ng-model="visibility" value="public" checked="checked">
           Public
         </label>
       </div>
