@@ -693,7 +693,7 @@ router.get('/comments', isAuth, function(req, res, next){
   } else {
 
     // the url to return comments on a file; specify category=comment
-    var url = FILES_API + 'userlibrary/' + req.query.uid + '/document/' + req.query.pid + '/feed?category=comment';
+    var url = FILES_API + 'userlibrary/' + req.query.uid + '/document/' + req.query.pid + '/feed?category=comment&sortBy=created';
 
     var headers = {'Authorization': 'Bearer ' + req.user.accessToken};
 

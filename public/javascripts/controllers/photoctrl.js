@@ -25,6 +25,12 @@ photoApp.controller('photoController', function($location, $scope, $rootScope, $
   var tagsCount = 0;
   var editCount = 0;
 
+  angular.element(document).ready(function() {
+    $('#commentBox').animate({
+      scrollTop: $('#commentBox').get(0).scrollHeight
+    }, 2000);
+  });
+
   function commentEditOpen(){
     for(var i = 0; i < $scope.comments.length; i++){
       var comment = $scope.comments[i];
@@ -174,16 +180,7 @@ photoApp.controller('photoController', function($location, $scope, $rootScope, $
       }
     }
 
-  }
-
-  console.log(isCached($scope.photo.link));
-
-  function isCached(src){
-    var image = new Image();
-    image.src = src;
-
-    return image.complete;
-  }
+  };
 
   $scope.editComment = function(content, cid){
     var comment = $scope.comments.filter(function(el){
@@ -245,7 +242,6 @@ photoApp.controller('photoController', function($location, $scope, $rootScope, $
     }
 
   }
-
 
 
   $scope.addComment = function(){
