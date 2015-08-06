@@ -13,29 +13,6 @@
   margin:0 auto;
 }
 
-tag {
-  text-align: center;
-  background-color: black;
-  color: white;
-  display: inline-block;
-  border-radius: 2px;
-}
-
-#photoTag {
-  background-color: black;
-  color: white;
-  margin-left: 0px;
-  margin-right: 2px;
-  margin-top: 2px;
-  margin-bottom: 2px;
-  padding: 3px;
-  border-radius: 2px;
-}
-
-.glyphicon-tag {
-  margin-right: 0px;
-}
-
 body {
   padding: 50px;
   font: 14px "Lucida Grande", Helvetica, Arial, sans-serif;
@@ -182,7 +159,7 @@ body {
   margin-left: 3px;
   margin-right: 3px;
   padding-right: 3px;
-  padding-left: 3px;
+  padding-left: 10px;
   padding-top: 3px;
   padding-bottom: 3px;
 }
@@ -381,11 +358,6 @@ div.photo button
   font-size: 12px;
 }
 
-/*tag {
-  font-family: "Ariel", sans-serif;
-  display: inline;
-}*/
-
 .tagButton {
   background-color: inherit;
   border: none;
@@ -394,6 +366,55 @@ div.photo button
 .addTags {
   padding: none;
   margin: none;
+}
+
+tag {
+  text-align: center;
+  background-color: black;
+  color: white;
+  display: inline-block;
+  border-radius: 2px;
+}
+
+.tagSlot {
+  background-color: black;
+  color: white;
+  margin-left: 0px;
+  margin-right: 2px;
+  margin-top: 2px;
+  margin-bottom: 2px;
+  padding: 3px;
+  border-radius: 2px;
+  display: inline;
+  max-width: 450px;
+  padding-left: 10px;
+  padding-right: 0px;
+}
+
+#tagName {
+  color: white;
+}
+
+.deleteTagButton {
+    font-size: 10px;
+    border: none;
+    color: gray;
+    background: transparent;
+    padding: none;
+    margin: none;
+  }
+
+.removeUploadTag {
+  font-size: 10px;
+  border: none;
+  color: gray;
+  background: transparent;
+  padding: none;
+  margin: none;
+}
+
+.glyphicon-tag {
+  margin-right: 0px;
 }
 
 /* Number of likes */

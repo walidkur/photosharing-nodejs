@@ -145,6 +145,22 @@ photoApp.factory('apiService', function($http, $q){
       return promise;
     },
 
+    deleteTag: function(editurl, xid, pid, tag, successCallback, errorCallback){
+
+      var promise = $http({
+        method:'PUT',
+        url:'/api/photo?removeTag=' + tag + '&pid=' + pid,
+        data:{ url:editurl,
+               id:xid }
+      }).success(function(data, status){
+        successCallback(data, status);
+      }).error(function(data, status){
+        errorCallback(data, status);
+      });
+
+      return promise;
+    },
+
     logout: function(errorCallback){
       $http.post('/logout')
            .error(errorCallback);
