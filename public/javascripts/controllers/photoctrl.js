@@ -330,15 +330,18 @@ photoApp.controller('photoController', function($location, $scope, $rootScope, $
   }
 
   $scope.deletePhoto = function(){
-    var params = '?pid=' + $scope.photo.pid;
-    apiService.deletePhoto(params).then(
-      function(data, status){
-        $location.path("/#/public");
-      },
-      function(data, status){
-        console.log('Deleting failed')
-      }
-    )
+    var r = confirm("Delete this photo?");
+    if(r == true) {
+      var params = '?pid=' + $scope.photo.pid;
+      apiService.deletePhoto(params).then(
+          function (data, status) {
+            $location.path("/#/public");
+          },
+          function (data, status) {
+            console.log('Deleting failed')
+          }
+      )
+    }
   }
 
   var setting = false;
