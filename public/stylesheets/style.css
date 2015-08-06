@@ -252,7 +252,7 @@ body{
 
 
 /* Delete photo */
-.glyphicon-trash {
+.deletePhoto {
   padding-right: 5px;
   background: transparent;
   color: white;
@@ -308,8 +308,13 @@ div.photo button
   border-radius: 30px   !important;
 }
 
-.photographer {
+.photoTitle {
   font-weight: bold;
+  font-size: 16px;
+}
+
+.photographer {
+  font-size: 14px;
 }
 
 .photographer a {
@@ -328,31 +333,36 @@ div.photo button
 }
 
 .published {
-
-  font-weight: bold;
   font-size: 12px;
+  font-family: "Ariel", sans-serif;
 }
 
 .dot {
-
-  padding-left: 7px;
-  padding-right: 5px;
+  padding-left: 5px;
+  padding-right: 3px;
   font-weight: bold;
   font-size: 12px;
 }
 
 .visibilityButton {
-
+  font-size: 12px;
   background-color: inherit;
   border: none;
 }
 
+.shareButton {
+  padding-left: 2px;
+  font-size: 12px;
+  font-family: "Ariel", sans-serif;
+}
+
 .glyphicon-eye-open {
   font-size: 12px;
+  padding-right: 2px;
 }
 
 .visibility {
-
+  font-family: "Ariel", sans-serif;
   padding-left: 0px;
   margin-right: 0px;
   font-size: 12px;

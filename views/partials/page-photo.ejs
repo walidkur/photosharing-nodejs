@@ -28,9 +28,45 @@
             </a>
           </div>
 
-          <!-- Uploader Username -->
+
           <div class="media-body">
-            <h4 class="photographer"><a href="#/profile/{{photo.uid}}">{{photo.photographer}}</a></h4>
+
+            <!-- Title/Edit Title -->
+            <div ng-show="!titleEdit">
+              <span class="photoTitle" style="display: inline">{{photo.title}}</span>
+              <span ng-show="!title.loading && $root.uid == photo.uid">
+                <button id="edit" class="editCommentButton" ng-click="titleEdit = !titleEdit">
+                  <span style="color: grey" class="glyphicon glyphicon-edit"></span>
+                </button>
+              </span>
+              <span ng-show="title.success && !title.loading">
+                <span class="glyphicon glyphicon-ok-sign"></span>
+              </span>
+              <span ng-show="title.failure && !title.loading">
+                <span class="glyphicon glyphicon-exclamation-sign"></span>
+              </span>
+              <span ng-show="title.loading">
+                <span class="glyphicon glyphicon-refresh spin"></span>
+              </span>
+            </div>
+
+            <!-- Title/Edit Title -->
+            <div ng-show="titleEdit">
+              <form>
+                <div class="input-group stylish-input-group">
+                  <input id="titleText" class="form-control" ng-model="photo.title">
+                    <span class="input-group-addon">
+                      <button type="submit" id="titleButton" ng-click="titleEdit = !titleEdit; editTitle()">
+                        <span class="glyphicon glyphicon-share-alt"></span>
+                      </button>
+                    </span>
+                </div>
+              </form>
+            </div>
+
+
+            <!-- Uploader Username -->
+            <span class="photographer"><a href="#/profile/{{photo.uid}}">{{photo.photographer}}</a></span>
             <div style="position: absolute;">
 
               <!-- Upload Date -->
@@ -66,11 +102,11 @@
                 </span>
               </span>
 
-              <span class="dot">·</span>
+              <span ng-show="$root.uid == photo.uid" class="dot">·</span>
 
               <span ng-show="$root.uid == photo.uid" class="share">
                 <button class="visibilityButton" ng-click="share = !share">
-                  <span class="glyphicon glyphicon-plus"></span>
+                  <span class="glyphicon glyphicon-plus"><span class="shareButton">Share</span></span>
                 </button>
               </span>
               <span ng-show="share" style="position: relative">
@@ -83,59 +119,20 @@
 
             </div>
 
-            <!-- Add necessary spacing -->
-            <br>
-            <br>
 
-            <!-- Title/Edit Title -->
-            <div ng-show="!titleEdit">
-              <span>
-                <h5 style="display: inline">{{photo.title}}</h5>
-              </span>
-              <span ng-show="!title.loading && $root.uid == photo.uid">
-                <button id="edit" class="editCommentButton" ng-click="titleEdit = !titleEdit">
-                  <span style="color: grey" class="glyphicon glyphicon-edit"></span>
-                </button>
-              </span>
-              <span ng-show="title.success && !title.loading">
-                <span class="glyphicon glyphicon-ok-sign"></span>
-              </span>
-              <span ng-show="title.failure && !title.loading">
-                <span class="glyphicon glyphicon-exclamation-sign"></span>
-              </span>
-              <span ng-show="title.loading">
-                <span class="glyphicon glyphicon-refresh spin"></span>
-              </span>
-            </div>
 
-            <!-- Title/Edit Title -->
-            <div ng-show="titleEdit">
-              <form>
-                <div class="input-group stylish-input-group">
-                  <input id="titleText" class="form-control" ng-model="photo.title">
-                    <span class="input-group-addon">
-                      <button type="submit" id="titleButton" ng-click="titleEdit = !titleEdit; editTitle()">
-                        <span class="glyphicon glyphicon-share-alt"></span>
-                      </button>
-                    </span>
-                </div>
-              </form>
-            </div>
+
 
           </div>
         </div>
+
+        <br>
 
         <!--Photo Tags/Edit Tags-->
         <h5 class="tagField">
           <button ng-click="meta = !meta;" class="tagButton">
             <span class="glyphicon glyphicon-tag"></span>
           </button>
-
-          <!-- <span ng-if="photo.tags.length !== 0">
-            <span ng-repeat="tag in photo.tags">
-              <a id="photoTag" href="/#/public?tags={{tag}}">{{tag}}</a>
-            </span>
-          </span> -->
 
             <span ng-if="photo.tags.length !== 0">
               <div class="tagSlot" ng-repeat="tag in photo.tags">
@@ -145,13 +142,6 @@
                 </button>
               </div>
             </span>
-
-          <!-- <div class="photo">
-            <img class="img-responsive" id="clickedPhoto" ng-src="{{photo.link}}"/>
-            <button ng-if="uid == photo.uid" class="deletePhotoButton" ng-click="deletePhoto()">
-              <span class="glyphicon glyphicon-trash"></span>
-            </button>
-          </div> -->
 
           <span ng-if="photo.tags.length === 0">
             <tag>Add tags<tag>
@@ -214,7 +204,7 @@
                   <span style="color: grey" class="glyphicon glyphicon-edit"></span>
                 </button>
                 <button class="deleteCommentButton" ng-click="deleteComment(comment.cid)">
-                  <span style="color: grey" class="glyphicon glyphicon-remove"></span>
+                  <span style="color: grey" class="glyphicon glyphicon-trash"></span>
                 </button>
               </span>
               <span ng-show="comment.success && !comment.loading">
