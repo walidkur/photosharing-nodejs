@@ -140,7 +140,7 @@
             <span ng-if="photo.tags.length !== 0">
               <div class="tagSlot" ng-repeat="tag in photo.tags">
                 <a id="tagName" href="/#/public?tags={{tag}}">{{tag}}</a>
-                <button class="deleteTagButton">
+                <button ng-click="deleteTag(tag);" class="deleteTagButton">
                   <span class="glyphicon glyphicon-remove"></span>
                 </button>
               </div>
