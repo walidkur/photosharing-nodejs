@@ -475,7 +475,7 @@ router.put('/photo', isAuth, function(req, res, next) {
 
     // add tags to be removed to the request
     if(!isEmpty(req.query.removeTag)) {
-      url = url + '&removeTag' + req.query.removeTag;
+      url = url + '&removeTag=' + req.query.removeTag;
     }
 
     var headers = {
@@ -490,6 +490,8 @@ router.put('/photo', isAuth, function(req, res, next) {
       headers: headers,
       body: body
     };
+
+    console.log("options", options);
 
     request.put(options, function(error, response, body){
       if(error){
@@ -510,6 +512,8 @@ router.put('/photo', isAuth, function(req, res, next) {
       if(response.statusCode === 401) {
         return res.status(401).end();
       }
+
+      console.log(body);
 
       return res.status(200).end();
     });
@@ -693,7 +697,7 @@ router.get('/comments', isAuth, function(req, res, next){
   } else {
 
     // the url to return comments on a file; specify category=comment
-    var url = FILES_API + 'userlibrary/' + req.query.uid + '/document/' + req.query.pid + '/feed?category=comment&sortBy=created';
+    var url = FILES_API + 'userlibrary/' + req.query.uid + '/document/' + req.query.pid + '/feed?category=comment&sortBy=created&sortOrder=desc';
 
     var headers = {'Authorization': 'Bearer ' + req.user.accessToken};
 
@@ -854,6 +858,7 @@ router.post('/comments', isAuth, function(req, res, next){
       if(response.statusCode === 401) {
         return res.status(401).end();
       }
+      console.log("Status Code", response.statusCode)
 
       parseString(body, function(err, result){
         if(err){

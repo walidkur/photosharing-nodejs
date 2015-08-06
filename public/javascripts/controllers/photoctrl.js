@@ -25,10 +25,14 @@ photoApp.controller('photoController', function($location, $scope, $rootScope, $
   var tagsCount = 0;
   var editCount = 0;
 
-  angular.element(document).ready(function() {
+  function scrollComments(){
     $('#commentBox').animate({
       scrollTop: $('#commentBox').get(0).scrollHeight
     }, 2000);
+  }
+
+  angular.element(document).ready(function() {
+    scrollComments();
   });
 
   function commentEditOpen(){
@@ -104,12 +108,14 @@ photoApp.controller('photoController', function($location, $scope, $rootScope, $
       if(type === 'comment'){
         console.log("New comment is: " + content);
         $scope.addComment();
+        event.preventDefault();
       }
       if(type === 'edit'){
         console.log("New Edit is: " + content);
         toggle.edit = !toggle.edit;
         $scope.editComment(content, cid);
         $scope.add = !$scope.add;
+        event.preventDefault();
       }
     }
     if(event.keyCode == 32){
@@ -255,7 +261,8 @@ photoApp.controller('photoController', function($location, $scope, $rootScope, $
     comment.sucess = false;
     comment.failure = false;
     comment.uid = $rootScope.uid;
-    $scope.comments.unshift(comment);
+    $scope.comments.push(comment);
+    scrollComments();
     $scope.content = '';
     apiService.addComment(comment.content, '?pid=' + $scope.photo.pid + '&uid=' + $scope.uid, $scope.photo.commenturl, addCommentCallback, addCommentErrorCallback);
 
