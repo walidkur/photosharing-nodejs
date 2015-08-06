@@ -164,11 +164,23 @@ photoApp.controller('ModalInstanceController', function($window, $http, $scope, 
   };
   $scope.loading = false;
 
+  $('html').click(function(e){
+    if($scope.tags.length > 0 && e.target != $('#tagField')[0]){
+      if($scope.appliedTags.indexOf($scope.tags) == -1) {
+        $scope.appliedTags.push($scope.tags);
+      }
+      clearTimeout($scope.lastSent);
+      $scope.tags = '';
+      $scope.tagsList = [];
+    }
+  })
+
   $scope.checkPress = function(event){
-    if(event.keyCode == 10 || event.keyCode == 13){
-      console.log($scope.tags);
-      $scope.appliedTags.push($scope.tags);
-      console.log($scope.appliedTags);
+    if(event.keyCode == 10 || event.keyCode == 13 || event.keyCode == 32){
+      if($scope.appliedTags.indexOf($scope.tags) == -1) {
+        $scope.appliedTags.push($scope.tags);
+      }
+      clearTimeout($scope.lastSent);
       $scope.tags = '';
       $scope.tagsList = [];
     }
