@@ -28,13 +28,13 @@ photoApp.controller('photoController', function($location, $scope, $rootScope, $
   $('html').click(function(e){
     if($scope.meta && e.target != $('#tagsText')[0]){
       if(tagsCount > 0) {
-        if ($scope.photo.tags.indexOf($('#tagsText').val()) == -1) {
-          $scope.editPhoto($('#tagsText').val());
-        }
         $scope.meta = !$scope.meta;
         $('#tagsText').val('');
+        tagsCount = 0;
+        $scope.$digest();
+      } else {
+        tagsCount++;
       }
-      tagsCount ++;
     }
   });
 
