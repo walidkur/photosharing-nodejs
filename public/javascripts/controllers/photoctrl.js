@@ -22,6 +22,21 @@ photoApp.controller('photoController', function($location, $scope, $rootScope, $
   $scope.title.loading = false;
   $scope.title.success = false;
   $scope.title.failure = false;
+  var tagsCount = 0;
+
+
+  $('html').click(function(e){
+    if($scope.meta && e.target != $('#tagsText')[0]){
+      if(tagsCount > 0) {
+        if ($scope.photo.tags.indexOf($('#tagsText').val()) == -1) {
+          $scope.editPhoto($('#tagsText').val());
+        }
+        $scope.meta = !$scope.meta;
+        $('#tagsText').val('');
+      }
+      tagsCount ++;
+    }
+  });
 
   $scope.peopleSearch = function(){
     var people = $scope.shareModel;
