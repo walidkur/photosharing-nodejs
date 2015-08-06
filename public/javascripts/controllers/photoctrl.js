@@ -65,8 +65,10 @@ photoApp.controller('photoController', function($location, $scope, $rootScope, $
       console.log("Space");
       if(type === 'tags'){
         event.preventDefault();
-        $scope.editPhoto(content);
         $('#tagsText').val('');
+        if($scope.photo.tags.indexOf(content) == -1) {
+          $scope.editPhoto(content);
+        }
       }
     }
   }
