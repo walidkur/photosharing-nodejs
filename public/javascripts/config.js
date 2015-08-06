@@ -113,6 +113,7 @@ photoApp.config(function($routeProvider) {
 
         function commentCallback(data, status){
           resolveData.comments = data;
+          resolveData.comments.reverse();
           resolveData.comments.forEach(function(comment, index){
             comment.date = new Date(comment.date);
             comment.date = comment.date.toLocaleDateString();

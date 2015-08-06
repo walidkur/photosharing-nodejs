@@ -28,16 +28,38 @@ function commentFormat(content){
 }
 
 // formatter for updating a photo
-function updatePhotoFormat(id, title){
+function updatePhotoFormat(id, title, summary){
+
+  var internal = '';
 
   // if the title was passed, include a title change in the content
+  if(summary){
+    internal += '<summary type="text">' + summary + '</summary>';
+  }
   if(title) {
-    return '<?xml version="1.0" encoding="UTF-8"?><entry xmlns="http://www.w3.org/2005/Atom"><category term="document" label="document" scheme="tag:ibm.com,2006:td/type"/><id>' + id + '</id><label xmlns="urn:ibm.com/td">' + title + '</label></entry>';
+    internal += '<label xmlns="urn:ibm.com/td">' + title + '</label>';
 
   // otherwise exclude it
-  } else {
-    return '<?xml version="1.0" encoding="UTF-8"?><entry xmlns="http://www.w3.org/2005/Atom"><category term="document" label="document" scheme="tag:ibm.com,2006:td/type"/><id>' + id + '</id></entry>';
   }
+
+  return '<?xml version="1.0" encoding="UTF-8"?><entry xmlns="http://www.w3.org/2005/Atom"><category term="document" label="document" scheme="tag:ibm.com,2006:td/type"/><id>' + id + '</id>' + internal + '</entry>';
+}
+
+function postPhotoFormat(title, summary){
+
+  var internal = '';
+
+  // if the title was passed, include a title change in the content
+  if(summary){
+    internal += '<summary type="text">' + summary + '</summary>';
+  }
+  if(title) {
+    internal += '<label xmlns="urn:ibm.com/td">' + title + '</label>';
+
+    // otherwise exclude it
+  }
+
+  return '<?xml version="1.0" encoding="UTF-8"?><entry xmlns="http://www.w3.org/2005/Atom"><category term="document" label="document" scheme="tag:ibm.com,2006:td/type"/>' + internal + '</entry>';
 }
 
 // check whether a session exists for the request
@@ -101,7 +123,7 @@ router.get('/feed', isAuth, function(req, res, next){
   if(!isEmpty(req.query.q)){
     var array = req.query.q.split(",");
     for(var i = 0; i < array.length; i++) {
-      url = url + '&tag=' + array[i];
+      url = url + '&search=' + array[i] + '*';
     }
   }
 
@@ -243,6 +265,8 @@ router.get('/feed', isAuth, function(req, res, next){
         // add the library id of the photo for later api calls
         photo.lid = entry['td:libraryId'][0];
 
+        photo.summary = entry['summary'][0]['_'];
+
         // push the photo to our photos array
         photos.push(photo);
       }
@@ -342,6 +366,8 @@ router.get('/photo', isAuth, function(req, res, next){
           }
         }
         photo.lid = entry['td:libraryId'][0];
+
+        photo.summary = entry['summary'][0]['_'];
         res.send(photo);
       });
     });
@@ -450,13 +476,15 @@ router.put('/photo', isAuth, function(req, res, next) {
 
     var title;
 
+    var summary = req.body.summary;
+
     // adding the title to the request. The extension of the image must be
     // included so that connections knows to treat it as a photo
     if(req.query.title){
       title = req.query.title + '.jpg';
     }
 
-    var body = updatePhotoFormat(req.body.id, title);
+    var body = updatePhotoFormat(req.body.id, title, summary);
 
     // add tags to the request
     if(!isEmpty(req.query.q)) {
@@ -475,7 +503,7 @@ router.put('/photo', isAuth, function(req, res, next) {
 
     // add tags to be removed to the request
     if(!isEmpty(req.query.removeTag)) {
-      url = url + '&removeTag' + req.query.removeTag;
+      url = url + '&removeTag=' + req.query.removeTag;
     }
 
     var headers = {
@@ -693,7 +721,7 @@ router.get('/comments', isAuth, function(req, res, next){
   } else {
 
     // the url to return comments on a file; specify category=comment
-    var url = FILES_API + 'userlibrary/' + req.query.uid + '/document/' + req.query.pid + '/feed?category=comment';
+    var url = FILES_API + 'userlibrary/' + req.query.uid + '/document/' + req.query.pid + '/feed?category=comment&sortBy=created&sortOrder=desc';
 
     var headers = {'Authorization': 'Bearer ' + req.user.accessToken};
 
@@ -1151,6 +1179,7 @@ router.post('/upload', isAuth, function(req, res, next) {
     busboy.on('file', function(fieldname, file, filename, encoding, mimetype){
       var j = request.jar();
       var url = FILES_API + 'myuserlibrary/feed?visibility=' + req.query.visibility;
+      var summary = req.body.summary;
 
       // add tags to the url
       if(!isEmpty(req.query.q)){
@@ -1173,6 +1202,8 @@ router.post('/upload', isAuth, function(req, res, next) {
         slug = filename;
       }
 
+      var body = postPhotoFormat(req.query.title, summary);
+
       var headers = {
         'Authorization': 'Bearer ' + req.user.accessToken,
         'Slug': slug,
@@ -1183,7 +1214,8 @@ router.post('/upload', isAuth, function(req, res, next) {
 
       var options = {
         url: url,
-        headers: headers
+        headers: headers,
+        body: body,
       };
 
       // pipe the file to the request
