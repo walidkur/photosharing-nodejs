@@ -47,8 +47,8 @@ photoApp.controller('photoController', function($location, $scope, $rootScope, $
     if((event.keyCode == 13 || event.keyCode == 10) && (event.shiftKey != 1)){
       if(type === 'tags'){
         console.log("New tags are: " + content);
-        $scope.meta = !$scope.meta;
         $scope.editPhoto(content);
+        $('#tagsText').val('');
       }
       if(type === 'comment'){
         console.log("New comment is: " + content);
@@ -59,6 +59,14 @@ photoApp.controller('photoController', function($location, $scope, $rootScope, $
         toggle.edit = !toggle.edit;
         $scope.editComment(content, cid);
         $scope.add = !$scope.add;
+      }
+    }
+    if(event.keyCode == 32){
+      console.log("Space");
+      if(type === 'tags'){
+        event.preventDefault();
+        $scope.editPhoto(content);
+        $('#tagsText').val('');
       }
     }
   }
@@ -155,10 +163,10 @@ photoApp.controller('photoController', function($location, $scope, $rootScope, $
   }
 
   $scope.editPhoto = function(content){
-    var tags = content.replace(/ /g, ",");
-    apiService.editPhoto($scope.photo.editurl, $scope.photo.id, '?pid=' + $scope.photo.pid + '&q=' + tags, editPhotoCallback, errorCallback);
+    apiService.editPhoto($scope.photo.editurl, $scope.photo.id, '?pid=' + $scope.photo.pid + '&q=' + content, editPhotoCallback, errorCallback);
 
     function editPhotoCallback(data, status) {
+      console.log("Pushing Data", data);
       $scope.photo.tags.push(content);
     }
   }
