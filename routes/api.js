@@ -128,8 +128,6 @@ router.get('/feed', isAuth, function(req, res, next){
     headers: headers
   };
 
-  console.log("options", options);
-
   request.get(options, function(error, response, body){
 
     // initialize the array of photos to be returned
@@ -493,8 +491,6 @@ router.put('/photo', isAuth, function(req, res, next) {
       body: body
     };
 
-    console.log("options", options);
-
     request.put(options, function(error, response, body){
       if(error){
         console.log('Error occurred: ' + JSON.stringify(error));
@@ -514,8 +510,6 @@ router.put('/photo', isAuth, function(req, res, next) {
       if(response.statusCode === 401) {
         return res.status(401).end();
       }
-
-      console.log(body);
 
       return res.status(200).end();
     });
@@ -860,7 +854,6 @@ router.post('/comments', isAuth, function(req, res, next){
       if(response.statusCode === 401) {
         return res.status(401).end();
       }
-      console.log("Status Code", response.statusCode)
 
       parseString(body, function(err, result){
         if(err){

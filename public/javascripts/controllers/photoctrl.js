@@ -38,20 +38,16 @@ photoApp.controller('photoController', function($location, $scope, $rootScope, $
   function commentEditOpen(){
     for(var i = 0; i < $scope.comments.length; i++){
       var comment = $scope.comments[i];
-      console.log(comment.edit);
       if(comment.edit == true){
-        console.log("Returning", comment.cid);
         return comment.cid;
       }
     }
-    console.log("returning false");
     return false;
   }
 
 
   $('html').click(function(e){
     var cid;
-    console.log("click");
     if($scope.meta && e.target != $('#tagsText')[0]){
       if(tagsCount > 0) {
         $scope.meta = !$scope.meta;
@@ -101,17 +97,14 @@ photoApp.controller('photoController', function($location, $scope, $rootScope, $
   $scope.change = function(event, type, content, cid, toggle){
     if((event.keyCode == 13 || event.keyCode == 10) && (event.shiftKey != 1)){
       if(type === 'tags'){
-        console.log("New tags are: " + content);
         $scope.editPhoto(content);
         $('#tagsText').val('');
       }
       if(type === 'comment'){
-        console.log("New comment is: " + content);
         $scope.addComment();
         event.preventDefault();
       }
       if(type === 'edit'){
-        console.log("New Edit is: " + content);
         toggle.edit = !toggle.edit;
         $scope.editComment(content, cid);
         $scope.add = !$scope.add;
@@ -119,7 +112,6 @@ photoApp.controller('photoController', function($location, $scope, $rootScope, $
       }
     }
     if(event.keyCode == 32){
-      console.log("Space");
       if(type === 'tags'){
         event.preventDefault();
         $('#tagsText').val('');
@@ -151,14 +143,12 @@ photoApp.controller('photoController', function($location, $scope, $rootScope, $
       $scope.title.loading = false;
       $scope.title.success = true;
       $scope.title.failure = false;
-      console.log(data);
     }
 
     function errorCallback(data, status){
       $scope.title.loading = false;
       $scope.title.success = false;
       $scope.title.failure = true;
-      console.log(data);
       if(status === 401 || status === 403){
         $window.location.assign('/');
       }
@@ -216,7 +206,6 @@ photoApp.controller('photoController', function($location, $scope, $rootScope, $
     apiService.editPhoto($scope.photo.editurl, $scope.photo.id, '?pid=' + $scope.photo.pid + '&q=' + content, editPhotoCallback, errorCallback);
 
     function editPhotoCallback(data, status) {
-      console.log("Pushing Data", data);
       $scope.photo.tags.push(content);
     }
   }
@@ -239,7 +228,6 @@ photoApp.controller('photoController', function($location, $scope, $rootScope, $
   }
 
   $scope.deleteTag = function(tag){
-    console.log("Delete tag: " + tag);
     apiService.deleteTag($scope.photo.editurl, $scope.photo.id, $scope.photo.pid, tag, deleteTagCallback, errorCallback);
 
     function deleteTagCallback(data, status){

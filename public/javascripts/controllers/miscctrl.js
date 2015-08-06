@@ -30,7 +30,6 @@ photoApp.controller('navbarController', function($location, $scope, $rootScope, 
 
   $scope.$on('$locationChangeStart', function(event, next, current){
     $rootScope.loading = true;
-    console.log("Route Changed!");
 
     if($rootScope.hueIndex > 2){
       $rootScope.hueIndex = 0;
@@ -193,8 +192,6 @@ photoApp.controller('ModalInstanceController', function($window, $http, $scope, 
     } else {
       $http.get('/api/searchPeople?q='+people).then(function(response){
         var people = response.data.persons;
-
-        console.log(people);
         $scope.peopleList = people;
       })
     }
