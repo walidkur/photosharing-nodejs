@@ -18,8 +18,8 @@
         <div id="author"><a href="#/profile/{{entry.uid}}">{{entry.photographer}}</a></div>
       </div>
       <div class="media-right media-top">
-        <span ng-show="entry.liked"><span ng-click="like($index)" style="color: white" class="glyphicon glyphicon-thumbs-up"></span><span>{{entry.likes}}</span></span>
-        <span ng-show="!entry.liked"><span ng-click="like($index)" class="glyphicon glyphicon-thumbs-up"></span><span>{{entry.likes}}</span></span>
+        <span ng-show="entry.liked"><span style="color: white" class="glyphicon glyphicon-thumbs-up"></span><span>{{entry.likes}}</span></span>
+        <span ng-show="!entry.liked"><span class="glyphicon glyphicon-thumbs-up"></span><span>{{entry.likes}}</span></span>
       </div>
       <div class="media-right media-top">
         <span class="glyphicon glyphicon-share-alt"></span><span style="margin-left: 5px">{{entry.shares}}</span>

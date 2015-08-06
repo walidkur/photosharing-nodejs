@@ -180,6 +180,19 @@ photoApp.controller('photoController', function($location, $scope, $rootScope, $
 
   }
 
+  $scope.deleteTag = function(tag){
+    console.log("Delete tag: " + tag);
+    apiService.deleteTag($scope.photo.editurl, $scope.photo.id, $scope.photo.pid, tag, deleteTagCallback, errorCallback);
+
+    function deleteTagCallback(data, status){
+      var index = $scope.photo.tags.indexOf(tag);
+      $scope.photo.tags.splice(index, index+1);
+    }
+
+  }
+
+
+
   $scope.addComment = function(){
     var comment = {};
     comment.content = $scope.content;
