@@ -9,8 +9,11 @@
     <div class="col-lg-8 col-md-12 col-sm-12 col-xs-12">
       <div class="photo">
         <img class="img-responsive" id="clickedPhoto" ng-src="{{photo.link}}"/>
+        <div ng-if="uid == photo.uid" class="photoToolBar"></div>
+        <span ng-if="uid == photo.uid" class="photoName">{{photo.title}}</span>
+        <span ng-if="uid == photo.uid" class="lineDivider"></span>
         <button ng-if="uid == photo.uid" class="deletePhotoButton" ng-click="deletePhoto()">
-          <span class="glyphicon glyphicon-trash"></span>
+          <span>Delete</span>
         </button>
       </div>
     </div>
