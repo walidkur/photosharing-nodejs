@@ -22,6 +22,51 @@ photoApp.controller('photoController', function($location, $scope, $rootScope, $
   $scope.title.loading = false;
   $scope.title.success = false;
   $scope.title.failure = false;
+  var tagsCount = 0;
+  var editCount = 0;
+
+  function commentEditOpen(){
+    for(var i = 0; i < $scope.comments.length; i++){
+      var comment = $scope.comments[i];
+      console.log(comment.edit);
+      if(comment.edit == true){
+        console.log("Returning", comment.cid);
+        return comment.cid;
+      }
+    }
+    console.log("returning false");
+    return false;
+  }
+
+
+  $('html').click(function(e){
+    var cid;
+    console.log("click");
+    if($scope.meta && e.target != $('#tagsText')[0]){
+      if(tagsCount > 0) {
+        $scope.meta = !$scope.meta;
+        $('#tagsText').val('');
+        tagsCount = 0;
+        $scope.$digest();
+      } else {
+        tagsCount++;
+      }
+    }
+    cid = commentEditOpen();
+    if((cid = commentEditOpen()) && (e.target != $('#editText' + cid)[0])){
+      if(editCount > 0) {
+        angular.forEach($scope.comments, function (comment) {
+          if (comment.cid == cid) {
+            comment.edit = false;
+            $scope.$digest();
+          }
+        })
+        editCount = 0;
+      } else {
+        editCount++;
+      }
+    }
+  });
 
   $scope.peopleSearch = function(){
     var people = $scope.shareModel;
@@ -47,8 +92,8 @@ photoApp.controller('photoController', function($location, $scope, $rootScope, $
     if((event.keyCode == 13 || event.keyCode == 10) && (event.shiftKey != 1)){
       if(type === 'tags'){
         console.log("New tags are: " + content);
-        $scope.meta = !$scope.meta;
         $scope.editPhoto(content);
+        $('#tagsText').val('');
       }
       if(type === 'comment'){
         console.log("New comment is: " + content);
@@ -59,6 +104,16 @@ photoApp.controller('photoController', function($location, $scope, $rootScope, $
         toggle.edit = !toggle.edit;
         $scope.editComment(content, cid);
         $scope.add = !$scope.add;
+      }
+    }
+    if(event.keyCode == 32){
+      console.log("Space");
+      if(type === 'tags'){
+        event.preventDefault();
+        $('#tagsText').val('');
+        if($scope.photo.tags.indexOf(content) == -1) {
+          $scope.editPhoto(content);
+        }
       }
     }
   }
@@ -155,10 +210,10 @@ photoApp.controller('photoController', function($location, $scope, $rootScope, $
   }
 
   $scope.editPhoto = function(content){
-    var tags = content.replace(/ /g, ",");
-    apiService.editPhoto($scope.photo.editurl, $scope.photo.id, '?pid=' + $scope.photo.pid + '&q=' + tags, editPhotoCallback, errorCallback);
+    apiService.editPhoto($scope.photo.editurl, $scope.photo.id, '?pid=' + $scope.photo.pid + '&q=' + content, editPhotoCallback, errorCallback);
 
     function editPhotoCallback(data, status) {
+      console.log("Pushing Data", data);
       $scope.photo.tags.push(content);
     }
   }
@@ -275,15 +330,18 @@ photoApp.controller('photoController', function($location, $scope, $rootScope, $
   }
 
   $scope.deletePhoto = function(){
-    var params = '?pid=' + $scope.photo.pid;
-    apiService.deletePhoto(params).then(
-      function(data, status){
-        $location.path("/#/public");
-      },
-      function(data, status){
-        console.log('Deleting failed')
-      }
-    )
+    var r = confirm("Delete this photo?");
+    if(r == true) {
+      var params = '?pid=' + $scope.photo.pid;
+      apiService.deletePhoto(params).then(
+          function (data, status) {
+            $location.path("/#/public");
+          },
+          function (data, status) {
+            console.log('Deleting failed')
+          }
+      )
+    }
   }
 
   var setting = false;
