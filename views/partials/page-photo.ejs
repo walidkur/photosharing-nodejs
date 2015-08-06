@@ -226,7 +226,7 @@
 
                 <!--Displays the "Edit comment" box-->
                   <div ng-show="comment.edit" class="commentEditField input-group stylish-input-group">
-                      <textarea ng-keypress="change($event, 'edit', comment.content, comment.cid, comment)" id="editText" class="form-control" ng-model="comment.content"></textarea>
+                      <textarea ng-keypress="change($event, 'edit', comment.content, comment.cid, comment)" id="editText{{comment.cid}}" class="form-control" ng-model="comment.content"></textarea>
                       <span class="input-group-addon">
                         <button type="submit" id="editButton" ng-click="comment.edit = !comment.edit; editComment(comment.content, comment.cid); $parent.add = !$parent.add">
                           <span class="glyphicon glyphicon-share-alt"></span>

@@ -23,9 +23,25 @@ photoApp.controller('photoController', function($location, $scope, $rootScope, $
   $scope.title.success = false;
   $scope.title.failure = false;
   var tagsCount = 0;
+  var editCount = 0;
+
+  function commentEditOpen(){
+    for(var i = 0; i < $scope.comments.length; i++){
+      var comment = $scope.comments[i];
+      console.log(comment.edit);
+      if(comment.edit == true){
+        console.log("Returning", comment.cid);
+        return comment.cid;
+      }
+    }
+    console.log("returning false");
+    return false;
+  }
 
 
   $('html').click(function(e){
+    var cid;
+    console.log("click");
     if($scope.meta && e.target != $('#tagsText')[0]){
       if(tagsCount > 0) {
         $scope.meta = !$scope.meta;
@@ -34,6 +50,20 @@ photoApp.controller('photoController', function($location, $scope, $rootScope, $
         $scope.$digest();
       } else {
         tagsCount++;
+      }
+    }
+    cid = commentEditOpen();
+    if((cid = commentEditOpen()) && (e.target != $('#editText' + cid)[0])){
+      if(editCount > 0) {
+        angular.forEach($scope.comments, function (comment) {
+          if (comment.cid == cid) {
+            comment.edit = false;
+            $scope.$digest();
+          }
+        })
+        editCount = 0;
+      } else {
+        editCount++;
       }
     }
   });
@@ -300,15 +330,18 @@ photoApp.controller('photoController', function($location, $scope, $rootScope, $
   }
 
   $scope.deletePhoto = function(){
-    var params = '?pid=' + $scope.photo.pid;
-    apiService.deletePhoto(params).then(
-      function(data, status){
-        $location.path("/#/public");
-      },
-      function(data, status){
-        console.log('Deleting failed')
-      }
-    )
+    var r = confirm("Delete this photo?");
+    if(r == true) {
+      var params = '?pid=' + $scope.photo.pid;
+      apiService.deletePhoto(params).then(
+          function (data, status) {
+            $location.path("/#/public");
+          },
+          function (data, status) {
+            console.log('Deleting failed')
+          }
+      )
+    }
   }
 
   var setting = false;
