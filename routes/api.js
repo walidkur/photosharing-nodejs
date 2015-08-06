@@ -101,7 +101,7 @@ router.get('/feed', isAuth, function(req, res, next){
   if(!isEmpty(req.query.q)){
     var array = req.query.q.split(",");
     for(var i = 0; i < array.length; i++) {
-      url = url + '&tag=' + array[i];
+      url = url + '&search=' + array[i] + '*';
     }
   }
 
@@ -475,7 +475,7 @@ router.put('/photo', isAuth, function(req, res, next) {
 
     // add tags to be removed to the request
     if(!isEmpty(req.query.removeTag)) {
-      url = url + '&removeTag' + req.query.removeTag;
+      url = url + '&removeTag=' + req.query.removeTag;
     }
 
     var headers = {
@@ -693,7 +693,7 @@ router.get('/comments', isAuth, function(req, res, next){
   } else {
 
     // the url to return comments on a file; specify category=comment
-    var url = FILES_API + 'userlibrary/' + req.query.uid + '/document/' + req.query.pid + '/feed?category=comment';
+    var url = FILES_API + 'userlibrary/' + req.query.uid + '/document/' + req.query.pid + '/feed?category=comment&sortBy=created&sortOrder=desc';
 
     var headers = {'Authorization': 'Bearer ' + req.user.accessToken};
 
