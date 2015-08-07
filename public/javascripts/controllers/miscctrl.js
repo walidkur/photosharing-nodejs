@@ -72,15 +72,25 @@ photoApp.controller('navbarController', function($location, $scope, $rootScope, 
   };
 
   $scope.search = function () {
+
     if($scope.searchQuery){
+
       $scope.searchTags = $scope.searchQuery.split(" ");
+
       $window.location.assign('/#/' + $scope.state + '?tags=' + $scope.searchTags.join());
+
     }
+
   };
 
   $scope.mediumScreen = true;
   $(document).ready(function(){
-    $scope.mediumScreen = !($(window).width() < 1218 || $(window).width() > 767);
+    if ($(window).width() < 1218 || $(window).width() > 767){
+      $scope.mediumScreen = false;
+    }
+    if ($(window).width() >= 1218 || $(window).width() <= 767){
+      $scope.mediumScreen = true;
+    }
     $scope.uploadSideA = $(window).width() >= 905;
     if($(window).width() < 746){
       $('#searchText').css('width', '100%');
@@ -90,7 +100,12 @@ photoApp.controller('navbarController', function($location, $scope, $rootScope, 
   });
 
   $(window).resize(function() {
-    $scope.mediumScreen = !($(window).width() < 1218 || $(window).width() > 767);
+    if ($(window).width() < 1218 || $(window).width() > 767){
+      $scope.mediumScreen = false;
+    }
+    if ($(window).width() >= 1218 || $(window).width() <= 746){
+      $scope.mediumScreen = true;
+    }
     $scope.uploadSideA = $(window).width() >= 905;
     if($(window).width() < 746){
       $('#searchText').css('width', '100%');
