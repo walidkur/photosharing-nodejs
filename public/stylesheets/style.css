@@ -513,6 +513,13 @@ tag {
   color: white;
 }
 
+#tagsText {
+  display: inline-block;
+  width: 85px;
+  height:22px;
+  border-radius: 0px;
+}
+
 .deleteTagButton {
     font-size: 10px;
     border: none;
