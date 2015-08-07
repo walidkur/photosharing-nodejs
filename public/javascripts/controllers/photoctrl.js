@@ -108,6 +108,12 @@ photoApp.controller('photoController', function($location, $scope, $rootScope, $
   };
 
   $scope.change = function(event, type, content, cid, toggle){
+    if(type === 'tags'){
+      if(content.length > 20){
+        console.log('preventing');
+        event.preventDefault();
+      }
+    }
     if((event.keyCode == 13 || event.keyCode == 10) && (!event.shiftKey)){
       if(type === 'tags'){
         $scope.editPhoto(content);
