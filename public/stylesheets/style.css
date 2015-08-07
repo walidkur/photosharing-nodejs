@@ -497,13 +497,13 @@ tag {
 .tagSlot {
   background-color: black;
   color: white;
-  margin-left: 0px;
+  margin-left: 2px;
   margin-right: 2px;
   margin-top: 2px;
   margin-bottom: 2px;
   padding: 3px;
   border-radius: 2px;
-  display: inline;
+  display: inline-block;
   max-width: 450px;
   padding-left: 10px;
   padding-right: 0px;
