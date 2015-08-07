@@ -250,15 +250,39 @@ body{
   float: right;
 }
 
+.photoName
+  {
+  position:absolute;
+  display:none;
+  }
 
-/* Delete photo */
-.deletePhoto {
-  padding-right: 5px;
-  background: transparent;
+.photo:hover .photoName
+  {
+  display: block;
+  border: none;
   color: white;
-  -webkit-text-stroke-width: 1px;
-  -webkit-text-stroke-color: black;
+  font-family: "Ariel", sans-serif;
+  font-size: 18px;
+  font-weight: lighter;
+  background: transparent;
+  bottom: 12;
+  left: 20;
+  }
+
+.lineDivider{
+    display: none;
 }
+
+
+.photo:hover .lineDivider{
+    display: block;
+    position:absolute;
+    right:100;
+    height:30px;
+    bottom:10;
+    border-left:1px solid white;
+}
+
 
 div.photo
   {
@@ -266,30 +290,54 @@ div.photo
   float:right;
   }
 
-div.photo:hover button
+div.photo:hover .deletePhotoButton
   {
   display: block;
   border: none;
   color: white;
-
-  font-size: 24px;
-  weight: bold;
+  font-family: "Ariel", sans-serif;
+  font-size: 16px;
+  font-weight: lighter;
   background: transparent;
-  bottom: 10;
-  left: 10;
+  bottom: 12;
+  right: 20;
   }
 
-div.photo:hover button:hover > span {
-  color: white;
-  font-size: 26px;
-}
-
-div.photo button
+div.photo .deletePhotoButton
   {
   position:absolute;
   display:none;
   }
 
+  .photoToolBar{
+    bottom: 0px;
+    height: 75px;
+    display: none;
+    position: absolute;
+    width: 100%;
+  }
+
+  .photo:hover .photoToolBar{
+    position: absolute;
+    height: 50px;
+    width: 100%;
+    bottom: 0px;
+    display: block;
+    background-color: black;
+    opacity: 0.85;
+    color: white;
+  }
+
+
+
+/*
+.deletePhotoButton {
+  color: white;
+  border: none;
+  font-size: 24px;
+  bottom: 20px;
+  left: 10px;
+}*/
 
 /* Comment column */
 #commentColumn {
@@ -309,8 +357,27 @@ div.photo button
 }
 
 .photoTitle {
+  font-family: "Ariel", sans-serif;
   font-weight: bold;
   font-size: 16px;
+}
+
+.editTitle {
+  display: none;
+  font-size: 14px;
+  border: none;
+  background-color: inherit;
+}
+
+.titleDiv:hover .editTitle {
+  display: inline;
+  font-size: 14px;
+  background-color: inherit;
+  border: none;
+  margin-left: 2px;
+  padding-left: 2px;
+  padding-right: 0px;
+  position: absolute;
 }
 
 .photographer {
@@ -333,15 +400,15 @@ div.photo button
 }
 
 .published {
-  font-size: 12px;
+  font-size: 14px;
   font-family: "Ariel", sans-serif;
 }
 
 .dot {
-  padding-left: 5px;
-  padding-right: 3px;
+  padding-left: 10px;
+  padding-right: 7px;
   font-weight: bold;
-  font-size: 12px;
+  font-size: 14px;
 }
 
 .visibilityButton {
@@ -350,22 +417,63 @@ div.photo button
   border: none;
 }
 
-.shareButton {
-  padding-left: 2px;
-  font-size: 12px;
-  font-family: "Ariel", sans-serif;
+#editVisibility {
+  display: none;
 }
 
-.glyphicon-eye-open {
+.visibilityButton:hover #editVisibility {
+  display: inline;
   font-size: 12px;
-  padding-right: 2px;
+  background-color: inherit;
+  border: none;
+  padding-left: 2px;
+  padding-right: 0px;
+  position: absolute;
+  margin-left: 20px;
+}
+
+.shareButton {
+  padding-left: 2px;
+  font-size: 14px;
+  font-family: "Ariel", sans-serif;
+  background-color: inherit;
+  border: none;
+}
+
+#editShare {
+  display: none;
+  font-size: 12px;
+}
+
+.shareButton {
+  font-size: 14px;
+  background-color: inherit;
+  border: none;
+}
+
+.shareButton:hover #editShare {
+  display: inline;
+  font-size: 12px;
+  background-color: inherit;
+  border: none;
+  padding:left: 4px;
+  padding-right: 0px;
+  margin-left: 2px;
+
+}
+
+#shareInput {
+  position: relative;
+  display: inline-block;
+  margin-left: 10px;
+  width: 105px;
 }
 
 .visibility {
   font-family: "Ariel", sans-serif;
   padding-left: 0px;
   margin-right: 0px;
-  font-size: 12px;
+  font-size: 14px;
 }
 
 .tagButton {
