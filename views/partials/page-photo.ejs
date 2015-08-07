@@ -1,7 +1,7 @@
 <div id="photoPage" class="container-fluid">
 
-<!-- Add necessary spacing -->
-<br>
+  <!-- Add necessary spacing -->
+  <br>
 
   <div class="row">
 
@@ -144,7 +144,7 @@
             </span>
 
           <span ng-if="photo.tags.length === 0">
-            <tag>Add tags<tag>
+            <tag>Add tags</tag>
           </span>
 
           <!--Edit Tags-->
@@ -191,7 +191,7 @@
 
           <!--Shows the delete and edit comment buttons when comments are hovered over-->
           <div ng-mouseover="comment.hovered = true" ng-mouseleave="comment.hovered = false" class="media-body">
-            <h4 class="media-heading">
+            <div class="media-heading">
 
               <!--Displays the name of the comment's author-->
               <a  href="#/profile/{{comment.uid}}">
@@ -217,16 +217,16 @@
                 <span class="glyphicon glyphicon-refresh spin"></span>
               </span>
 
-            <h5 ng-show="!comment.edit">{{comment.content}}</h5>
+              <h5 ng-show="!comment.edit">{{comment.content}}</h5>
 
-            <div>
+              <div>
 
-              <!--This form allows user to hit enter to submit comment-->
-              <form>
+                <!--This form allows user to hit enter to submit comment-->
+                <form>
 
-                <!--Displays the "Edit comment" box-->
+                  <!--Displays the "Edit comment" box-->
                   <div ng-show="comment.edit" class="commentEditField input-group stylish-input-group">
-                      <textarea ng-keypress="change($event, 'edit', comment.content, comment.cid, comment)" id="editText{{comment.cid}}" class="form-control" ng-model="comment.content"></textarea>
+                    <textarea ng-keypress="change($event, 'edit', comment.content, comment.cid, comment)" id="editText{{comment.cid}}" class="form-control" ng-model="comment.content"></textarea>
                       <span class="input-group-addon">
                         <button type="submit" id="editButton" ng-click="comment.edit = !comment.edit; editComment(comment.content, comment.cid); $parent.add = !$parent.add">
                           <span class="glyphicon glyphicon-share-alt"></span>
@@ -234,38 +234,37 @@
                       </span>
                   </div>
 
-              </form>
+                </form>
+
+              </div>
+
+              <!--Displays the date the comment was published-->
+              <h5 class="date">{{comment.date}}</h5>
 
             </div>
-
-            <!--Displays the date the comment was published-->
-            <h5 class="date">{{comment.date}}</h5>
-
           </div>
         </div>
-      </div>
 
-      <div>
+        <div>
 
-        <!--This form allows user to hit enter to submit comment-->
-        <form>
+          <!--This form allows user to hit enter to submit comment-->
+          <form>
 
-          <!--Displays the "Add comment" box-->
-          <div class="addCommentBox" id="addCommentText">
+            <!--Displays the "Add comment" box-->
             <div class="input-group stylish-input-group">
-                <textarea ng-keypress="change($event, 'comment', content)" id="commentText" class="form-control" ng-model="content" placeholder="Add comment"></textarea>
+              <textarea ng-keypress="change($event, 'comment', content)" id="commentText" class="form-control" ng-model="content" placeholder="Add comment"></textarea>
                   <span class="input-group-addon">
                     <button type="submit" id="commentButton" ng-click="addComment()">
                       <span class="glyphicon glyphicon-plus"></span>
                     </button>
                   </span>
             </div>
-          </div>
 
-        </form>
+          </form>
 
+        </div>
       </div>
     </div>
-  </div>
 
+  </div>
 </div>
