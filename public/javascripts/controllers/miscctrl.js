@@ -20,7 +20,7 @@ photoApp.controller('navbarController', function($location, $scope, $rootScope, 
     });
     $(button).css("animation", "navSelected .5s forwards");
 
-  }
+  };
 
   $scope.searchQuery = '';
 
@@ -45,7 +45,7 @@ photoApp.controller('navbarController', function($location, $scope, $rootScope, 
     function errorCallback(data, status) {
       if(status === 302)  $window.location.href = data;
     }
-  }
+  };
 
   $scope.open = function (size) {
 
@@ -81,7 +81,7 @@ photoApp.controller('navbarController', function($location, $scope, $rootScope, 
 
     }
 
-  }
+  };
 
   $scope.mediumScreen = true;
   $(document).ready(function(){
@@ -91,11 +91,7 @@ photoApp.controller('navbarController', function($location, $scope, $rootScope, 
     if ($(window).width() >= 1218 || $(window).width() <= 767){
       $scope.mediumScreen = true;
     }
-    if($(window).width() < 905){
-      $scope.uploadSideA = false
-    } else {
-      $scope.uploadSideA = true;
-    }
+    $scope.uploadSideA = $(window).width() >= 905;
     if($(window).width() < 746){
       $('#searchText').css('width', '100%');
     } else {
@@ -107,23 +103,16 @@ photoApp.controller('navbarController', function($location, $scope, $rootScope, 
     if ($(window).width() < 1218 || $(window).width() > 767){
       $scope.mediumScreen = false;
     }
-    $scope.$apply();
     if ($(window).width() >= 1218 || $(window).width() <= 746){
       $scope.mediumScreen = true;
     }
-    $scope.$apply();
-    if($(window).width() < 905){
-      $scope.uploadSideA = false
-    } else {
-      $scope.uploadSideA = true;
-    }
-    $scope.$apply();
+    $scope.uploadSideA = $(window).width() >= 905;
     if($(window).width() < 746){
       $('#searchText').css('width', '100%');
     } else {
       $('#searchText').css('width', '100px');
     }
-    $scope.$apply();
+    $scope.$digest();
   });
 
   var getAvatar = function () {
@@ -144,7 +133,7 @@ photoApp.controller('navbarController', function($location, $scope, $rootScope, 
       }
 
     });
-  }
+  };
 
   getAvatar();
 
@@ -172,7 +161,7 @@ photoApp.controller('ModalInstanceController', function($window, $http, $scope, 
       $scope.tags = '';
       $scope.tagsList = [];
     }
-  })
+  });
 
   $scope.checkPress = function(event){
     if(event.keyCode == 10 || event.keyCode == 13 || event.keyCode == 32){
@@ -183,7 +172,7 @@ photoApp.controller('ModalInstanceController', function($window, $http, $scope, 
       $scope.tags = '';
       $scope.tagsList = [];
     }
-  }
+  };
 
   $scope.peopleSearch = function(){
     var people = $scope.people;
@@ -191,17 +180,16 @@ photoApp.controller('ModalInstanceController', function($window, $http, $scope, 
       $scope.peopleList = [];
     } else {
       $http.get('/api/searchPeople?q='+people).then(function(response){
-        var people = response.data.persons;
-        $scope.peopleList = people;
+        $scope.peopleList = response.data.persons;
       })
     }
-  }
+  };
 
   $scope.initiateSearch = function(param) {
     $http.get("/api/searchTags?q="+param).then(function(response){
       $scope.tagsList = response.data.items;
     });
-  }
+  };
 
   $scope.search = function(){
     if($scope.tags == ''){
@@ -210,7 +198,7 @@ photoApp.controller('ModalInstanceController', function($window, $http, $scope, 
     }
     clearTimeout($scope.lastSent);
     $scope.lastSent = setTimeout(function(){$scope.initiateSearch($scope.tags)}, 100);
-  }
+  };
 
   $scope.ok = function () {
     $modalInstance.close($scope.selected.item);
@@ -222,17 +210,17 @@ photoApp.controller('ModalInstanceController', function($window, $http, $scope, 
 
   $scope.removeTag = function(index){
     $scope.appliedTags.splice(index, 1);
-  }
+  };
 
   $scope.removePerson = function(index){
     $scope.appliedPeople.splice(index, 1);
-  }
+  };
 
   $scope.addTag = function(index) {
     $scope.appliedTags.push($scope.tagsList[index].name);
     $scope.tags = '';
     $scope.tagsList = [];
-  }
+  };
 
   $scope.addPerson = function(index){
     var person = $scope.peopleList[index];
@@ -241,7 +229,7 @@ photoApp.controller('ModalInstanceController', function($window, $http, $scope, 
     $scope.appliedPeople.push(person);
     $scope.people = '';
     $scope.peopleList = [];
-  }
+  };
 
   $scope.uploadFile = function(){
     $scope.message = '';
@@ -257,7 +245,7 @@ photoApp.controller('ModalInstanceController', function($window, $http, $scope, 
       var shares = [];
       angular.forEach($scope.appliedPeople, function(person){
         shares.push(person.id);
-      })
+      });
       url = url + '&share=' + shares.join();
     }
 
