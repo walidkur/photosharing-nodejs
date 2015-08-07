@@ -33,7 +33,7 @@
 
 
           <div class="media-body">
-
+            <div style="height: 6px;"> </div>
             <!-- Title/Edit Title -->
             <div class="titleDiv" ng-show="!titleEdit">
               <span class="photoTitle" style="display: inline">{{photo.title}}</span>
@@ -129,37 +129,43 @@
         <br>
 
         <!--Photo Tags/Edit Tags-->
-        <h5 class="tagField">
+        <div class="tagField">
           <button ng-click="meta = !meta;" class="tagButton">
             <span class="glyphicon glyphicon-tag"></span>
           </button>
 
-            <span ng-if="photo.tags.length !== 0">
-              <div class="tagSlot" ng-repeat="tag in photo.tags">
-                <a id="tagName" href="/#/public?tags={{tag}}">{{tag}}</a>
-                <button ng-click="deleteTag(tag);" class="deleteTagButton">
-                  <span class="glyphicon glyphicon-remove"></span>
-                </button>
-              </div>
-            </span>
+          <span ng-if="photo.tags.length !== 0">
+            <div class="tagSlot" ng-repeat="tag in photo.tags">
+              <a id="tagName" href="/#/public?tags={{tag}}">{{tag}}</a>
+              <button ng-click="deleteTag(tag);" class="deleteTagButton">
+                <span class="glyphicon glyphicon-remove"></span>
+              </button>
+            </div>
+          </span>
 
           <span ng-if="photo.tags.length === 0">
-            <tag>Add tags</tag>
+            <div class="tagSlot">Add tags</div>
           </span>
 
           <!--Edit Tags-->
-          <div ng-if="uid == photo.uid" class="addTags">
-            <br ng-show="meta">
-            <br ng-show="meta">
-            <form>
-              <div ng-show="meta" class="input-group">
+          <span ng-if="uid == photo.uid" class="addTags">
+              <span ng-show="meta" style="position: relative">
+                <input ng-keypress="change($event, 'tags', newMeta)" id="tagsText" type="text" placeholder="Add tags" ng-model="newMeta" class="form-control">
+              </span>
+              <!-- <div ng-show="meta" class="input-group">
                 <input ng-keypress="change($event, 'tags', newMeta)" id="tagsText" type="text" ng-model="newMeta" class="form-control" placeholder="Enter new tags (separated by spaces)">
                   <span class="input-group-btn">
                     <button id="tagsButton" ng-click="meta = !meta; editPhoto(newMeta);" class="btn btn-primary" type="button">Submit</button>
                   </span>
-              </div>
-            </form>
-          </div>
+              </div> -->
+          </span>
+
+        </div>
+
+
+
+
+
 
       </div>
 
