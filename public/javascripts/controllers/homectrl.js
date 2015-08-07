@@ -43,10 +43,11 @@ photoApp.controller('homeController', function($animate, apiService, feedData, $
       if(phase === 'close'){
         animateCount = 0;
         angular.element(document).ready(function(){
-          $('#homeGallery').justifiedGallery(galleryConfig).on('jg.complete', function(e){
+          var $homeGallery = $('#homeGallery')
+          $homeGallery.justifiedGallery(galleryConfig).on('jg.complete', function(e){
             $scope.loading = false;
           });
-          $('#homeGallery').removeClass('hidden');
+          $homeGallery.removeClass('hidden');
         });
       }
     }
@@ -72,9 +73,8 @@ photoApp.controller('homeController', function($animate, apiService, feedData, $
     apiService.getFeed('?type=' + type + '&q=' + tags + '&ps=5' + '&si=' + index, feedCallback, errorCallback)
     .then(function(){
       index += 5;
-      return;
     });
-  }
+  };
 
   $scope.like = function(index){
     var photo = $scope.data[index];
@@ -100,7 +100,7 @@ photoApp.controller('homeController', function($animate, apiService, feedData, $
         }
       }
     )
-  }
+  };
 
   function feedCallback(data, status){
     if(data.length != 0){

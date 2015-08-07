@@ -5,7 +5,7 @@ photoApp.factory('apiService', function($http, $q){
   var apiService = {
 
     getFeed: function(params, successCallback, errorCallback){
-        var promise = $http({
+        return $http({
           method:'GET',
           url:'/api/feed' + params
         }).success(function(data, status){
@@ -13,12 +13,10 @@ photoApp.factory('apiService', function($http, $q){
         }).error(function(data, status){
           errorCallback(data, status);
         });
-
-        return promise;
     },
 
     getPhoto: function(params, successCallback, errorCallback){
-        var promise = $http({
+        return $http({
           method:'GET',
           url:'/api/photo' + params
         }).success(function(data, status){
@@ -26,12 +24,10 @@ photoApp.factory('apiService', function($http, $q){
         }).error(function(data, status){
           errorCallback(data, status);
         });
-
-        return promise
     },
 
     getComments: function(params, successCallback, errorCallback){
-        var promise = $http({
+        return $http({
           method:'GET',
           url:'/api/comments' + params
         }).success(function(data, status){
@@ -39,8 +35,6 @@ photoApp.factory('apiService', function($http, $q){
         }).error(function(data, status){
           errorCallback(data, status);
         });
-
-        return promise;
     },
 
     getProfiles: function(comments, successCallback, errorCallback){
@@ -64,27 +58,18 @@ photoApp.factory('apiService', function($http, $q){
     },
 
     getProfile: function(params, successCallback, errorCallback){
-      var promise = $http({
+      return $http({
         method:'GET',
-        url: '/api/profile' + params,
+        url: '/api/profile' + params
       }).success(function(data, status){
         successCallback(data, status);
       }).error(function(data, status){
         errorCallback(data, status);
       });
-        return promise;
-    },
-
-    getPeople: function(params, successCallback, errorCallback){
-      var promise = $http({
-        method: 'GET',
-        url: '/api/searchPeople' + params,
-      }).success(successCallback)
-        .error(errorCallback);
     },
 
     addComment: function(content, params, url, successCallback, errorCallback){
-      var promise = $http({
+      return $http({
         method:'POST',
         url:'/api/comments' + params,
         data: {comment: content,
@@ -94,32 +79,29 @@ photoApp.factory('apiService', function($http, $q){
       }).error(function(data, status){
         errorCallback(data, status);
       });
-      return promise;
     },
 
     postLike: function(params){
-      var promise = $http({
+      return $http({
         method:'post',
         url: '/api/like' + params
       });
-      return promise;
     },
 
     deleteComment: function(params, successCallback, errorCallback){
-      var promise = $http({
+      return $http({
         method:'DELETE',
         url: '/api/comments' + params
       }).success(function(data, status){
         successCallback(data, status);
       }).error(function(data, status){
         errorCallback(data, status);
-      })
-      return promise;
+      });
     },
 
 
     editComment: function(content, params, successCallback, errorCallback){
-      var promise = $http({
+      return $http({
         method:'PUT',
         url: '/api/comments' + params,
         data: {comment: content}
@@ -128,11 +110,10 @@ photoApp.factory('apiService', function($http, $q){
       }).error(function(data, status){
         errorCallback(data, status);
       });
-      return promise;
     },
 
     editPhoto: function(url, id, params, successCallback, errorCallback){
-      var promise = $http({
+      return $http({
         method:'PUT',
         url:'/api/photo' + params,
         data: {url: url,
@@ -142,12 +123,11 @@ photoApp.factory('apiService', function($http, $q){
       }).error(function(data, status){
         errorCallback(data, status);
       });
-      return promise;
     },
 
     deleteTag: function(editurl, xid, pid, tag, successCallback, errorCallback){
 
-      var promise = $http({
+      return $http({
         method:'PUT',
         url:'/api/photo?removeTag=' + tag + '&pid=' + pid,
         data:{ url:editurl,
@@ -157,8 +137,6 @@ photoApp.factory('apiService', function($http, $q){
       }).error(function(data, status){
         errorCallback(data, status);
       });
-
-      return promise;
     },
 
     logout: function(errorCallback){
@@ -167,11 +145,10 @@ photoApp.factory('apiService', function($http, $q){
     },
 
     deletePhoto: function(params){
-      var promise = $http({
+      return $http({
         method: 'DELETE',
         url: '/api/photo' + params
       });
-      return promise;
     },
 
     resolveImages: function(images){
@@ -182,7 +159,7 @@ photoApp.factory('apiService', function($http, $q){
           var deferred = $q.defer();
           var image = new Image();
 
-          image.src = img
+          image.src = img;
 
           if(image.completed){
             console.log("Completed");
@@ -204,8 +181,6 @@ photoApp.factory('apiService', function($http, $q){
           promises.push(deferred.promise);
 
         });
-
-        console.log(promises.length)
 
         return $q.all(promises);
 
