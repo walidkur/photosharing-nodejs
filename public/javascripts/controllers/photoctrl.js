@@ -26,8 +26,9 @@ photoApp.controller('photoController', function($location, $scope, $rootScope, $
   var editCount = 0;
 
   function scrollComments(){
-    $('#commentBox').animate({
-      scrollTop: $('#commentBox').get(0).scrollHeight
+    var $commentBox = $('#commentBox');
+    $commentBox.animate({
+      scrollTop: $commentBox.get(0).scrollHeight
     }, 2000);
   }
 
@@ -38,7 +39,7 @@ photoApp.controller('photoController', function($location, $scope, $rootScope, $
   function commentEditOpen(){
     for(var i = 0; i < $scope.comments.length; i++){
       var comment = $scope.comments[i];
-      if(comment.edit == true){
+      if (comment.edit) {
         return comment.cid;
       }
     }
@@ -48,10 +49,11 @@ photoApp.controller('photoController', function($location, $scope, $rootScope, $
 
   $('html').click(function(e){
     var cid;
-    if($scope.meta && e.target != $('#tagsText')[0]){
+    var $tagsText = $('#tagsText');
+    if($scope.meta && e.target != $tagsText[0]){
       if(tagsCount > 0) {
         $scope.meta = !$scope.meta;
-        $('#tagsText').val('');
+        $tagsText.val('');
         tagsCount = 0;
         $scope.$digest();
       } else {
@@ -66,7 +68,7 @@ photoApp.controller('photoController', function($location, $scope, $rootScope, $
             comment.edit = false;
             $scope.$digest();
           }
-        })
+        });
         editCount = 0;
       } else {
         editCount++;
@@ -80,22 +82,20 @@ photoApp.controller('photoController', function($location, $scope, $rootScope, $
       $scope.peopleList = [];
     } else {
       $http.get('/api/searchPeople?q='+people).then(function(response){
-        var people = response.data.persons;
-
-        $scope.peopleList = people;
+        $scope.peopleList = response.data.persons;
       })
     }
-  }
+  };
 
   $scope.shareClick = function(index){
     $scope.shareEdit($scope.peopleList[index].id);
     $scope.shareModel = '';
     $scope.peopleList = [];
     $scope.share = false;
-  }
+  };
 
   $scope.change = function(event, type, content, cid, toggle){
-    if((event.keyCode == 13 || event.keyCode == 10) && (event.shiftKey != 1)){
+    if((event.keyCode == 13 || event.keyCode == 10) && (!event.shiftKey)){
       if(type === 'tags'){
         $scope.editPhoto(content);
         $('#tagsText').val('');
@@ -120,7 +120,7 @@ photoApp.controller('photoController', function($location, $scope, $rootScope, $
         }
       }
     }
-  }
+  };
 
   $scope.shareEdit = function(user){
     apiService.editPhoto($scope.photo.editurl, $scope.photo.id, '?pid=' + $scope.photo.pid + '&share=' + user, successCallback, errorCallback);
@@ -130,9 +130,9 @@ photoApp.controller('photoController', function($location, $scope, $rootScope, $
     }
 
     function errorCallback(data, status){
-      console.log("FIALURE!!!!");
+      console.log("FAILURE!!!!");
     }
-  }
+  };
 
   $scope.editTitle = function(){
     $scope.title.loading = true;
@@ -154,7 +154,7 @@ photoApp.controller('photoController', function($location, $scope, $rootScope, $
       }
     }
 
-  }
+  };
 
   $scope.updateVisibility = function(visibility){
     $scope.visibility.loading = true;
@@ -200,7 +200,7 @@ photoApp.controller('photoController', function($location, $scope, $rootScope, $
       comment.failure = true;
       comment.content = commentContent;
     }
-  }
+  };
 
   $scope.editPhoto = function(content){
     apiService.editPhoto($scope.photo.editurl, $scope.photo.id, '?pid=' + $scope.photo.pid + '&q=' + content, editPhotoCallback, errorCallback);
@@ -208,7 +208,7 @@ photoApp.controller('photoController', function($location, $scope, $rootScope, $
     function editPhotoCallback(data, status) {
       $scope.photo.tags.push(content);
     }
-  }
+  };
 
   $scope.deleteComment = function(cid){
     var comment = $scope.comments.filter(function(el){
@@ -225,7 +225,7 @@ photoApp.controller('photoController', function($location, $scope, $rootScope, $
       }
     }
 
-  }
+  };
 
   $scope.deleteTag = function(tag){
     apiService.deleteTag($scope.photo.editurl, $scope.photo.id, $scope.photo.pid, tag, deleteTagCallback, errorCallback);
@@ -235,7 +235,7 @@ photoApp.controller('photoController', function($location, $scope, $rootScope, $
       $scope.photo.tags.splice(index, index+1);
     }
 
-  }
+  };
 
 
   $scope.addComment = function(){
@@ -266,27 +266,7 @@ photoApp.controller('photoController', function($location, $scope, $rootScope, $
       comment.failure = true;
       comment.loading = false;
     }
-  }
-
-  function getProfileCallback(data, status){
-    $scope.comments[0].profileImg = data.img;
-  }
-
-  function editPhotoCallback(data, status){
-    $scope.photo.tags = $scope.photo.tags.concat($scope.newMeta.split(" "));
-  }
-
-  function commentCallback(data, status){
-    $scope.comments = data;
-  }
-
-  function profilesCallback(data, status, comment){
-    comment.profileImg = data.img;
-  }
-
-  function editCallback(data, status){
-    console.log("Successfully edited!");
-  }
+  };
 
   function errorCallback(data, status){
     if(status === 401 || status === 403){
@@ -318,7 +298,7 @@ photoApp.controller('photoController', function($location, $scope, $rootScope, $
         }
       }
     )
-  }
+  };
 
   $scope.deletePhoto = function(){
     var r = confirm("Delete this photo?");
@@ -333,29 +313,5 @@ photoApp.controller('photoController', function($location, $scope, $rootScope, $
           }
       )
     }
-  }
-
-  var setting = false;
-
-  // $scope.editListener = function () {
-  //
-  //   $(document).ready(function(){
-  //     if (setting === false) {
-  //         setting = true;
-  //         $("#addCommentText").css("display", "none");
-  //         console.log("Hide");
-  //
-  //     }
-  //     else {
-  //       setting = false;
-  //       $("#addCommentText").css("display", "block");
-  //       console.log("Show");
-  //     }
-  //
-  //   });
-  //
-  //
-  // }
-
-
+  };
 });
