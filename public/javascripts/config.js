@@ -53,7 +53,7 @@ photoApp.config(function($routeProvider) {
 
       }
     },
-    controller  : 'homeController',
+    controller  : 'homeController'
   })
 
   // route for the about page
