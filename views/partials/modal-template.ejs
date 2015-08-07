@@ -30,9 +30,9 @@
           <label for="tag">Tags:</label>
           <div style="position: relative">
             <tag id="uploadTag" class="tag" ng-repeat="tag in appliedTags">{{tag}}<button class="removeUploadTag" ng-click="removeTag($index)"><span class="glyphicon glyphicon-remove"></span></button></tag>
-              <input ng-keypress="checkPress($event)" id="tagField" ng-change="search($viewValue)" ng-model="tags" type="text" class="form-control">
+              <input ng-keypress="checkPress($event, 'tags')" id="tagField" ng-change="search($viewValue)" ng-model="tags" type="text" class="form-control">
               <ul ng-show="tagsList.length > 0" class="dropdown-menu" style="display: block">
-                <li ng-click="addTag($index)" ng-repeat="tag in tagsList"><a href=""><{{tag.name}}</a></li>
+                <li ng-click="addTag($index)" ng-repeat="tag in tagsList" ng-class="{sel: $index == selected}"><a href="">{{tag.name}}</a></li>
               </ul>
           </div>
         </div>
@@ -43,7 +43,7 @@
           <label for="person">Share with:</label>
           <div style="position: relative">
             <tag id="uploadPerson" ng-click="removePerson($index)" class="person" ng-repeat="person in appliedPeople">{{person.name}}</tag>
-              <input id="peopleField" ng-change="peopleSearch($viewValue)" ng-model="people" type="text" class="form-control">
+              <input id="peopleField" ng-keypress="checkPress($event, 'people')" ng-change="peopleSearch($viewValue)" ng-model="people" type="text" class="form-control">
               <ul ng-show="peopleList.length > 0" class="dropdown-menu" style="display: block">
                 <li ng-click="addPerson($index)" ng-repeat="person in peopleList"><a ng-bind-html="person.name" href=""></a></li>
               </ul>
