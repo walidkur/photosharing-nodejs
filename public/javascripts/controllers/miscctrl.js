@@ -293,6 +293,10 @@ photoApp.controller('ModalInstanceController', function($window, $http, $scope, 
 
     url += '&title=' + $scope.title;
 
+    if($scope.caption.length > 0){
+      url += '&summary=' + $scope.caption;
+    }
+
     $http.post(url, fd, {
       headers: { 'Content-Type' : undefined, 'X-Content-Length' : $scope.files[0].size},
       transformRequest: angular.identity
