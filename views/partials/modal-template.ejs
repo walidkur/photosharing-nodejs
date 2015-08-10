@@ -18,10 +18,16 @@
           <p>{{message}}</p>
       </div>
 
-      <!-- Creates ability to add a title fo photos-->
+      <!-- Creates ability to add a title for photos-->
       <div class="form-group">
-          <label for="title">Title:</label>
-          <input ng-model="title" type="text" class="form-control" id="title">
+        <label for="title">Title:</label>
+        <input ng-model="title" type="text" class="form-control" id="title">
+      </div>
+
+      <!-- Creates ability to add a caption for photos-->
+      <div class="form-group">
+        <label for="caption">Caption:</label>
+        <textarea ng-model="caption" type="text" class="form-control" id="caption"></textarea>
       </div>
 
       <!-- Creates ability to make tags for photos -->

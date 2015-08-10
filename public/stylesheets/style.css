@@ -511,6 +511,7 @@ tag {
 
 #tagName {
   color: white;
+  padding-right: 10px;
 }
 
 #tagsText {
@@ -525,8 +526,8 @@ tag {
     border: none;
     color: gray;
     background: transparent;
-    padding: none;
-    margin: none;
+    padding-left: 0px;
+    margin-left: 0px;
   }
 
 .removeUploadTag {
