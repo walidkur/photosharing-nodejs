@@ -118,11 +118,6 @@
               </span>
 
             </div>
-
-
-
-
-
           </div>
         </div>
 
@@ -137,7 +132,7 @@
           <span ng-if="photo.tags.length !== 0">
             <div class="tagSlot" ng-repeat="tag in photo.tags">
               <a id="tagName" href="/#/public?tags={{tag}}">{{tag}}</a>
-              <button ng-click="deleteTag(tag);" class="deleteTagButton">
+              <button ng-click="deleteTag(tag);" ng-show="$root.uid == photo.uid" class="deleteTagButton">
                 <span class="glyphicon glyphicon-remove"></span>
               </button>
             </div>
@@ -152,21 +147,9 @@
               <span ng-show="meta" style="position: relative">
                 <input ng-keypress="change($event, 'tags', newMeta)" id="tagsText" type="text" placeholder="Add tags" ng-model="newMeta" class="form-control">
               </span>
-              <!-- <div ng-show="meta" class="input-group">
-                <input ng-keypress="change($event, 'tags', newMeta)" id="tagsText" type="text" ng-model="newMeta" class="form-control" placeholder="Enter new tags (separated by spaces)">
-                  <span class="input-group-btn">
-                    <button id="tagsButton" ng-click="meta = !meta; editPhoto(newMeta);" class="btn btn-primary" type="button">Submit</button>
-                  </span>
-              </div> -->
           </span>
 
         </div>
-
-
-
-
-
-
       </div>
 
       <!--Like Button and Number of Likes-->
