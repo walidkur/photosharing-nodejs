@@ -13,6 +13,18 @@ photoApp.controller('navbarController', function($location, $scope, $rootScope, 
 
   $rootScope.buttons = [".profileButton", ".publicButton", ".privateButton", ".personalButton", ".uploadButton"];
 
+  $scope.peopleSearch = function(){
+    var people = $scope.searchQuery;
+    if(people == ''){
+      $scope.resultList = [];
+    } else {
+      $http.get('/api/searchPeople?q='+people).then(function(response){
+        console.log(response);
+        $scope.resultList = response.data.persons;
+      });
+    }
+  };
+
   $scope.select = function(button){
     angular.forEach($rootScope.buttons, function(btn){
       $(btn).css("animation", "");
@@ -82,6 +94,12 @@ photoApp.controller('navbarController', function($location, $scope, $rootScope, 
     }
 
   };
+
+  $scope.goToProfile = function(id){
+    $scope.resultList = [];
+    $scope.searchQuery = '';
+    $window.location.assign('/#/profile/' + id);
+  }
 
   $scope.mediumScreen = true;
   $(document).ready(function(){
