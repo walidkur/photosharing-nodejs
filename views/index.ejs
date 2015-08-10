@@ -4,11 +4,11 @@
 
 <% include head %>
 
-<body ng-controller="navbarController" ng-app="photoApp">
+<body ng-app="photoApp">
 
 
 <!--Calls back to navbarController, and creates the navbar fixed at the top of the screen-->
-<nav id="navStyle" class="navbar navbar-fixed-top" role="navigation">
+<nav ng-controller="navbarController" id="navStyle" class="navbar navbar-fixed-top" role="navigation">
     <!--Displays brand in center of navbar-->
     <a style="line-height:15px;" class="navbar-brand" ng-click="select();" ng-show="!loading" href="#/public">
       Photo<span style="font-weight:bolder">Node</span>
@@ -91,13 +91,16 @@
         <li>
           <!--Displays the search bar and defines its functionality-->
           <form class="searchBar navbar-form" role="search">
-            <div class="form-group input-group stylish-input-group">
-              <input type="text" id="searchText" ng-model="searchQuery" class="form-control" placeholder="Search">
+            <div style="position: relative" class="form-group input-group stylish-input-group">
+              <input type="text" id="searchText" ng-change="peopleSearch()" ng-model="searchQuery" class="form-control" placeholder="Search">
               <span class="input-group-addon">
                 <button type="submit" id="searchButton" ng-click="search()">
                   <span class="glyphicon glyphicon-search"></span>
                 </button>
               </span>
+              <ul ng-show="resultList.length > 0" class="dropdown-menu" style="display:block">
+                <li ng-repeat="result in resultList"><a ng-bind-html="result.name" href="" ng-click="goToProfile(result.id)"></a></li>
+              </ul>
 
               <!--Allows the user to submit search by hitting enter-->
               <script>
