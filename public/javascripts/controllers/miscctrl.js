@@ -13,6 +13,18 @@ photoApp.controller('navbarController', function($location, $scope, $rootScope, 
 
   $rootScope.buttons = [".profileButton", ".publicButton", ".privateButton", ".personalButton", ".uploadButton"];
 
+  $scope.peopleSearch = function(){
+    var people = $scope.searchQuery;
+    if(people == ''){
+      $scope.resultList = [];
+    } else {
+      $http.get('/api/searchPeople?q='+people).then(function(response){
+        console.log(response);
+        $scope.resultList = response.data.persons;
+      });
+    }
+  };
+
   $scope.select = function(button){
     angular.forEach($rootScope.buttons, function(btn){
       $(btn).css("animation", "");
@@ -82,6 +94,12 @@ photoApp.controller('navbarController', function($location, $scope, $rootScope, 
     }
 
   };
+
+  $scope.goToProfile = function(id){
+    $scope.resultList = [];
+    $scope.searchQuery = '';
+    $window.location.assign('/#/profile/' + id);
+  }
 
   $scope.mediumScreen = true;
   $(document).ready(function(){
@@ -160,17 +178,33 @@ photoApp.controller('ModalInstanceController', function($window, $http, $scope, 
       clearTimeout($scope.lastSent);
       $scope.tags = '';
       $scope.tagsList = [];
+    } else if($scope.people.length > 0 && e.target != $('#peopleField')){
+      $scope.addPerson(0);
     }
   });
 
-  $scope.checkPress = function(event){
-    if(event.keyCode == 10 || event.keyCode == 13 || event.keyCode == 32){
-      if($scope.appliedTags.indexOf($scope.tags) == -1) {
-        $scope.appliedTags.push($scope.tags);
+  $scope.checkPress = function(event, context){
+    if(event.keyCode == 10 || event.keyCode == 13){
+      if(context == 'tags') {
+        if ($scope.appliedTags.indexOf($scope.tags) == -1) {
+          $scope.appliedTags.push($scope.tags);
+        }
+        clearTimeout($scope.lastSent);
+        $scope.tags = '';
+        $scope.tagsList = [];
+      } else if(context == 'people'){
+        $scope.addPerson(0);
       }
-      clearTimeout($scope.lastSent);
-      $scope.tags = '';
-      $scope.tagsList = [];
+    }
+    if(event.keyCode == 32){
+      if(context == 'tags'){
+        if ($scope.appliedTags.indexOf($scope.tags) == -1) {
+          $scope.appliedTags.push($scope.tags);
+        }
+        clearTimeout($scope.lastSent);
+        $scope.tags = '';
+        $scope.tagsList = [];
+      }
     }
   };
 
@@ -188,13 +222,16 @@ photoApp.controller('ModalInstanceController', function($window, $http, $scope, 
   $scope.initiateSearch = function(param) {
     $http.get("/api/searchTags?q="+param).then(function(response){
       $scope.tagsList = response.data.items;
+      console.log(response);
+      console.log($scope.tagsList);
     });
   };
 
   $scope.search = function(){
     if($scope.tags == ''){
-      $scope.tagsList = [];
       clearTimeout($scope.lastSent);
+      $scope.tagsList = [];
+      $scope.$digest();
     }
     clearTimeout($scope.lastSent);
     $scope.lastSent = setTimeout(function(){$scope.initiateSearch($scope.tags)}, 100);
@@ -224,9 +261,10 @@ photoApp.controller('ModalInstanceController', function($window, $http, $scope, 
 
   $scope.addPerson = function(index){
     var person = $scope.peopleList[index];
-
-    person.name = person.name.replace(/<B>/, "").replace(/<\/B>/, "");
-    $scope.appliedPeople.push(person);
+    if($scope.appliedPeople.indexOf(person) == -1){
+      person.name = person.name.replace(/<B>/, "").replace(/<\/B>/, "");
+      $scope.appliedPeople.push(person);
+    }
     $scope.people = '';
     $scope.peopleList = [];
   };
@@ -254,6 +292,10 @@ photoApp.controller('ModalInstanceController', function($window, $http, $scope, 
     }
 
     url += '&title=' + $scope.title;
+
+    if($scope.caption.length > 0){
+      url += '&summary=' + $scope.caption;
+    }
 
     $http.post(url, fd, {
       headers: { 'Content-Type' : undefined, 'X-Content-Length' : $scope.files[0].size},

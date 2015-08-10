@@ -24,6 +24,8 @@ photoApp.controller('photoController', function($location, $scope, $rootScope, $
   $scope.title.failure = false;
   var tagsCount = 0;
   var editCount = 0;
+  var shareCount = 0;
+  var titleCount = 0;
 
   function scrollComments(){
     var $commentBox = $('#commentBox');
@@ -50,30 +52,41 @@ photoApp.controller('photoController', function($location, $scope, $rootScope, $
   $('html').click(function(e){
     var cid;
     var $tagsText = $('#tagsText');
-    if($scope.meta && e.target != $tagsText[0]){
-      if(tagsCount > 0) {
+    if($scope.meta && e.target != $tagsText[0]) {
+      if (tagsCount > 0) {
         $scope.meta = !$scope.meta;
         $tagsText.val('');
         tagsCount = 0;
-        $scope.$digest();
       } else {
         tagsCount++;
       }
-    }
-    cid = commentEditOpen();
-    if((cid = commentEditOpen()) && (e.target != $('#editText' + cid)[0])){
-      if(editCount > 0) {
+    } else if((cid = commentEditOpen()) && (e.target != $('#editText' + cid)[0])) {
+      if (editCount > 0) {
         angular.forEach($scope.comments, function (comment) {
           if (comment.cid == cid) {
             comment.edit = false;
-            $scope.$digest();
           }
         });
         editCount = 0;
       } else {
         editCount++;
       }
+    } else if($scope.titleEdit && e.target != $('#titleText')[0]) {
+      if(titleCount > 0) {
+        $scope.titleEdit = false;
+        titleCount = 0;
+      } else {
+        titleCount++;
+      }
+    } else if($scope.share && e.target != $('#shareInput')[0]){
+      if(shareCount > 0) {
+        $scope.share = false;
+        shareCount = 0;
+      } else {
+        shareCount++;
+      }
     }
+    $scope.$digest();
   });
 
   $scope.peopleSearch = function(){
