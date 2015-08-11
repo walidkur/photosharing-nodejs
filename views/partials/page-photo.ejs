@@ -42,13 +42,13 @@
                   <span class="glyphicon glyphicon-pencil"></span>
                 </button>
               </span>
-              <span ng-show="title.success && !title.loading">
+              <span class="titleAlerts" ng-show="title.success && !title.loading">
                 <span class="glyphicon glyphicon-ok-sign"></span>
               </span>
-              <span ng-show="title.failure && !title.loading">
+              <span class="titleAlerts" ng-show="title.failure && !title.loading">
                 <span class="glyphicon glyphicon-exclamation-sign"></span>
               </span>
-              <span ng-show="title.loading">
+              <span class="titleAlerts" ng-show="title.loading">
                 <span class="glyphicon glyphicon-refresh spin"></span>
               </span>
             </div>
@@ -172,8 +172,8 @@
 
       <!--Like Button and Number of Likes-->
       <div id="photoBar">
-        <button ng-show="liked" class="likeButton" ng-click="like()"><span style="color: blue" class="glyphicon glyphicon-thumbs-up"></span></button>
-        <button ng-show="!liked" class="likeButton" ng-click="like()"><span class="glyphicon glyphicon-thumbs-up"></span></button>
+        <a href="" ng-show="liked" class="likeButton" ng-click="like()"><span style="color: blue" class="glyphicon glyphicon-thumbs-up"></span></a>
+        <a href="" ng-show="!liked" class="likeButton" ng-click="like()"><span style="color: #333333" class="glyphicon glyphicon-thumbs-up"></span></a>
         <span ng-if="photo.likes !== 1">
           {{photo.likes}} people
         </span>
