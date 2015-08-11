@@ -22,6 +22,7 @@ photoApp.controller('photoController', function($location, $scope, $rootScope, $
   $scope.title.loading = false;
   $scope.title.success = false;
   $scope.title.failure = false;
+  $scope.peopleList = [];
   var tagsCount = 0;
   var editCount = 0;
   var shareCount = 0;
@@ -80,6 +81,8 @@ photoApp.controller('photoController', function($location, $scope, $rootScope, $
       }
     } else if($scope.share && e.target != $('#shareInput')[0]){
       if(shareCount > 0) {
+        $scope.peopleList = [];
+        delete $scope.shareModel;
         $scope.share = false;
         shareCount = 0;
       } else {
@@ -101,9 +104,11 @@ photoApp.controller('photoController', function($location, $scope, $rootScope, $
   };
 
   $scope.shareClick = function(index){
-    $scope.shareEdit($scope.peopleList[index].id);
-    $scope.shareModel = '';
-    $scope.peopleList = [];
+    if($scope.peopleList[index]){
+      $scope.shareEdit($scope.peopleList[index].id);
+    }
+    delete $scope.peopleList;
+    delete $scope.shareModel;
     $scope.share = false;
   };
 
@@ -115,6 +120,18 @@ photoApp.controller('photoController', function($location, $scope, $rootScope, $
       }
     }
     if((event.keyCode == 13 || event.keyCode == 10) && (!event.shiftKey)){
+      if(type === 'share'){
+        console.log('content', content);
+        if(content == ''){
+          console.log('empty clear')
+          delete $scope.shareModel;
+          $scope.peopleList = [];
+          $scope.share = false;
+        } else {
+          console.log('Otherwise')
+          $scope.shareClick(0);
+        }
+      }
       if(type === 'tags'){
         $scope.editPhoto(content);
         $('#tagsText').val('');
@@ -128,6 +145,10 @@ photoApp.controller('photoController', function($location, $scope, $rootScope, $
         $scope.editComment(content, cid);
         $scope.add = !$scope.add;
         event.preventDefault();
+      }
+      if(type === 'titleEdit'){
+        $scope.titleEdit = false;
+        $scope.editTitle();
       }
     }
     if(event.keyCode == 32){

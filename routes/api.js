@@ -1179,7 +1179,6 @@ router.post('/upload', isAuth, function(req, res, next) {
     busboy.on('file', function(fieldname, file, filename, encoding, mimetype){
       var j = request.jar();
       var url = FILES_API + 'myuserlibrary/feed?visibility=' + req.query.visibility;
-      var summary = req.body.summary;
 
       // add tags to the url
       if(!isEmpty(req.query.q)){
@@ -1202,8 +1201,6 @@ router.post('/upload', isAuth, function(req, res, next) {
         slug = filename;
       }
 
-      var body = postPhotoFormat(req.query.title, summary);
-
       var headers = {
         'Authorization': 'Bearer ' + req.user.accessToken,
         'Slug': slug,
@@ -1215,7 +1212,6 @@ router.post('/upload', isAuth, function(req, res, next) {
       var options = {
         url: url,
         headers: headers,
-        body: body,
       };
 
       // pipe the file to the request
