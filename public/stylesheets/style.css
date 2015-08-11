@@ -506,6 +506,18 @@ div.photo .deletePhotoButton
 .tagButton {
   background-color: inherit;
   border: none;
+  color: #333333;
+  text-decoration: none;
+}
+
+.tagButton:focus {
+  color: #333333;
+  text-decoration: none;
+}
+
+.tagButton:hover {
+  color: #333333;
+  text-decoration: none;
 }
 
 .addTags {
@@ -649,6 +661,7 @@ textarea {
 .editCommentButton {
   background-color: inherit;
   border: none;
+  margin-right: 5px;
   font-size: 10px;
 }
 
@@ -660,6 +673,8 @@ textarea {
 .deleteCommentButton {
   background-color: inherit;
   border: none;
+  margin-right: 10px;
+  margin-left: 5px;
   font-size: 10px;
 }
 
