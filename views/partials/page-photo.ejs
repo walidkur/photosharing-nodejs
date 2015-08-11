@@ -110,7 +110,7 @@
                 </a>
               </span>
               <span ng-show="share" style="position: relative">
-                <input ng-change="peopleSearch()" id="shareInput" type="text" placeholder="Share with user" ng-model="shareModel">
+                <input ng-keypress="change($event, 'share', shareModel)" ng-change="peopleSearch()" id="shareInput" type="text" placeholder="Share with user" ng-model="shareModel">
                 <ul ng-show="peopleList.length > 0" class="dropdown-menu" style="display: block">
                   <li ng-click="shareClick($index)" ng-repeat="person in peopleList"><a ng-bind-html="person.name" href=""></a></li>
                 </ul>
