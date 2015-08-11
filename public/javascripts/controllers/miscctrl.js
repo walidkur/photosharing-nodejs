@@ -184,6 +184,12 @@ photoApp.controller('ModalInstanceController', function($window, $http, $scope, 
   });
 
   $scope.checkPress = function(event, context){
+    if(context == 'tags' && $scope.tags.length > 20){
+      event.preventDefault();
+    }
+    if(context == 'title' && $scope.title.length > 38){
+      event.preventDefault();
+    }
     if(event.keyCode == 10 || event.keyCode == 13){
       if(context == 'tags') {
         if ($scope.appliedTags.indexOf($scope.tags) == -1) {

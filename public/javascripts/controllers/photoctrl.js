@@ -119,7 +119,7 @@ photoApp.controller('photoController', function($location, $scope, $rootScope, $
       }
     }
     if(type === 'titleEdit'){
-      if(content.length > 38){
+      if(content.length > 30){
         event.preventDefault();
       }
     }
