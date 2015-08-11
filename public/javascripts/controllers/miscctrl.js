@@ -178,7 +178,7 @@ photoApp.controller('ModalInstanceController', function($window, $http, $scope, 
       clearTimeout($scope.lastSent);
       $scope.tags = '';
       $scope.tagsList = [];
-    } else if($scope.people.length > 0 && e.target != $('#peopleField')){
+    } else if($scope.people && e.target != $('#peopleField')){
       $scope.addPerson(0);
     }
   });
