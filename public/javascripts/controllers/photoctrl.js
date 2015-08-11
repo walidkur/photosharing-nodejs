@@ -115,6 +115,7 @@ photoApp.controller('photoController', function($location, $scope, $rootScope, $
       }
     }
     if((event.keyCode == 13 || event.keyCode == 10) && (!event.shiftKey)){
+      console.log('enter key');
       if(type === 'tags'){
         $scope.editPhoto(content);
         $('#tagsText').val('');
@@ -124,6 +125,7 @@ photoApp.controller('photoController', function($location, $scope, $rootScope, $
         event.preventDefault();
       }
       if(type === 'edit'){
+        console.log('rediting');
         toggle.edit = !toggle.edit;
         $scope.editComment(content, cid);
         $scope.add = !$scope.add;

@@ -373,6 +373,7 @@ div.photo .deletePhotoButton
   display: inline;
   font-size: 14px;
   background-color: inherit;
+  border-color:#ccc;
   border: none;
   margin-left: 2px;
   padding-left: 2px;
@@ -382,7 +383,14 @@ div.photo .deletePhotoButton
 
 #titleText {
   border-radius: 0px;
+  border-color:#ccc;
   height:22px;
+  margin-left: 1px;
+  max-width: 344px;
+}
+
+.titleAlerts {
+  margin-left: 40px;
 }
 
 .photographer {
@@ -460,6 +468,7 @@ div.photo .deletePhotoButton
   display: inline;
   font-size: 12px;
   background-color: inherit;
+  border-color:#ccc;
   border: none;
   padding:left: 4px;
   padding-right: 0px;
@@ -470,9 +479,10 @@ div.photo .deletePhotoButton
 #shareInput {
   position: relative;
   display: inline-block;
+  border-radius: 0px;
   margin-left: 10px;
   height: 22px;
-  width: 105px;
+  width: 126px;
 }
 
 .visibility {
@@ -482,7 +492,7 @@ div.photo .deletePhotoButton
   font-size: 14px;
 }
 
-.editCaption {
+/*.editCaption {
   font-size: 14px;
   border: none;
   background-color: inherit;
@@ -491,7 +501,7 @@ div.photo .deletePhotoButton
 #captionText {
   border-radius: 0px;
   height: 35px;
-}
+}*/
 
 .tagButton {
   background-color: inherit;
