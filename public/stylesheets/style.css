@@ -390,7 +390,7 @@ div.photo .deletePhotoButton
 }
 
 .titleAlerts {
-  margin-left: 40px;
+  margin-left: 24px;
 }
 
 .photographer {
@@ -616,6 +616,18 @@ tag {
 
 .date {
   color: #9d9d9d;
+}
+
+.commentEditField {
+  font-weight: normal;
+}
+
+.commentTextField {
+  margin-left: 2px;
+  margin-top: 5px;
+  width: 340px;
+  border-radius: 0px;
+  border-color: #ccc;
 }
 
 .addCommentBox {
