@@ -32,7 +32,7 @@ photoApp.controller('homeController', function($animate, apiService, feedData, $
   }
 
   //Configuration for image gallery
-  var galleryConfig = { rowHeight: window.screen.height * .25,  margins: 10 };
+  var galleryConfig = { rowHeight: window.screen.height * .27,  margins: 10 };
 
   var index = 21;
   var animateCount = 1;

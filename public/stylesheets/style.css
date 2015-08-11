@@ -380,6 +380,11 @@ div.photo .deletePhotoButton
   position: absolute;
 }
 
+#titleText {
+  border-radius: 0px;
+  height:22px;
+}
+
 .photographer {
   font-size: 14px;
 }
@@ -466,6 +471,7 @@ div.photo .deletePhotoButton
   position: relative;
   display: inline-block;
   margin-left: 10px;
+  height: 22px;
   width: 105px;
 }
 
@@ -474,6 +480,17 @@ div.photo .deletePhotoButton
   padding-left: 0px;
   margin-right: 0px;
   font-size: 14px;
+}
+
+.editCaption {
+  font-size: 14px;
+  border: none;
+  background-color: inherit;
+}
+
+#captionText {
+  border-radius: 0px;
+  height: 35px;
 }
 
 .tagButton {
@@ -592,13 +609,9 @@ tag {
 }
 
 .addCommentBox {
-  margin-top: 5px;
+  margin-top: 10px;
   margin-bottom: 5px;
   float: left;
-}
-
-#addComment {
-  height: 35px;
 }
 
 textarea {
