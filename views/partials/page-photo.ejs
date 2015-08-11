@@ -56,7 +56,7 @@
             <!-- Title/Edit Title -->
             <div ng-show="titleEdit">
               <form>
-                  <input id="titleText" class="form-control" ng-model="photo.title">
+                  <input ng-keypress="change($event, 'titleEdit', photo.title)" id="titleText" class="form-control" ng-model="photo.title">
               </form>
             </div>
 

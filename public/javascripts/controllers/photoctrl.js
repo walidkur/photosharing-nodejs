@@ -146,6 +146,10 @@ photoApp.controller('photoController', function($location, $scope, $rootScope, $
         $scope.add = !$scope.add;
         event.preventDefault();
       }
+      if(type === 'titleEdit'){
+        $scope.titleEdit = false;
+        $scope.editTitle();
+      }
     }
     if(event.keyCode == 32){
       if(type === 'tags'){
