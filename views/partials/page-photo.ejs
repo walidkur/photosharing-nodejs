@@ -56,14 +56,7 @@
             <!-- Title/Edit Title -->
             <div ng-show="titleEdit">
               <form>
-                <div class="input-group stylish-input-group">
                   <input id="titleText" class="form-control" ng-model="photo.title">
-                    <span class="input-group-addon">
-                      <button type="submit" id="titleButton" ng-click="titleEdit = !titleEdit; editTitle()">
-                        <span class="glyphicon glyphicon-share-alt"></span>
-                      </button>
-                    </span>
-                </div>
               </form>
             </div>
 
@@ -123,7 +116,32 @@
 
         <br>
 
-        <!--Photo Tags/Edit Tags-->
+          <!-- <div class="captionField" ng-show="!captionEdit">
+            <span class="photoCaption" style="display: inline">{{photo.caption}}</span>
+            <span ng-show="!caption.loading && $root.uid == photo.uid">
+              <button id="edit" class="editCaption" ng-click="captionEdit = !captionEdit">
+                <span class="glyphicon glyphicon-pencil"></span>
+              </button>
+            </span>
+            <span ng-show="caption.success && !caption.loading">
+              <span class="glyphicon glyphicon-ok-sign"></span>
+            </span>
+            <span ng-show="caption.failure && !caption.loading">
+              <span class="glyphicon glyphicon-exclamation-sign"></span>
+            </span>
+            <span ng-show="caption.loading">
+              <span class="glyphicon glyphicon-refresh spin"></span>
+            </span>
+          </div>
+
+          <!-- Title/Edit Title -->
+          <!-- <div ng-show="captionEdit">
+            <form>
+              <input id="captionText" class="form-control" ng-model="photo.caption">
+            </form>
+          </div> -->
+
+        <!-- Photo Tags/Edit Tags -->
         <div class="tagField">
           <button ng-click="meta = !meta;" class="tagButton">
             <span class="glyphicon glyphicon-tag"></span>
@@ -234,25 +252,28 @@
           </div>
         </div>
 
-        <div>
 
-          <!--This form allows user to hit enter to submit comment-->
-          <form>
-
-            <!--Displays the "Add comment" box-->
-            <div class="input-group stylish-input-group">
-              <textarea ng-keypress="change($event, 'comment', content)" id="commentText" class="form-control" ng-model="content" placeholder="Add comment"></textarea>
-                  <span class="input-group-addon">
-                    <button type="submit" id="commentButton" ng-click="addComment()">
-                      <span class="glyphicon glyphicon-plus"></span>
-                    </button>
-                  </span>
-            </div>
-
-          </form>
-
-        </div>
       </div>
+
+      <div class="addCommentBox">
+
+        <!--This form allows user to hit enter to submit comment-->
+        <form>
+
+          <!--Displays the "Add comment" box-->
+          <div class="input-group stylish-input-group">
+            <textarea ng-keypress="change($event, 'comment', content)" id="commentText" class="form-control" ng-model="content" placeholder="Add comment"></textarea>
+                <span class="input-group-addon">
+                  <button type="submit" id="commentButton" ng-click="addComment()">
+                    <span class="glyphicon glyphicon-plus"></span>
+                  </button>
+                </span>
+          </div>
+
+        </form>
+
+      </div>
+
     </div>
 
   </div>
