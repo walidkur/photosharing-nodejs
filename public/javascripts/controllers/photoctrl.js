@@ -145,6 +145,7 @@ photoApp.controller('photoController', function($location, $scope, $rootScope, $
         event.preventDefault();
       }
       if(type === 'edit'){
+        console.log('rediting');
         toggle.edit = !toggle.edit;
         $scope.editComment(content, cid);
         $scope.add = !$scope.add;
