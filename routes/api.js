@@ -1074,63 +1074,7 @@ router.delete('/comments', isAuth, function(req, res, next){
 });
 
 // upload a file
-router.post('/upload', isAuth, function(req, res, next) {
-  // return 412 if the necessary queries are not passed
-  if(isEmpty(req.query.visibility) || isEmpty(req.query.title)) {
-    return res.status(412).end();
-  }
-
-  // first check if a file of the same name exists in the user's library
-
-  // url to search for a file
-  var url = FILES_API + 'myuserlibrary/feed?includeCount=true&search=' + req.query.title;
-
-  var headers = { 'Authorization' : 'Bearer ' + req.user.accessToken };
-
-  var options = {
-    url: url,
-    headers: headers
-  };
-
-  request.get(options, function(error, response, body){
-    if(error){
-      console.log('Error occurred: ' + JSON.stringify(error));
-      return res.status(500).end();
-    }
-
-    // if the response is 403, destroy the session and send back a 403 to obtain
-    // a new token
-    if(response.statusCode === 403) {
-      res.clearCookie('user');
-      req.logout();
-      req.session.destroy();
-      return res.status(403).end();
-    }
-
-    // pass back a 401 if a 401 is received
-    if(response.statusCode === 401) {
-      return res.status(401).end();
-    }
-
-    parseString(body, function(err, result){
-      if(err){
-        console.log('Error occurred: ' + JSON.stringify(err));
-        return res.status(500).end();
-      }
-      var feed = result.feed;
-      var searchCount = parseInt(feed['opensearch:totalResults'][0]);
-
-      // continue if no results were found
-      if(searchCount == 0){
-        next();
-
-      // otherwise return 409
-      } else {
-        res.status(409).end();
-      }
-    })
-  })
-}, function(req, res, next){
+router.post('/upload', isAuth, function(req, res, next){
 
   // return 412 if the necessary queries are not passed
   if(isEmpty(req.query.visibility) || isEmpty(req.query.title)) {
@@ -1220,6 +1164,10 @@ router.post('/upload', isAuth, function(req, res, next) {
         if(error){
           console.log('Error occurred: ' + JSON.stringify(error));
           return res.status(500).end();
+        }
+
+        if(response.statusCode === 409){
+          return res.status(409).end();
         }
 
         // if the response is 403, destroy the session and send back a 403 to obtain
