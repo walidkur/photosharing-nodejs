@@ -1198,6 +1198,13 @@ router.post('/upload', isAuth, function(req, res, next){
 
           // extract the libary id of the photo
           photo.lid = lid;
+          if(req.query.caption) {
+            photo.url = req.body.url;
+            photo.id = req.body.id;
+            photo.caption = req.query.caption;
+            req.local.photo = photo;
+            return next();
+          }
           return res.send(photo);
         });
       }));
@@ -1209,6 +1216,84 @@ router.post('/upload', isAuth, function(req, res, next){
 
     // pipe the request to busboy
     req.pipe(busboy);
+  });
+}, function(req, res, next){
+
+  // url to return a nonce from the api
+  var url = FILES_API + 'nonce';
+
+  var headers = { 'Authorization' : 'Bearer ' + req.user.accessToken };
+
+  var options = {
+    url: url,
+    headers: headers
+  };
+
+  // perform request to get a nonce from the server
+  request.get(options, function(error, response, body) {
+    if (error) {
+      console.log('Error occurred: ' + JSON.stringify(error));
+      return res.status(500).end();
+    }
+
+    // if the response is 403, destroy the session and send back a 403 to obtain
+    // a new token
+    if (response.statusCode === 403) {
+      res.clearCookie('user');
+      req.logout();
+      req.session.destroy();
+      return res.status(403).end();
+    }
+
+    // pass back a 401 if a 401 is received
+    if (response.statusCode === 401) {
+      return res.status(401).end();
+    }
+
+    var nonce = body;
+
+    // url for updating a photo
+    var url = 'https://' + config.server.domain + '/files/basic/api/' + 'myuserlibrary/document/' + req.local.photo.pid + '/entry?';
+    var summary = req.local.photo.caption;
+
+    var body = updatePhotoFormat(req.local.photo.id, null, summary);
+
+    var headers = {
+      'Authorization': 'Bearer ' + req.user.accessToken,
+      'X-Update-Nonce': nonce,
+      'Content-Length': body.length,
+      'Content-Type': 'application/atom+xml'
+    };
+
+    var options = {
+      url: url,
+      headers: headers,
+      body: body
+    };
+
+    request.put(options, function (error, response, body) {
+      if (error) {
+        console.log('Error occurred: ' + JSON.stringify(error));
+        return res.status(500).end();
+      }
+
+      // if the response is 403, destroy the session and send back a 403 to obtain
+      // a new token
+      if (response.statusCode === 403) {
+        res.clearCookie('user');
+        req.logout();
+        req.session.destroy();
+        return res.status(403).end();
+      }
+
+      // pass back a 401 if a 401 is received
+      if (response.statusCode === 401) {
+        return res.status(401).end();
+      }
+
+      console.log('response', body);
+      res.status(200).end();
+    });
   });
 });
 
