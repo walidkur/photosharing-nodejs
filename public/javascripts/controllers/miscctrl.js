@@ -297,15 +297,15 @@ photoApp.controller('ModalInstanceController', function($window, $http, $scope, 
       url = url + '&share=' + shares.join();
     }
 
-    if($scope.appliedTags.length > 0){
+    if($scope.appliedTags){
       url = url + '&q=' + $scope.appliedTags.join();
     }
 
     url += '&title=' + $scope.title;
 
-    //if($scope.caption.length > 0){
-    //  url += '&summary=' + $scope.caption;
-    //}
+    if($scope.caption){
+      url += '&caption=' + $scope.caption;
+    }
 
     $http.post(url, fd, {
       headers: { 'Content-Type' : undefined, 'X-Content-Length' : $scope.files[0].size},
