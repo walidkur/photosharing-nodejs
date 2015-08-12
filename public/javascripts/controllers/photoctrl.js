@@ -27,6 +27,7 @@ photoApp.controller('photoController', function($location, $scope, $rootScope, $
   var editCount = 0;
   var shareCount = 0;
   var titleCount = 0;
+  var captionCount = 0;
 
   function scrollComments(){
     var $commentBox = $('#commentBox');
@@ -87,6 +88,13 @@ photoApp.controller('photoController', function($location, $scope, $rootScope, $
         shareCount = 0;
       } else {
         shareCount++;
+      }
+    } else if($scope.captionEdit && e.target != $('#captionText')[0]){
+      if(captionCount > 0){
+        $scope.captionEdit = false;
+        captionCount = 0;
+      } else {
+        captionCount++;
       }
     }
     $scope.$digest();
