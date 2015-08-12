@@ -277,7 +277,7 @@ photoApp.controller('photoController', function($location, $scope, $rootScope, $
 
     function deleteTagCallback(data, status){
       var index = $scope.photo.tags.indexOf(tag);
-      $scope.photo.tags.splice(index, index+1);
+      $scope.photo.tags.splice(index, 1);
     }
 
   };
