@@ -459,7 +459,7 @@ router.put('/photo', isAuth, function(req, res, next) {
 
     var title;
 
-    var summary = req.body.summary;
+    var summary = req.query.caption;
 
     // adding the title to the request. The extension of the image must be
     // included so that connections knows to treat it as a photo

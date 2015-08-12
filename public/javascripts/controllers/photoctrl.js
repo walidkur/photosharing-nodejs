@@ -151,6 +151,10 @@ photoApp.controller('photoController', function($location, $scope, $rootScope, $
         $scope.titleEdit = false;
         $scope.editTitle();
       }
+      if(type === 'caption'){
+        $scope.captionEdit = false;
+        $scope.editCaption();
+      }
     }
     if(event.keyCode == 32){
       if(type === 'tags'){
@@ -196,6 +200,19 @@ photoApp.controller('photoController', function($location, $scope, $rootScope, $
     }
 
   };
+
+  $scope.editCaption = function(){
+    console.log($scope.photo.summary);
+    apiService.editPhoto($scope.photo.editurl, $scope.photo.id, '?pid=' + $scope.photo.pid + '&caption=' + $scope.photo.summary, successCallback, errorCallback);
+
+    function successCallback(data, status){
+      console.log("Success!!!!");
+    }
+
+    function errorCallback(data, sttus){
+      cosole.log('Failrue !!!!')
+    }
+  }
 
   $scope.updateVisibility = function(visibility){
     $scope.visibility.loading = true;
