@@ -45,23 +45,6 @@ function updatePhotoFormat(id, title, summary){
   return '<?xml version="1.0" encoding="UTF-8"?><entry xmlns="http://www.w3.org/2005/Atom"><category term="document" label="document" scheme="tag:ibm.com,2006:td/type"/><id>' + id + '</id>' + internal + '</entry>';
 }
 
-function postPhotoFormat(title, summary){
-
-  var internal = '';
-
-  // if the title was passed, include a title change in the content
-  if(summary){
-    internal += '<summary type="text">' + summary + '</summary>';
-  }
-  if(title) {
-    internal += '<label xmlns="urn:ibm.com/td">' + title + '</label>';
-
-    // otherwise exclude it
-  }
-
-  return '<?xml version="1.0" encoding="UTF-8"?><entry xmlns="http://www.w3.org/2005/Atom"><category term="document" label="document" scheme="tag:ibm.com,2006:td/type"/>' + internal + '</entry>';
-}
-
 // check whether a session exists for the request
 function isAuth(req, res, next){
   if(!req.user) {
@@ -1202,6 +1185,7 @@ router.post('/upload', isAuth, function(req, res, next){
             photo.url = req.body.url;
             photo.id = req.body.id;
             photo.caption = req.query.caption;
+            req.local = {};
             req.local.photo = photo;
             return next();
           }
@@ -1291,8 +1275,7 @@ router.post('/upload', isAuth, function(req, res, next){
         return res.status(401).end();
       }
 
-      console.log('response', body);
-      res.status(200).end();
+      return res.send(req.local.photo);
     });
   });
 });
