@@ -98,7 +98,7 @@
               <span ng-show="$root.uid == photo.uid" class="dot">·</span>
 
               <span ng-show="$root.uid == photo.uid" class="share">
-                <a class="shareButton" ng-click="share = !share">
+                <a class="shareButton" style="color: gray" ng-click="share = !share">
                   Share<span id="editShare" ng-show="uid === photo.uid" class="glyphicon glyphicon-pencil"></span>
                 </a>
               </span>
@@ -116,30 +116,16 @@
 
         <br>
 
-          <div class="captionField" ng-show="!captionEdit">
-            <span class="photoCaption" style="display: inline">{{photo.caption}}</span>
-            <span ng-show="!caption.loading && $root.uid == photo.uid">
-              <button id="edit" class="editCaption" ng-click="captionEdit = !captionEdit">
-                <span class="glyphicon glyphicon-pencil"></span>
-              </button>
-            </span>
-            <span ng-show="caption.success && !caption.loading">
-              <span class="glyphicon glyphicon-ok-sign"></span>
-            </span>
-            <span ng-show="caption.failure && !caption.loading">
-              <span class="glyphicon glyphicon-exclamation-sign"></span>
-            </span>
-            <span ng-show="caption.loading">
-              <span class="glyphicon glyphicon-refresh spin"></span>
-            </span>
+          <div class="captionField">
+            <span class="photoCaption" style="display: inline-block">{{photo.summary}}</span>
           </div>
 
           <!-- Title/Edit Title -->
-          <div ng-show="captionEdit">
+          <!-- <div ng-show="captionEdit">
             <form>
-              <input id="captionText" class="form-control" ng-model="photo.caption">
+              <input id="captionText" class="form-control" ng-model="photo.summary">
             </form>
-          </div>
+          </div> -->
 
         <!-- Photo Tags/Edit Tags -->
         <div class="tagField">
