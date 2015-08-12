@@ -396,6 +396,7 @@ div.photo .deletePhotoButton
 
 .photographer {
   font-size: 14px;
+  color: gray;
 }
 
 .photographer a {
@@ -416,6 +417,7 @@ div.photo .deletePhotoButton
 .published {
   font-size: 14px;
   font-family: "Ariel", sans-serif;
+  color: gray;
 }
 
 .dot {
@@ -423,16 +425,19 @@ div.photo .deletePhotoButton
   padding-right: 5px;
   font-weight: bold;
   font-size: 14px;
+  color: gray;
 }
 
 .visibilityButton {
   font-size: 12px;
   background-color: inherit;
   border: none;
+  color: gray;
 }
 
 #editVisibility {
   display: none;
+  color: gray;
 }
 
 .visibilityButton:hover #editVisibility {
@@ -444,6 +449,7 @@ div.photo .deletePhotoButton
   padding-right: 0px;
   position: absolute;
   margin-left: 20px;
+  color: gray;
 }
 
 .shareButton {
@@ -452,6 +458,7 @@ div.photo .deletePhotoButton
   font-family: "Ariel", sans-serif;
   background-color: inherit;
   border: none;
+  color: gray;
 }
 
 #editShare {
@@ -459,13 +466,9 @@ div.photo .deletePhotoButton
   font-size: 12px;
   margin-right: 0px;
   padding-right: 0px;
+  color: gray;
 }
 
-.shareButton {
-  font-size: 14px;
-  background-color: inherit;
-  border: none;
-}
 
 .shareButton:hover #editShare {
   display: inline;
@@ -476,7 +479,7 @@ div.photo .deletePhotoButton
   padding:left: 4px;
   padding-right: 0px;
   margin-left: 2px;
-
+  color: gray;
 }
 
 #shareInput {
@@ -494,6 +497,13 @@ div.photo .deletePhotoButton
   padding-left: 0px;
   margin-right: 0px;
   font-size: 14px;
+  color: gray;
+}
+
+.captionField {
+  margin-right: 0px;
+  margin-top: 0px;
+  margin-bottom: 20px;
 }
 
 .editCaption {
