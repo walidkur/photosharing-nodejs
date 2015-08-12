@@ -496,7 +496,7 @@ div.photo .deletePhotoButton
   font-size: 14px;
 }
 
-/*.editCaption {
+.editCaption {
   font-size: 14px;
   border: none;
   background-color: inherit;
@@ -505,7 +505,7 @@ div.photo .deletePhotoButton
 #captionText {
   border-radius: 0px;
   height: 35px;
-}*/
+}
 
 .tagButton {
   background-color: inherit;
