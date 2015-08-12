@@ -382,6 +382,25 @@ div.photo .deletePhotoButton
   position: absolute;
 }
 
+.editCaption {
+  display: none;
+  font-size: 14px;
+  border: none;
+  background-color: inherit;
+}
+
+.captionField:hover .editCaption {
+  display: inline;
+  font-size: 14px;
+  background-color: inherit;
+  border-color:#ccc;
+  border: none;
+  margin-left: 2px;
+  padding-left: 2px;
+  padding-right: 0px;
+  position: absolute;
+}
+
 #titleText {
   border-radius: 0px;
   border-color:#ccc;

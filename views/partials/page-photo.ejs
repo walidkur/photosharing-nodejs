@@ -116,16 +116,22 @@
 
         <br>
 
-          <div class="captionField">
+          <div class="captionField" ng-show="!captionEdit">
             <span class="photoCaption" style="display: inline-block">{{photo.summary}}</span>
+            <span ng-show="$root.uid == photo.uid">
+              <a href="" class="editCaption" ng-click="captionEdit = !captionEdit">
+                <span class="glyphicon glyphicon-pencil"></span>
+              </a>
+            </span>
           </div>
 
+
           <!-- Title/Edit Title -->
-          <!-- <div ng-show="captionEdit">
+          <div ng-show="captionEdit">
             <form>
-              <input id="captionText" class="form-control" ng-model="photo.summary">
+              <input ng-keypress="change($event, 'caption')" id="captionText" class="form-control" ng-model="photo.summary">
             </form>
-          </div> -->
+          </div>
 
         <!-- Photo Tags/Edit Tags -->
         <div class="tagField">
