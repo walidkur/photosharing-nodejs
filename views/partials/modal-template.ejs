@@ -7,10 +7,10 @@
 
     <!-- Declares the form as a file-uploader -->
       <div style="position:relative;">
-        <button class='btn btn-primary' href='javascript:;'>
+        <span class='btn btn-file btn-primary'>
           Choose File...
-          <input type="file" file-input="files" style='position:absolute;z-index:2;top:0;left:0;filter: alpha(opacity=0);opacity:0;background-color:transparent;color:transparent;' name="file_source" size="40"  onchange='$("#upload-file-info").html($(this).val().replace(/^.*\\/, ""));'>
-        </button>
+          <input type="file" file-input="files" name="file_source" size="40"  onchange='$("#upload-file-info").html($(this).val().replace(/^.*\\/, ""));'>
+        </span>
         &nbsp;
         <span class='label label-info' id="upload-file-info"></span>
       </div>
