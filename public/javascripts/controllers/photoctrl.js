@@ -115,7 +115,11 @@ photoApp.controller('photoController', function($location, $scope, $rootScope, $
   $scope.change = function(event, type, content, cid, toggle){
     if(type === 'tags'){
       if(content.length > 20){
-        console.log('preventing');
+        event.preventDefault();
+      }
+    }
+    if(type === 'titleEdit'){
+      if(content.length > 30){
         event.preventDefault();
       }
     }

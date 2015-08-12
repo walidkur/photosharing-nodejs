@@ -21,7 +21,7 @@
       <!-- Creates ability to add a title for photos-->
       <div class="form-group">
         <label for="title">Title:</label>
-        <input ng-model="title" type="text" class="form-control" id="title">
+        <input ng-keypress="checkPress($event, 'title')" ng-model="title" type="text" class="form-control" id="title">
       </div>
 
       <!-- Creates ability to add a caption for photos-->

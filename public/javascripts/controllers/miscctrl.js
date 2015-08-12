@@ -184,6 +184,16 @@ photoApp.controller('ModalInstanceController', function($window, $http, $scope, 
   });
 
   $scope.checkPress = function(event, context){
+    if(context == 'tags' && $scope.tags){
+      if($scope.tags.length > 20) {
+        event.preventDefault();
+      }
+    }
+    if(context == 'title' && $scope.title){
+      if($scope.title.length > 38) {
+        event.preventDefault();
+      }
+    }
     if(event.keyCode == 10 || event.keyCode == 13){
       if(context == 'tags') {
         if ($scope.appliedTags.indexOf($scope.tags) == -1) {
@@ -293,9 +303,9 @@ photoApp.controller('ModalInstanceController', function($window, $http, $scope, 
 
     url += '&title=' + $scope.title;
 
-    if($scope.caption.length > 0){
-      url += '&summary=' + $scope.caption;
-    }
+    //if($scope.caption.length > 0){
+    //  url += '&summary=' + $scope.caption;
+    //}
 
     $http.post(url, fd, {
       headers: { 'Content-Type' : undefined, 'X-Content-Length' : $scope.files[0].size},
