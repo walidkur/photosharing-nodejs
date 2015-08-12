@@ -248,6 +248,7 @@ body{
 #clickedPhoto {
   margin-top: 20px;
   float: right;
+  max-height: 800px;
 }
 
 .photoName
@@ -418,8 +419,8 @@ div.photo .deletePhotoButton
 }
 
 .dot {
-  padding-left: 10px;
-  padding-right: 7px;
+  padding-left: 8px;
+  padding-right: 5px;
   font-weight: bold;
   font-size: 14px;
 }
@@ -456,6 +457,8 @@ div.photo .deletePhotoButton
 #editShare {
   display: none;
   font-size: 12px;
+  margin-right: 0px;
+  padding-right: 0px;
 }
 
 .shareButton {
@@ -483,6 +486,7 @@ div.photo .deletePhotoButton
   margin-left: 10px;
   height: 22px;
   width: 126px;
+  text-align: left;
 }
 
 .visibility {
