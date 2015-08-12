@@ -7,10 +7,10 @@
 
     <!-- Declares the form as a file-uploader -->
       <div style="position:relative;">
-        <button class='btn btn-primary' href='javascript:;'>
+        <span class='btn btn-file btn-primary'>
           Choose File...
-          <input type="file" file-input="files" style='position:absolute;z-index:2;top:0;left:0;filter: alpha(opacity=0);opacity:0;background-color:transparent;color:transparent;' name="file_source" size="40"  onchange='$("#upload-file-info").html($(this).val().replace(/^.*\\/, ""));'>
-        </button>
+          <input type="file" file-input="files" name="file_source" size="40"  onchange='$("#upload-file-info").html($(this).val().replace(/^.*\\/, ""));'>
+        </span>
         &nbsp;
         <span class='label label-info' id="upload-file-info"></span>
       </div>
@@ -21,7 +21,7 @@
       <!-- Creates ability to add a title for photos-->
       <div class="form-group">
         <label for="title">Title:</label>
-        <input ng-model="title" type="text" class="form-control" id="title">
+        <input ng-keypress="checkPress($event, 'title')" ng-model="title" type="text" class="form-control" id="title">
       </div>
 
       <!-- Creates ability to add a caption for photos-->
@@ -36,9 +36,9 @@
           <label for="tag">Tags:</label>
           <div style="position: relative">
             <tag id="uploadTag" class="tag" ng-repeat="tag in appliedTags">{{tag}}<button class="removeUploadTag" ng-click="removeTag($index)"><span class="glyphicon glyphicon-remove"></span></button></tag>
-              <input ng-keypress="checkPress($event)" id="tagField" ng-change="search($viewValue)" ng-model="tags" type="text" class="form-control">
+              <input ng-keypress="checkPress($event, 'tags')" id="tagField" ng-change="search($viewValue)" ng-model="tags" type="text" class="form-control">
               <ul ng-show="tagsList.length > 0" class="dropdown-menu" style="display: block">
-                <li ng-click="addTag($index)" ng-repeat="tag in tagsList"><a href=""><{{tag.name}}</a></li>
+                <li ng-click="addTag($index)" ng-repeat="tag in tagsList"><a href="">{{tag.name}}</a></li>
               </ul>
           </div>
         </div>
@@ -49,7 +49,7 @@
           <label for="person">Share with:</label>
           <div style="position: relative">
             <tag id="uploadTag" class="person" ng-repeat="person in appliedPeople">{{person.name}}<button class="removeUploadTag" ng-click="removePerson($index)"><span class="glyphicon glyphicon-remove"></span></button></tag>
-              <input id="peopleField" ng-change="peopleSearch($viewValue)" ng-model="people" type="text" class="form-control">
+              <input ng-keypress="checkPress($event, 'people')" id="peopleField" ng-change="peopleSearch($viewValue)" ng-model="people" type="text" class="form-control">
               <ul ng-show="peopleList.length > 0" class="dropdown-menu" style="display: block">
                 <li ng-click="addPerson($index)" ng-repeat="person in peopleList"><a ng-bind-html="person.name" href=""></a></li>
               </ul>
