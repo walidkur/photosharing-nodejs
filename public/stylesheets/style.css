@@ -404,7 +404,9 @@ div.photo .deletePhotoButton
 #titleText {
   border-radius: 0px;
   border-color:#ccc;
-  height:22px;
+  height: 22px;
+  margin-top: 0px;
+  margin-bottom: 0px;
   margin-left: 1px;
   max-width: 344px;
 }
@@ -521,7 +523,7 @@ div.photo .deletePhotoButton
 
 #captionText {
   border-radius: 0px;
-  height: 35px;
+  max-height: 80px;
 }
 
 .tagButton {
@@ -618,6 +620,14 @@ tag {
 
 .glyphicon-thumbs-up {
   margin-right: 5px;
+}
+
+.fullEditButton:focus {
+  text-decoration: none;
+}
+
+.fullEditButton:hover {
+  text-decoration: none;
 }
 
 #photoBar {
