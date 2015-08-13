@@ -477,7 +477,11 @@ div.photo .deletePhotoButton
   font-family: "Ariel", sans-serif;
   background-color: inherit;
   border: none;
-  color: gray;
+  text-decoration: none;
+}
+
+.shareButton:hover {
+  text-decoration: none;
 }
 
 #editShare {
@@ -485,7 +489,8 @@ div.photo .deletePhotoButton
   font-size: 12px;
   margin-right: 0px;
   padding-right: 0px;
-  color: gray;
+  text-decoration: none;
+
 }
 
 
@@ -498,7 +503,7 @@ div.photo .deletePhotoButton
   padding:left: 4px;
   padding-right: 0px;
   margin-left: 2px;
-  color: gray;
+  text-decoration: none;
 }
 
 #shareInput {
@@ -509,6 +514,7 @@ div.photo .deletePhotoButton
   height: 22px;
   width: 126px;
   text-align: left;
+  text-decoration: none;
 }
 
 .visibility {

@@ -94,21 +94,7 @@
                 </span>
               </span>
 
-              <!-- Creates dot divider-->
-              <span ng-show="$root.uid == photo.uid" class="dot">·</span>
 
-              <span ng-show="$root.uid == photo.uid" class="share">
-                <a class="shareButton" style="color: gray" ng-click="share = !share">
-                  Share<span id="editShare" ng-show="uid === photo.uid" class="glyphicon glyphicon-pencil"></span>
-                </a>
-              </span>
-              <span ng-show="share" style="position: relative">
-                <input ng-keypress="change($event, 'share', shareModel)" ng-change="peopleSearch()" id="shareInput" type="text" placeholder="Share with user" class="form-control" ng-model="shareModel">
-                <ul ng-show="peopleList.length > 0" class="dropdown-menu" style="display: block">
-                  <li ng-click="shareClick($index)" ng-repeat="person in peopleList"><a ng-bind-html="person.name" href=""></a></li>
-                </ul>
-
-              </span>
 
             </div>
           </div>
@@ -119,7 +105,7 @@
           <div class="captionField" ng-show="!captionEdit">
             <span class="photoCaption" style="display: inline-block">{{photo.summary}}</span>
             <span ng-show="$root.uid == photo.uid">
-              <a href="" class="editCaption" ng-click="captionEdit = !captionEdit">
+              <a href="" class="editCaption" ng-click="captionEdit = !captionEdit" style="color: #333333">
                 <span class="glyphicon glyphicon-pencil"></span>
               </a>
             </span>
@@ -129,7 +115,7 @@
           <!-- Title/Edit Title -->
           <div ng-show="captionEdit">
             <form>
-              <input ng-keypress="change($event, 'caption')" id="captionText" class="form-control" ng-model="photo.summary">
+              <textarea ng-keypress="change($event, 'caption')" id="captionText" class="form-control" ng-model="photo.summary"></textarea>
             </form>
           </div>
 
@@ -166,11 +152,27 @@
       <div id="photoBar">
         <a href="" ng-show="liked" class="likeButton" ng-click="like()"><span style="color: blue" class="glyphicon glyphicon-thumbs-up"></span></a>
         <a href="" ng-show="!liked" class="likeButton" ng-click="like()"><span style="color: #333333" class="glyphicon glyphicon-thumbs-up"></span></a>
-        <span ng-if="photo.likes !== 1">
+        <span style="color: #333333" ng-if="photo.likes !== 1">
           {{photo.likes}} people
         </span>
         <span ng-if="photo.likes === 1">
           {{photo.likes}} person
+        </span>
+
+        <!-- Creates dot divider-->
+        <span ng-show="$root.uid == photo.uid" style="color: #333333" class="dot">·</span>
+
+        <span ng-show="$root.uid == photo.uid" class="share">
+          <a href="" class="shareButton" style="color: #333333" ng-click="share = !share">
+            Share
+          </a>
+        </span>
+        <span ng-show="share" style="position: relative">
+          <input ng-keypress="change($event, 'share', shareModel)" ng-change="peopleSearch()" id="shareInput" type="text" placeholder="Share with user" class="form-control" ng-model="shareModel">
+          <ul ng-show="peopleList.length > 0" class="dropdown-menu" style="display: block">
+            <li ng-click="shareClick($index)" ng-repeat="person in peopleList"><a ng-bind-html="person.name" href=""></a></li>
+          </ul>
+
         </span>
       </div>
 
