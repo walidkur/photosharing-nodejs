@@ -170,6 +170,22 @@ photoApp.controller('ModalInstanceController', function($window, $http, $scope, 
   };
   $scope.loading = false;
 
+  $scope.$watch('files', function(newvalue, oldvalue){
+    $scope.previewFile();
+  })
+
+  $scope.previewFile = function(){
+    console.log('Previewing')
+    $("#upload-file-info").html($scope.files[0].name.replace(/^.*\\/, ""))
+    var reader = new FileReader();
+    reader.onload = function(){
+      $scope.preview = reader.result;
+      $scope.$apply();
+    }
+    reader.readAsDataURL($scope.files[0]);
+  }
+
+
   $('html').click(function(e){
     if($scope.tags.length > 0 && e.target != $('#tagField')[0]){
       if($scope.appliedTags.indexOf($scope.tags) == -1) {

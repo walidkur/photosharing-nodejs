@@ -9,10 +9,12 @@
       <div style="position:relative;">
         <span class='btn btn-file btn-primary'>
           Choose File...
-          <input type="file" file-input="files" name="file_source" size="40"  onchange='$("#upload-file-info").html($(this).val().replace(/^.*\\/, ""));'>
+          <input type="file" file-input="files" name="file_source" size="40">
         </span>
-        &nbsp;
         <span class='label label-info' id="upload-file-info"></span>
+        <span>
+          <img height="10%" ng-src="{{preview}}">
+        </span>
       </div>
       <div ng-show="message.length > 0" class="alert alert-danger">
           <p>{{message}}</p>
