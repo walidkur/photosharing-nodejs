@@ -152,7 +152,7 @@
         <!-- Creates dot divider-->
         <span ng-show="$root.uid == photo.uid" style="color: #333333" class="dot">·</span>
 
-        <span ng-show="$root.uid == photo.uid" class="share">
+        <span ng-show="!share" ng-show="$root.uid == photo.uid" class="share">
           <a href="" class="shareButton" style="color: #333333" ng-click="share = !share">
             Share
           </a>
