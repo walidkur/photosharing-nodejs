@@ -484,25 +484,7 @@ div.photo .deletePhotoButton
   text-decoration: none;
 }
 
-#editShare {
-  display: none;
-  font-size: 12px;
-  margin-right: 0px;
-  padding-right: 0px;
-  text-decoration: none;
-
-}
-
-
-.shareButton:hover #editShare {
-  display: inline;
-  font-size: 12px;
-  background-color: inherit;
-  border-color:#ccc;
-  border: none;
-  padding:left: 4px;
-  padding-right: 0px;
-  margin-left: 2px;
+.shareButton:focus {
   text-decoration: none;
 }
 
