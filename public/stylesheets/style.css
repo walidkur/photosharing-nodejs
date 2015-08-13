@@ -86,10 +86,7 @@ body {
 }
 
 .navbar-nav > li > a {
-  padding-top: 0px;
-  padding-right: 0px;
-  padding-left: 0px;
-  padding-bottom: 0px;
+  padding: 0;
 }
 
 .nav, .navbar-nav > li {
@@ -97,7 +94,7 @@ body {
 }
 
 .nav, .navbar-nav > li:last-child {
-  padding-right: 0px;
+  padding-right: 0;
 }
 
 .nav, .navbar-nav, .navbar-right > li {
@@ -155,13 +152,8 @@ body {
 }
 
 #uploadTag {
-  margin: 5px;
-  margin-left: 3px;
-  margin-right: 3px;
-  padding-right: 3px;
-  padding-left: 10px;
-  padding-top: 3px;
-  padding-bottom: 3px;
+  margin: 5px 3px;
+  padding: 3px 3px 3px 10px;
 }
 
 
@@ -209,7 +201,7 @@ body {
 }
 
 body{
-  padding: 0px;
+  padding: 0;
 }
 
 
@@ -266,8 +258,8 @@ body{
   font-size: 18px;
   font-weight: lighter;
   background: transparent;
-  bottom: 12;
-  left: 20;
+  bottom: 12px;
+  left: 20px;
   }
 
 .lineDivider{
@@ -278,9 +270,9 @@ body{
 .photo:hover .lineDivider{
     display: block;
     position:absolute;
-    right:100;
+    right:100px;
     height:30px;
-    bottom:10;
+    bottom:10px;
     border-left:1px solid white;
 }
 
@@ -300,8 +292,8 @@ div.photo:hover .deletePhotoButton
   font-size: 16px;
   font-weight: lighter;
   background: transparent;
-  bottom: 12;
-  right: 20;
+  bottom: 12px;
+  right: 20px;
   }
 
 div.photo .deletePhotoButton
@@ -311,7 +303,7 @@ div.photo .deletePhotoButton
   }
 
   .photoToolBar{
-    bottom: 0px;
+    bottom: 0;
     height: 75px;
     display: none;
     position: absolute;
@@ -322,7 +314,7 @@ div.photo .deletePhotoButton
     position: absolute;
     height: 50px;
     width: 100%;
-    bottom: 0px;
+    bottom: 0;
     display: block;
     background-color: black;
     opacity: 0.85;
@@ -374,11 +366,10 @@ div.photo .deletePhotoButton
   display: inline;
   font-size: 14px;
   background-color: inherit;
-  border-color:#ccc;
-  border: none;
+  border: none #ccc;
   margin-left: 2px;
   padding-left: 2px;
-  padding-right: 0px;
+  padding-right: 0;
   position: absolute;
 }
 
@@ -393,20 +384,19 @@ div.photo .deletePhotoButton
   display: inline;
   font-size: 14px;
   background-color: inherit;
-  border-color:#ccc;
-  border: none;
+  border: none #ccc;
   margin-left: 2px;
   padding-left: 2px;
-  padding-right: 0px;
+  padding-right: 0;
   position: absolute;
 }
 
 #titleText {
-  border-radius: 0px;
+  border-radius: 0;
   border-color:#ccc;
   height: 22px;
-  margin-top: 0px;
-  margin-bottom: 0px;
+  margin-top: 0;
+  margin-bottom: 0;
   margin-left: 1px;
   max-width: 344px;
 }
@@ -467,7 +457,7 @@ div.photo .deletePhotoButton
   background-color: inherit;
   border: none;
   padding-left: 2px;
-  padding-right: 0px;
+  padding-right: 0;
   position: absolute;
   margin-left: 20px;
   color: gray;
@@ -482,6 +472,26 @@ div.photo .deletePhotoButton
   text-decoration: none;
 }
 
+#editShare {
+  display: none;
+  font-size: 12px;
+  margin-right: 0;
+  padding-right: 0;
+  color: gray;
+}
+
+
+.shareButton:hover #editShare {
+  display: inline;
+  font-size: 12px;
+  background-color: inherit;
+  border: none #ccc;
+  padding-left: 4px;
+  padding-right: 0;
+  margin-left: 2px;
+  color: gray;
+}
+
 .shareButton:hover {
   text-decoration: none;
 }
@@ -493,7 +503,7 @@ div.photo .deletePhotoButton
 #shareInput {
   position: relative;
   display: inline-block;
-  border-radius: 0px;
+  border-radius: 0;
   margin-left: 10px;
   height: 22px;
   width: 126px;
@@ -503,15 +513,15 @@ div.photo .deletePhotoButton
 
 .visibility {
   font-family: "Ariel", sans-serif;
-  padding-left: 0px;
-  margin-right: 0px;
+  padding-left: 0;
+  margin-right: 0;
   font-size: 14px;
   color: gray;
 }
 
 .captionField {
-  margin-right: 0px;
-  margin-top: 0px;
+  margin-right: 0;
+  margin-top: 0;
   margin-bottom: 20px;
 }
 
@@ -522,7 +532,7 @@ div.photo .deletePhotoButton
 }
 
 #captionText {
-  border-radius: 0px;
+  border-radius: 0;
   max-height: 80px;
 }
 
@@ -544,8 +554,8 @@ div.photo .deletePhotoButton
 }
 
 .addTags {
-  padding: none;
-  margin: none;
+  padding: 0;
+  margin: 0;
 }
 
 tag {
@@ -559,16 +569,11 @@ tag {
 .tagSlot {
   background-color: black;
   color: white;
-  margin-left: 2px;
-  margin-right: 2px;
-  margin-top: 2px;
-  margin-bottom: 2px;
-  padding: 3px;
+  margin: 2px;
+  padding: 3px 0 3px 10px;
   border-radius: 2px;
   display: inline-block;
   max-width: 450px;
-  padding-left: 10px;
-  padding-right: 0px;
 }
 
 #tagName {
@@ -580,7 +585,7 @@ tag {
   display: inline-block;
   width: 85px;
   height:22px;
-  border-radius: 0px;
+  border-radius: 0;
 }
 
 .deleteTagButton {
@@ -588,8 +593,8 @@ tag {
     border: none;
     color: gray;
     background: transparent;
-    padding-left: 0px;
-    margin-left: 0px;
+    padding-left: 0;
+    margin-left: 0;
   }
 
 .removeUploadTag {
@@ -597,18 +602,18 @@ tag {
   border: none;
   color: gray;
   background: transparent;
-  padding: none;
-  margin: none;
+  padding: 0;
+  margin: 0;
 }
 
 .glyphicon-tag {
-  margin-right: 0px;
+  margin-right: 0;
 }
 
 /* Number of likes */
 #divider {
   width: 440px;
-  margin-top: 0px;
+  margin-top: 0;
   margin-bottom: 10px;
   float: left;
 }
@@ -634,7 +639,7 @@ tag {
   font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
   padding-bottom: 10px;
   margin-top: 10px;
-  margin-bottom: 0px;
+  margin-bottom: 0;
 }
 
 
@@ -669,7 +674,7 @@ tag {
   margin-left: 2px;
   margin-top: 5px;
   width: 340px;
-  border-radius: 0px;
+  border-radius: 0;
   border-color: #ccc;
 }
 
@@ -684,8 +689,8 @@ textarea {
 }
 
 #addButton {
-  padding-top: 0px;
-  padding-bottom: 0px;
+  padding-top: 0;
+  padding-bottom: 0;
 }
 
 /* Edit comments */
@@ -814,7 +819,7 @@ textarea {
 
 @keyframes navSelected {
   to {
-    box-shadow: 0px 2px 0px #004266;
+    box-shadow: 0 2px 0 #004266;
     }
   }
 

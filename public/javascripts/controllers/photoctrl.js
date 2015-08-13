@@ -26,8 +26,6 @@ photoApp.controller('photoController', function($location, $scope, $rootScope, $
   var tagsCount = 0;
   var editCount = 0;
   var shareCount = 0;
-  var titleCount = 0;
-  var captionCount = 0;
 
   function scrollComments(){
     var $commentBox = $('#commentBox');
@@ -73,13 +71,6 @@ photoApp.controller('photoController', function($location, $scope, $rootScope, $
       } else {
         editCount++;
       }
-    } else if($scope.titleEdit && e.target != $('#titleText')[0]) {
-      if(titleCount > 0) {
-        $scope.titleEdit = false;
-        titleCount = 0;
-      } else {
-        titleCount++;
-      }
     } else if($scope.share && e.target != $('#shareInput')[0]){
       if(shareCount > 0) {
         $scope.peopleList = [];
@@ -88,13 +79,6 @@ photoApp.controller('photoController', function($location, $scope, $rootScope, $
         shareCount = 0;
       } else {
         shareCount++;
-      }
-    } else if($scope.captionEdit && e.target != $('#captionText')[0]){
-      if(captionCount > 0){
-        $scope.captionEdit = false;
-        captionCount = 0;
-      } else {
-        captionCount++;
       }
     }
     $scope.$digest();
