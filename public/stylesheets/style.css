@@ -394,7 +394,9 @@ div.photo .deletePhotoButton
 #titleText {
   border-radius: 0;
   border-color:#ccc;
-  height:22px;
+  height: 22px;
+  margin-top: 0;
+  margin-bottom: 0;
   margin-left: 1px;
   max-width: 344px;
 }
@@ -467,7 +469,7 @@ div.photo .deletePhotoButton
   font-family: "Ariel", sans-serif;
   background-color: inherit;
   border: none;
-  color: gray;
+  text-decoration: none;
 }
 
 #editShare {
@@ -490,6 +492,14 @@ div.photo .deletePhotoButton
   color: gray;
 }
 
+.shareButton:hover {
+  text-decoration: none;
+}
+
+.shareButton:focus {
+  text-decoration: none;
+}
+
 #shareInput {
   position: relative;
   display: inline-block;
@@ -498,6 +508,7 @@ div.photo .deletePhotoButton
   height: 22px;
   width: 126px;
   text-align: left;
+  text-decoration: none;
 }
 
 .visibility {
@@ -522,7 +533,7 @@ div.photo .deletePhotoButton
 
 #captionText {
   border-radius: 0;
-  height: 35px;
+  max-height: 80px;
 }
 
 .tagButton {
@@ -614,6 +625,14 @@ tag {
 
 .glyphicon-thumbs-up {
   margin-right: 5px;
+}
+
+.fullEditButton:focus {
+  text-decoration: none;
+}
+
+.fullEditButton:hover {
+  text-decoration: none;
 }
 
 #photoBar {
