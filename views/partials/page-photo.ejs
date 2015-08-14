@@ -49,9 +49,9 @@
             </div>
 
             <!-- Title/Edit Title -->
-            <div ng-show="edit">
+            <div ng-if="edit">
               <form>
-                  <input ng-keypress="change($event, 'titleEdit', photo.title)" id="titleText" class="form-control" ng-model="photo.title">
+                  <input ng-keypress="change($event, 'titleEdit', photo.title)" id="titleText" class="form-control" ng-model="photoTitleEdit">
               </form>
             </div>
 
@@ -88,11 +88,11 @@
                 <!-- Creates ability to set photo to public or private visibility -->
                 <span class="form-group" ng-show="edit">
                   <label>
-                    <input type="radio" ng-model="photo.visibility" value="private">
+                    <input type="radio" ng-model="photoVisibilityEdit" value="private">
                     Private
                   </label>
                   <label>
-                    <input type="radio" ng-model="photo.visibility" value="public">
+                    <input type="radio" ng-model="photoVisibilityEdit" value="public">
                     Public
                   </label>
                 </span>
@@ -113,7 +113,7 @@
           <!-- Title/Edit Title -->
           <div ng-show="edit">
             <form>
-              <textarea ng-keypress="change($event, 'caption')" id="captionText" class="form-control" ng-model="photo.summary"></textarea>
+              <textarea ng-keypress="change($event, 'caption')" id="captionText" class="form-control" ng-model="photoSummaryEdit"></textarea>
             </form>
           </div>
 
