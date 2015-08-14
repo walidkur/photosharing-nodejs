@@ -35,7 +35,7 @@
           <div class="media-body">
             <div style="height: 6px;"> </div>
             <!-- Title/Edit Title -->
-            <div class="titleDiv" ng-show="!titleEdit">
+            <div class="titleDiv" ng-show="!edit">
               <span class="photoTitle" style="display: inline">{{photo.title}}</span>
               <span class="titleAlerts" ng-show="title.success && !title.loading">
                 <span class="glyphicon glyphicon-ok-sign"></span>
@@ -49,7 +49,7 @@
             </div>
 
             <!-- Title/Edit Title -->
-            <div ng-show="titleEdit">
+            <div ng-show="edit">
               <form>
                   <input ng-keypress="change($event, 'titleEdit', photo.title)" id="titleText" class="form-control" ng-model="photo.title">
               </form>
@@ -65,29 +65,37 @@
               <span class="dot">·</span>
 
               <!-- Visibility Dropdown -->
-              <span class="dropdown">
-                <button ng-mouseover="visibility.hover = true" ng-mouseleave="visibility.hover = false" class="visibilityButton dropdown-toggle" data-toggle="dropdown">
-
+              <span ng-show="!edit">
                   <span class="visibility" ng-show="photo.visibility == 'public'">Public</span>
                   <span class="visibility" ng-show="photo.visibility == 'private'">Private</span>
-                  <span id="editVisibility" ng-show="uid === photo.uid" class="glyphicon glyphicon-pencil"></span>
-                </button>
-                <ul ng-if="uid === photo.uid" class="dropdown-menu">
-                  <li><a ng-click="updateVisibility('public')" href="">Public</a></li>
-                  <li><a ng-click="updateVisibility('private')" href="">Private</a></li>
-                </ul>
-                <span ng-show="visibility.success && !visibility.loading">
-                  <span class="glyphicon glyphicon-ok-sign"></span>
+
+
+
+                  <span ng-show="visibility.success && !visibility.loading">
+                    <span class="glyphicon glyphicon-ok-sign"></span>
+                  </span>
+
+                  <span ng-show="visibility.failure && !visibility.loading">
+                    <span class="glyphicon glyphicon-exclamation-sign"></span>
+                  </span>
+
+                  <span ng-show="visibility.loading">
+                    <span class="glyphicon glyphicon-refresh spin"></span>
+                  </span>
                 </span>
 
-                <span ng-show="visibility.failure && !visibility.loading">
-                  <span class="glyphicon glyphicon-exclamation-sign"></span>
-                </span>
 
-                <span ng-show="visibility.loading">
-                  <span class="glyphicon glyphicon-refresh spin"></span>
+                <!-- Creates ability to set photo to public or private visibility -->
+                <span class="form-group" ng-show="edit">
+                  <label>
+                    <input type="radio" ng-model="photo.visibility" value="private">
+                    Private
+                  </label>
+                  <label>
+                    <input type="radio" ng-model="photo.visibility" value="public">
+                    Public
+                  </label>
                 </span>
-              </span>
 
 
 
@@ -97,13 +105,13 @@
 
         <br>
 
-          <div class="captionField" ng-show="!captionEdit">
+          <div class="captionField" ng-show="!edit">
             <span class="photoCaption" style="display: inline-block">{{photo.summary}}</span>
           </div>
 
 
           <!-- Title/Edit Title -->
-          <div ng-show="captionEdit">
+          <div ng-show="edit">
             <form>
               <textarea ng-keypress="change($event, 'caption')" id="captionText" class="form-control" ng-model="photo.summary"></textarea>
             </form>
@@ -152,7 +160,7 @@
         <!-- Creates dot divider-->
         <span ng-show="$root.uid == photo.uid" style="color: #333333" class="dot">·</span>
 
-        <span ng-show="!share" ng-show="$root.uid == photo.uid" class="share">
+        <span ng-show="$root.uid == photo.uid" class="share">
           <a href="" class="shareButton" style="color: #333333" ng-click="share = !share">
             Share
           </a>
@@ -169,7 +177,10 @@
         <span ng-show="$root.uid == photo.uid" style="color: #333333" class="dot">·</span>
 
         <span ng-show="$root.uid == photo.uid">
-          <a class="fullEditButton" ng-click="captionEdit = !captionEdit; titleEdit = !titleEdit;" href="" style="color: #333333">Edit</a>
+          <a class="fullEditButton" ng-show="!edit" ng-click="edit = !edit" href="" style="color: #333333">Edit</a>
+          <a class="doneEditButton" href="" ng-show="edit" style="color: #333333">Done Editing</a>
+          <span ng-show="edit" style="color: #333333" class="dot">·</span>
+          <a class="cancelEditButton" href="" ng-show="edit" ng-click="edit = !edit" style="color: #333333">Cancel Editing</a>
         </span>
       </div>
 
