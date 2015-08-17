@@ -5,7 +5,7 @@
 
   <div class="row">
 
-    <!--Photo with Delete Button overlayed -->
+    <!--Photo with photoName and deletePhotoButton overlayed -->
     <div class="col-lg-8 col-md-12 col-sm-12 col-xs-12">
       <div class="photo">
         <img class="img-responsive" id="clickedPhoto" ng-src="{{photo.link}}"/>
@@ -31,9 +31,11 @@
             </a>
           </div>
 
-
           <div class="media-body">
+
+            <!-- Necessary spacing -->
             <div style="height: 6px;"> </div>
+
             <!-- Title/Edit Title -->
             <div class="titleDiv" ng-show="!edit">
               <span class="photoTitle" style="display: inline">{{photo.title}}</span>
@@ -48,13 +50,12 @@
               </span>
             </div>
 
-            <!-- Title/Edit Title -->
+            <!-- Edit Title -->
             <div ng-if="edit">
               <form>
                   <input ng-keypress="change($event, 'titleEdit', photo.title)" id="titleText" class="form-control" ng-model="photoTitleEdit">
               </form>
             </div>
-
 
             <!-- Uploader Username -->
             <span class="photographer"><a href="#/profile/{{photo.uid}}">{{photo.photographer}}</a></span>
@@ -64,26 +65,20 @@
               <span class="published">{{photo.published}}</span>
               <span class="dot">·</span>
 
-              <!-- Visibility Dropdown -->
+              <!-- Displays visibility feature of photo -->
               <span ng-show="!edit">
                   <span class="visibility" ng-show="photo.visibility == 'public'">Public</span>
                   <span class="visibility" ng-show="photo.visibility == 'private'">Private</span>
-
-
-
                   <span ng-show="visibility.success && !visibility.loading">
                     <span class="glyphicon glyphicon-ok-sign"></span>
                   </span>
-
                   <span ng-show="visibility.failure && !visibility.loading">
                     <span class="glyphicon glyphicon-exclamation-sign"></span>
                   </span>
-
                   <span ng-show="visibility.loading">
                     <span class="glyphicon glyphicon-refresh spin"></span>
                   </span>
                 </span>
-
 
                 <!-- Creates ability to set photo to public or private visibility -->
                 <span class="form-group" ng-show="edit">
@@ -97,38 +92,39 @@
                   </label>
                 </span>
 
-
-
             </div>
           </div>
         </div>
 
+        <!-- Necessary spacing-->
         <br>
 
-          <div class="captionField" ng-show="!edit">
-            <span class="photoCaption" style="display: inline-block">{{photo.summary}}</span>
-          </div>
+        <!-- Displays caption field-->
+        <div class="captionField" ng-show="!edit">
+          <span class="photoCaption" style="display: inline-block">{{photo.summary}}</span>
+        </div>
 
+        <!-- Edit caption -->
+        <div ng-show="edit">
+          <form>
+            <textarea ng-keypress="change($event, 'caption')" id="captionText" class="form-control" ng-model="photoSummaryEdit"></textarea>
+          </form>
+        </div>
 
-          <!-- Title/Edit Title -->
-          <div ng-show="edit">
-            <form>
-              <textarea ng-keypress="change($event, 'caption')" id="captionText" class="form-control" ng-model="photoSummaryEdit"></textarea>
-            </form>
-          </div>
-
-        <!-- Photo Tags/Edit Tags -->
+        <!-- Photo tags -->
         <div class="tagField">
           <a href="" ng-click="meta = !meta;" class="tagButton">
             <span class="glyphicon glyphicon-tag"></span>
           </a>
-
           <span ng-if="photo.tags.length !== 0">
             <div class="tagSlot" ng-repeat="tag in photo.tags">
               <a id="tagName" href="/#/public?tags={{tag}}">{{tag}}</a>
-              <button ng-click="deleteTag(tag);" ng-show="$root.uid == photo.uid" class="deleteTagButton">
+
+              <!-- Allows user to delete tags -->
+              <a href="" ng-click="deleteTag(tag);" ng-show="$root.uid == photo.uid" class="deleteTagButton">
                 <span class="glyphicon glyphicon-remove"></span>
-              </button>
+              </a>
+
             </div>
           </span>
 

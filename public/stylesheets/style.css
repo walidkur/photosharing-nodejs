@@ -600,8 +600,19 @@ tag {
     color: gray;
     background: transparent;
     padding-left: 0;
+    padding-right: 8px;
     margin-left: 0;
   }
+
+.deleteTagButton:focus {
+  color: gray;
+  text-decoration: none;
+}
+
+.deletetagButton:hover {
+  color: gray;
+  text-decoration: none;
+}
 
 .removeUploadTag {
   font-size: 10px;
