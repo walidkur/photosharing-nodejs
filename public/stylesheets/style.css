@@ -9,7 +9,7 @@
   visibility: hidden;
 }
 
-.col-center{
+.col-center {
   margin:0 auto;
 }
 
@@ -47,21 +47,11 @@ body {
   color: white;
 }
 
-
-
 /*------- Styling for navbar -------*/
 
 #navStyle {
   background-color: white;
   color: #004266;
-}
-
-#navStyle > a:hover{
-  /*color: white;*/
-}
-
-#navStyle > a:focus{
-  /*color: white;*/
 }
 
 #navStyle > .navbar-collapse > ul > li > a {
@@ -108,7 +98,6 @@ body {
   font-weight: bold;
 }
 
-
 /* Styling for profile picture */
 .profile {
   font-weight: bold;
@@ -120,7 +109,6 @@ body {
   margin-right: 5px;
 }
 
-
 /* Styling for upload button and modal */
 .glyphicon-upload {
   margin-right: 5px;
@@ -131,24 +119,24 @@ body {
 }
 
 .btn-file {
-    position: relative;
-    overflow: hidden;
+  position: relative;
+  overflow: hidden;
 }
 
 .btn-file input[type=file] {
-    position: absolute;
-    top: 0;
-    right: 0;
-    min-width: 100%;
-    min-height: 100%;
-    font-size: 100px;
-    text-align: right;
-    filter: alpha(opacity=0);
-    opacity: 0;
-    outline: none;
-    background: white;
-    cursor: inherit;
-    display: block;
+  position: absolute;
+  top: 0;
+  right: 0;
+  min-width: 100%;
+  min-height: 100%;
+  font-size: 100px;
+  text-align: right;
+  filter: alpha(opacity=0);
+  opacity: 0;
+  outline: none;
+  background: white;
+  cursor: inherit;
+  display: block;
 }
 
 #uploadTag {
@@ -161,18 +149,15 @@ body {
   padding-bottom: 3px;
 }
 
-
 /* Styling for public button */
 .glyphicon-globe {
   margin-right: 5px;
 }
 
-
 /* Styling for private button */
 .glyphicon-envelope {
   margin-right: 5px;
 }
-
 
 /* Styling for search bar */
 .stylish-input-group .input-group-addon {
@@ -190,25 +175,20 @@ body {
   background:transparent;
 }
 
-
 /* Styling for logout button */
 .logOut {
   margin-right: 5px;
 }
 
-
-
 /*----- Styling for page-profile.ejs ------*/
 .container-full {
   width: 100%;
   margin: 0 auto;
-
 }
 
-body{
+body {
   padding: 0;
 }
-
 
 #profileImg {
   margin-top: 60px;
@@ -219,9 +199,8 @@ body{
   font-family: "Ariel", sans-serif;
 }
 
-.user{
+.user {
   font-size: 32px;
-
 }
 
 .profileContainer {
@@ -233,13 +212,11 @@ body{
 }
 
 
-
 /*------- Styling for page-photo.ejs -------*/
 
 #photoPage {
   margin-top: 40px;
 }
-
 
 /* Photo column */
 #clickedPhoto {
@@ -248,14 +225,12 @@ body{
   max-height: 800px;
 }
 
-.photoName
-  {
+.photoName {
   position:absolute;
   display:none;
   }
 
-.photo:hover .photoName
-  {
+.photo:hover .photoName {
   display: block;
   border: none;
   color: white;
@@ -265,31 +240,27 @@ body{
   background: transparent;
   bottom: 12px;
   left: 20px;
-  }
-
-.lineDivider{
-    display: none;
 }
 
-
-.photo:hover .lineDivider{
-    display: block;
-    position:absolute;
-    right:100px;
-    height:30px;
-    bottom:10px;
-    border-left:1px solid white;
+.lineDivider {
+  display: none;
 }
 
+.photo:hover .lineDivider {
+  display: block;
+  position:absolute;
+  right:100px;
+  height:30px;
+  bottom:10px;
+  border-left:1px solid white;
+}
 
-div.photo
-  {
+div.photo {
   position: relative;
   float:right;
-  }
+}
 
-div.photo:hover .deletePhotoButton
-  {
+div.photo:hover .deletePhotoButton {
   display: block;
   border: none;
   color: white;
@@ -299,43 +270,31 @@ div.photo:hover .deletePhotoButton
   background: transparent;
   bottom: 12px;
   right: 20px;
-  }
+}
 
-div.photo .deletePhotoButton
-  {
+div.photo .deletePhotoButton {
   position:absolute;
   display:none;
-  }
+}
 
-  .photoToolBar{
-    bottom: 0;
-    height: 75px;
-    display: none;
-    position: absolute;
-    width: 100%;
-  }
+.photoToolBar {
+  bottom: 0;
+  height: 75px;
+  display: none;
+  position: absolute;
+  width: 100%;
+}
 
-  .photo:hover .photoToolBar{
-    position: absolute;
-    height: 50px;
-    width: 100%;
-    bottom: 0;
-    display: block;
-    background-color: black;
-    opacity: 0.85;
-    color: white;
-  }
-
-
-
-/*
-.deletePhotoButton {
+.photo:hover .photoToolBar {
+  position: absolute;
+  height: 50px;
+  width: 100%;
+  bottom: 0;
+  display: block;
+  background-color: black;
+  opacity: 0.85;
   color: white;
-  border: none;
-  font-size: 24px;
-  bottom: 20px;
-  left: 10px;
-}*/
+}
 
 /* Comment column */
 #commentColumn {
@@ -358,6 +317,7 @@ div.photo .deletePhotoButton
   font-family: "Ariel", sans-serif;
   font-weight: bold;
   font-size: 16px;
+  display: inline;
 }
 
 .editTitle {
@@ -376,6 +336,10 @@ div.photo .deletePhotoButton
   padding-left: 2px;
   padding-right: 0;
   position: absolute;
+}
+
+.photoCaption {
+  display: inline-block;
 }
 
 .editCaption {
@@ -441,6 +405,10 @@ div.photo .deletePhotoButton
   padding-right: 5px;
   font-weight: bold;
   font-size: 14px;
+  color: #333333;
+}
+
+#grayDot {
   color: gray;
 }
 
@@ -471,6 +439,7 @@ div.photo .deletePhotoButton
 .shareButton {
   padding-left: 2px;
   font-size: 14px;
+  color: #333333;
   font-family: "Ariel", sans-serif;
   background-color: inherit;
   border: none;
@@ -484,7 +453,6 @@ div.photo .deletePhotoButton
   padding-right: 0;
   color: gray;
 }
-
 
 .shareButton:hover #editShare {
   display: inline;
@@ -640,6 +608,19 @@ tag {
 
 .glyphicon-thumbs-up {
   margin-right: 5px;
+  color: #333333;
+}
+
+#blueThumb {
+  color: blue;
+}
+
+.people {
+  color: #333333;
+}
+
+.fullEditButton {
+  color: #333333;
 }
 
 .fullEditButton:focus {
@@ -650,12 +631,20 @@ tag {
   text-decoration: none;
 }
 
+.cancelEditButton {
+  color: #333333;
+}
+
 .cancelEditButton:focus {
   text-decoration: none;
 }
 
 .cancelEditButton:hover {
   text-decoration: none;
+}
+
+.doneEditButton {
+  color: #333333;
 }
 
 .doneEditButton:focus {
@@ -672,7 +661,6 @@ tag {
   margin-top: 10px;
   margin-bottom: 0;
 }
-
 
 /* Comments */
 .media-heading {
@@ -722,6 +710,10 @@ textarea {
 #addButton {
   padding-top: 0;
   padding-bottom: 0;
+}
+
+.commentButton {
+  color: gray;
 }
 
 /* Edit comments */
@@ -788,7 +780,7 @@ textarea {
   margin-left: 5px;
 }
 
-.successfulEdit{
+.successfulEdit {
   background: inherit;
   border: none;
 }
@@ -798,7 +790,7 @@ textarea {
   color: #4F8A10;
 }
 
-.failedEdit{
+.failedEdit {
   background: inherit;
   border: none;
 }
@@ -808,17 +800,9 @@ textarea {
   color: #D8000C;
 }
 
-.tooltip.bottom .tooltip-arrow {
-  top: 0;
-  left: 50%;
-  margin-left: -5px;
-  border-bottom-color: #000000; /* black */
-  border-width: 0 5px 5px;
-}
-
 /* ANIMATIONS
 ============================================================================= */
-.spin{
+.spin {
      -webkit-transform-origin: 50% 58%;
      transform-origin:50% 58%;
      -ms-transform-origin:50% 58%; /* IE 9 */
