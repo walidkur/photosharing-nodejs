@@ -113,9 +113,6 @@
 
         <!-- Photo tags -->
         <div class="tagField">
-          <a href="" ng-click="meta = !meta;" class="tagButton">
-            <span class="glyphicon glyphicon-tag"></span>
-          </a>
           <span ng-if="photo.tags.length !== 0">
             <div class="tagSlot" ng-repeat="tag in photo.tags">
               <a id="tagName" href="/#/public?tags={{tag}}">{{tag}}</a>
@@ -128,13 +125,9 @@
             </div>
           </span>
 
-          <span ng-if="photo.tags.length === 0">
-            <div class="tagSlot">Add tags</div>
-          </span>
-
           <!--Edit Tags-->
           <span ng-if="uid == photo.uid" class="addTags">
-              <span ng-show="meta" style="position: relative">
+              <span style="position: relative">
                 <input ng-keypress="change($event, 'tags', newMeta)" id="tagsText" type="text" placeholder="Add tags" ng-model="newMeta" class="form-control">
               </span>
           </span>
