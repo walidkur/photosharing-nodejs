@@ -734,6 +734,15 @@ textarea {
   font-size: 10px;
 }
 
+/* Delete comments */
+.cancelEditComment {
+  background-color: inherit;
+  border: none;
+  margin-right: 10px;
+  margin-left: 5px;
+  font-size: 10px;
+}
+
 #uploadSpinner {
   display: none;
 }
