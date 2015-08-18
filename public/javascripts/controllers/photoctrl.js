@@ -7,6 +7,14 @@ photoApp.controller('photoController', function($location, $scope, $rootScope, $
     $(btn).css("box-shadow", "");
   });
 
+  $scope.$watch('edit', function(newValue, oldValue){
+    if(newValue){
+      $scope.photoTitleEdit = $scope.photo.title;
+      $scope.photoSummaryEdit = $scope.photo.summary;
+      $scope.photoVisibilityEdit = $scope.photo.visibility;
+    }
+  })
+
   $rootScope.loading = false;
   $scope.add = true;
   $scope.pageClass = 'page-photo';
