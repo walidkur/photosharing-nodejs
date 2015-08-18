@@ -467,10 +467,12 @@ div.photo .deletePhotoButton {
 
 .shareButton:hover {
   text-decoration: none;
+  color: #333333;
 }
 
 .shareButton:focus {
   text-decoration: none;
+  color: #333333;
 }
 
 #shareInput {
@@ -625,10 +627,12 @@ tag {
 
 .fullEditButton:focus {
   text-decoration: none;
+  color: #333333;
 }
 
 .fullEditButton:hover {
   text-decoration: none;
+  color: #333333;
 }
 
 .cancelEditButton {
@@ -636,11 +640,13 @@ tag {
 }
 
 .cancelEditButton:focus {
-  text-decoration: none;
+  text-decoration: none
+  color: #333333;
 }
 
 .cancelEditButton:hover {
   text-decoration: none;
+  color: #333333;
 }
 
 .doneEditButton {
@@ -649,10 +655,12 @@ tag {
 
 .doneEditButton:focus {
   text-decoration: none;
+  color: #333333;
 }
 
 .doneEditButton:hover {
   text-decoration: none;
+  color: #333333;
 }
 
 #photoBar {
