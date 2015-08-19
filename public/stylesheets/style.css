@@ -96,6 +96,11 @@ body {
   padding-bottom: 11px;
   padding-left: 10px;
   font-weight: bold;
+  font-size: 16px;
+}
+
+.navButton {
+  margin-right: 3px;
 }
 
 /* Styling for profile picture */
@@ -106,11 +111,6 @@ body {
 }
 
 #profilePic {
-  margin-right: 5px;
-}
-
-/* Styling for upload button and modal */
-.glyphicon-upload {
   margin-right: 5px;
 }
 
@@ -147,16 +147,6 @@ body {
   padding-left: 10px;
   padding-top: 3px;
   padding-bottom: 3px;
-}
-
-/* Styling for public button */
-.glyphicon-globe {
-  margin-right: 5px;
-}
-
-/* Styling for private button */
-.glyphicon-envelope {
-  margin-right: 5px;
 }
 
 /* Styling for search bar */
@@ -299,6 +289,8 @@ div.photo .deletePhotoButton {
 /* Comment column */
 #commentColumn {
   margin-top: 20px;
+  margin-right: 5px;
+  margin-left: 5px;
   max-height: 750px !important;
   max-width: 450px;
 }
@@ -615,6 +607,10 @@ tag {
 
 #blueThumb {
   color: blue;
+}
+
+#whiteThumb {
+  color: white;
 }
 
 .people {
