@@ -199,7 +199,7 @@
               </a>
 
               <!-- Displays the delete, edit, and cancel comment buttons -->
-              <span ng-show="!comment.loading && $root.uid == comment.uid && comment.hovered" style="float: right">
+              <span ng-show="!comment.loading && $root.uid == comment.uid" style="float: right">
                 <a href="" id="edit" class="editCommentButton" ng-show="!comment.edit" ng-click="comment.edit = !comment.edit; $parent.add = !$parent.add; log($parent.add);">
                   <span class="glyphicon glyphicon-edit commentButton"></span>
                 </a>
