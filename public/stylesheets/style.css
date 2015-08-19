@@ -299,6 +299,8 @@ div.photo .deletePhotoButton {
 /* Comment column */
 #commentColumn {
   margin-top: 20px;
+  margin-right: 5px;
+  margin-left: 5px;
   max-height: 750px !important;
   max-width: 450px;
 }
@@ -615,6 +617,10 @@ tag {
 
 #blueThumb {
   color: blue;
+}
+
+#whiteThumb {
+  color: white;
 }
 
 .people {
