@@ -15,6 +15,30 @@ photoApp.controller('photoController', function($location, $scope, $rootScope, $
     }
   })
 
+  $scope.editMeta = function(){
+    apiService.editPhoto($scope.photo.editurl, $scope.photo.id,
+    '?pid=' + $scope.photo.pid +
+    '&title=' + $scope.photoTitleEdit +
+    '&caption=' + $scope.photoSummaryEdit +
+    '&visibility=' + $scope.photoVisibilityEdit,
+    successCallback, errorCallback);
+
+    function successCallback(data, status){
+      console.log("Finished!");
+      $scope.edit = !$scope.edit;
+      $scope.photo.title = $scope.photoTitleEdit;
+      $scope.photo.summary = $scope.photoSummaryEdit;
+      $scope.photo.visibility = $scope.photoVisibilityEdit;
+    }
+
+    function errorCallback(data, status){
+      console.log("Failed to Edit");
+      if(status === 401 || status === 403){
+        $window.location.assign('/');
+      }
+    }
+  }
+
   $rootScope.loading = false;
   $scope.add = true;
   $scope.pageClass = 'page-photo';

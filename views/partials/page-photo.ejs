@@ -34,26 +34,17 @@
           <div class="media-body">
 
             <!-- Add necessary spacing -->
-            <div style="height: 6px;"> </div>
+            <div style="height: 6px;"></div>
 
             <!-- Title/Edit Title -->
             <div class="titleDiv" ng-show="!edit">
               <span class="photoTitle">{{photo.title}}</span>
-              <span class="titleAlerts" ng-show="title.success && !title.loading">
-                <span class="glyphicon glyphicon-ok-sign"></span>
-              </span>
-              <span class="titleAlerts" ng-show="title.failure && !title.loading">
-                <span class="glyphicon glyphicon-exclamation-sign"></span>
-              </span>
-              <span class="titleAlerts" ng-show="title.loading">
-                <span class="glyphicon glyphicon-refresh spin"></span>
-              </span>
             </div>
 
             <!-- Edit Title -->
-            <div ng-if="edit">
+            <div ng-show="edit">
               <form>
-                  <input ng-keypress="change($event, 'titleEdit', photo.title)" id="titleText" class="form-control" ng-model="photoTitleEdit">
+                  <input id="titleText" class="form-control" ng-model="photoTitleEdit">
               </form>
             </div>
 
@@ -69,16 +60,7 @@
               <span ng-show="!edit">
                   <span class="visibility" ng-show="photo.visibility == 'public'">Public</span>
                   <span class="visibility" ng-show="photo.visibility == 'private'">Private</span>
-                  <span ng-show="visibility.success && !visibility.loading">
-                    <span class="glyphicon glyphicon-ok-sign"></span>
-                  </span>
-                  <span ng-show="visibility.failure && !visibility.loading">
-                    <span class="glyphicon glyphicon-exclamation-sign"></span>
-                  </span>
-                  <span ng-show="visibility.loading">
-                    <span class="glyphicon glyphicon-refresh spin"></span>
-                  </span>
-                </span>
+              </span>
 
                 <!-- Creates ability to set photo to public or private visibility -->
                 <span class="form-group" ng-show="edit">
@@ -107,7 +89,7 @@
         <!-- Edit caption -->
         <div ng-show="edit">
           <form>
-            <textarea ng-keypress="change($event, 'caption')" id="captionText" class="form-control" ng-model="photoSummaryEdit"></textarea>
+            <textarea id="captionText" class="form-control" ng-model="photoSummaryEdit"></textarea>
           </form>
         </div>
 
@@ -169,7 +151,7 @@
         <!-- Allows user to edit meta data-->
         <span ng-show="$root.uid == photo.uid">
           <a class="fullEditButton" ng-show="!edit" ng-click="edit = !edit" href="">Edit</a>
-          <a class="doneEditButton" href="" ng-show="edit">Done Editing</a>
+          <a class="doneEditButton" ng-click="editMeta();" href="" ng-show="edit">Done Editing</a>
           <span ng-show="edit" class="dot">·</span>
           <a class="cancelEditButton" href="" ng-show="edit" ng-click="edit = !edit">Cancel Editing</a>
         </span>
