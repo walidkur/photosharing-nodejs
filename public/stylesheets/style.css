@@ -215,12 +215,8 @@ body {
   max-height: 800px;
 }
 
-.photoName {
-  position:absolute;
-  display:none;
-  }
-
-.photo:hover .photoName {
+.photo > .photoName {
+  position: absolute;
   display: block;
   border: none;
   color: white;
@@ -232,11 +228,7 @@ body {
   left: 20px;
 }
 
-.lineDivider {
-  display: none;
-}
-
-.photo:hover .lineDivider {
+.photo > .lineDivider {
   display: block;
   position:absolute;
   right:100px;
@@ -245,13 +237,14 @@ body {
   border-left:1px solid white;
 }
 
-div.photo {
+.photo {
   position: relative;
   float:right;
 }
 
-div.photo:hover .deletePhotoButton {
+.photo > .deletePhotoButton {
   display: block;
+  position: absolute;
   border: none;
   color: white;
   font-family: "Ariel", sans-serif;
@@ -262,20 +255,7 @@ div.photo:hover .deletePhotoButton {
   right: 20px;
 }
 
-div.photo .deletePhotoButton {
-  position:absolute;
-  display:none;
-}
-
-.photoToolBar {
-  bottom: 0;
-  height: 75px;
-  display: none;
-  position: absolute;
-  width: 100%;
-}
-
-.photo:hover .photoToolBar {
+.photo > .photoToolBar {
   position: absolute;
   height: 50px;
   width: 100%;
