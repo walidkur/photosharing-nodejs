@@ -1,4 +1,9 @@
 /*------- Styling for landing.ejs-------*/
+
+.col-center {
+  margin:0 auto;
+}
+
 #loginButton {
   text-align: center  !important;
 }
@@ -9,16 +14,6 @@
   visibility: hidden;
 }
 
-.col-center {
-  margin:0 auto;
-}
-
-body {
-  padding: 50px;
-  font: 14px "Lucida Grande", Helvetica, Arial, sans-serif;
-}
-
-/* Styling for home gallery */
 .gallery .caption {
   background-color: black;
 }
@@ -84,7 +79,7 @@ body {
 }
 
 .nav, .navbar-nav > li:last-child {
-  padding-right: 0;
+  padding-right: 0px;
 }
 
 .nav, .navbar-nav, .navbar-right > li {
@@ -103,7 +98,7 @@ body {
   margin-right: 3px;
 }
 
-/* Styling for profile picture */
+/* Styling for profile button */
 .profile {
   font-weight: bold;
   padding-top: 6px;
@@ -112,7 +107,46 @@ body {
 
 #profilePic {
   margin-right: 5px;
+  height: 40px;
 }
+
+.profileButton {
+  font-weight: bold;
+  font-size: 16px;
+}
+
+/* Styling for search bar */
+.stylish-input-group .input-group-addon {
+  background: white !important;
+}
+
+.stylish-input-group .form-control {
+  border-right:0;
+  box-shadow:0 0 0;
+  border-color:#ccc;
+}
+
+.stylish-input-group button {
+  border: 0;
+  background:transparent;
+}
+
+/* Styling for logout button */
+.logOut {
+  margin-right: 5px;
+}
+
+/* Styling for hamburger */
+.hamburger {
+  border-radius: 2px;
+  border: 1px solid #004266;
+}
+
+.icon-bar {
+  background-color: #004266;
+}
+
+/*------- Styling for modal-template.ejs -------*/
 
 .modal-body .btn-primary {
   margin-bottom: 20px;
@@ -149,36 +183,18 @@ body {
   padding-bottom: 3px;
 }
 
-
-/* Styling for search bar */
-.stylish-input-group .input-group-addon {
-  background: white !important;
-}
-
-.stylish-input-group .form-control {
-  border-right:0;
-  box-shadow:0 0 0;
-  border-color:#ccc;
-}
-
-.stylish-input-group button {
-  border: 0;
-  background:transparent;
-}
-
-/* Styling for logout button */
-.logOut {
-  margin-right: 5px;
+.removeUploadTag {
+  font-size: 10px;
+  border: none;
+  color: gray;
+  background: transparent;
 }
 
 /*----- Styling for page-profile.ejs ------*/
+
 .container-full {
   width: 100%;
   margin: 0 auto;
-}
-
-body {
-  padding: 0;
 }
 
 #profileImg {
@@ -195,13 +211,12 @@ body {
 }
 
 .profileContainer {
-  color: #070B19;
+  color: #004266;
 }
 
 #searchText {
   width: 100px;
 }
-
 
 /*------- Styling for page-photo.ejs -------*/
 
@@ -209,12 +224,21 @@ body {
   margin-top: 40px;
 }
 
-/* Photo column */
+#photoColumn {
+  padding: 0px;
+}
+
 #clickedPhoto {
   margin-top: 20px;
   max-height: 800px;
 }
 
+.photo {
+  position: relative;
+  float:right;
+}
+
+/* Styling for photo's toolbar*/
 .photo > .photoName {
   position: absolute;
   display: block;
@@ -235,11 +259,6 @@ body {
   height:30px;
   bottom:10px;
   border-left:1px solid white;
-}
-
-.photo {
-  position: relative;
-  float:right;
 }
 
 .photo > .deletePhotoButton {
@@ -275,16 +294,21 @@ body {
   max-width: 450px;
 }
 
-/* Photo information */
 .photoInfo {
   min-height: 20%   !important;
   overflow: auto;
 }
 
-#userPhoto {
-  border-radius: 30px   !important;
+.spacing {
+  height: 6px;
 }
 
+.userPhoto {
+  border-radius: 30px   !important;
+  height: 60px;
+}
+
+/* Styling for photo's title */
 .photoTitle {
   font-family: "Ariel", sans-serif;
   font-weight: bold;
@@ -310,29 +334,6 @@ body {
   position: absolute;
 }
 
-.photoCaption {
-  margin-left: 3px;
-  display: inline-block;
-}
-
-.editCaption {
-  display: none;
-  font-size: 14px;
-  border: none;
-  background-color: inherit;
-}
-
-.captionField:hover .editCaption {
-  display: inline;
-  font-size: 14px;
-  background-color: inherit;
-  border: none #ccc;
-  margin-left: 2px;
-  padding-left: 2px;
-  padding-right: 0;
-  position: absolute;
-}
-
 #titleText {
   border-radius: 0;
   border-color:#ccc;
@@ -347,14 +348,10 @@ body {
   margin-left: 24px;
 }
 
+/* Styling for photo's photographer */
 .photographer {
   font-size: 14px;
   color: gray;
-}
-
-.photographer a {
-  color: inherit;
-  text-decoration: inherit;
 }
 
 .photographer a:hover {
@@ -362,9 +359,9 @@ body {
   color: inherit;
 }
 
-.media-body a {
-  color: inherit;
-  text-decoration: inherit;
+/* Styling for photo's date and visibility */
+.dateAndVisibillity {
+  position: absolute;
 }
 
 .published {
@@ -382,6 +379,14 @@ body {
 }
 
 #grayDot {
+  color: gray;
+}
+
+.visibility {
+  font-family: "Ariel", sans-serif;
+  padding-left: 0;
+  margin-right: 0;
+  font-size: 14px;
   color: gray;
 }
 
@@ -409,6 +414,126 @@ body {
   color: gray;
 }
 
+/* Styling for photo's caption */
+.captionField {
+  margin-right: 0;
+  margin-top: 0;
+  margin-bottom: 20px;
+}
+
+.photoCaption {
+  margin-left: 3px;
+  display: inline-block;
+}
+
+.editCaption {
+  display: inline;
+  font-size: 14px;
+  background-color: inherit;
+  border: #ccc;
+  margin-left: 2px;
+  padding-left: 2px;
+  padding-right: 0;
+  position: absolute;
+}
+
+#captionText {
+  border-radius: 0;
+  max-height: 80px;
+  margin-top: 10px;
+}
+
+/* Styling for photo's tag(s) */
+tag {
+  text-align: center;
+  background-color: black;
+  color: white;
+  display: inline-block;
+  border-radius: 2px;
+}
+
+.tagSpan {
+  position: relative;
+}
+
+#tagName {
+  color: white;
+  padding-right: 10px;
+}
+
+.tagSlot {
+  background-color: black;
+  margin: 2px;
+  height: 24px;
+  padding: 3px 0 3px 10px;
+  border-radius: 2px;
+  display: inline-block;
+  max-width: 450px;
+}
+
+.deleteTagButton {
+    font-size: 10px;
+    border: none;
+    color: gray;
+    background: transparent;
+    padding-left: 0;
+    padding-right: 8px;
+    margin-left: 0;
+  }
+
+.deleteTagButton:focus {
+  color: gray;
+  text-decoration: none;
+}
+
+.deletetagButton:hover {
+  color: gray;
+  text-decoration: none;
+}
+
+.addTags {
+  padding: 0;
+  margin: 0;
+}
+
+#tagsText {
+  display: inline-block;
+  width: 85px;
+  height:24px;
+  border-radius: 0;
+  margin-top: 1px;
+}
+
+#photoBar {
+  padding-bottom: 10px;
+  margin-top: 20px;
+  margin-bottom: 0px;
+}
+
+/* Styling for photo's likes */
+.likeButton {
+  background-color: inherit;
+  border: none;
+}
+
+.glyphicon-thumbs-up {
+  margin-right: 5px;
+  color: #333333;
+}
+
+#blueThumb {
+  color: blue;
+}
+
+#whiteThumb {
+  color: white;
+}
+
+.like {
+  color: #333333;
+}
+
+/* Styling for photo's shareability */
 .shareButton {
   padding-left: 2px;
   font-size: 14px;
@@ -448,6 +573,10 @@ body {
   color: #333333;
 }
 
+.shareSpan {
+  position: relative;
+}
+
 #shareInput {
   position: relative;
   display: inline-block;
@@ -459,145 +588,11 @@ body {
   text-decoration: none;
 }
 
-.visibility {
-  font-family: "Ariel", sans-serif;
-  padding-left: 0;
-  margin-right: 0;
-  font-size: 14px;
-  color: gray;
+.sharePeople {
+  display: block;
 }
 
-.captionField {
-  margin-right: 0;
-  margin-top: 0;
-  margin-bottom: 20px;
-}
-
-.editCaption {
-  font-size: 14px;
-  border: none;
-  background-color: inherit;
-}
-
-#captionText {
-  border-radius: 0;
-  max-height: 80px;
-  margin-top: 10px;
-}
-
-.tagButton {
-  background-color: inherit;
-  border: none;
-  color: #333333;
-  text-decoration: none;
-}
-
-.tagButton:focus {
-  color: #333333;
-  text-decoration: none;
-}
-
-.tagButton:hover {
-  color: #333333;
-  text-decoration: none;
-}
-
-.addTags {
-  padding: 0;
-  margin: 0;
-}
-
-tag {
-  text-align: center;
-  background-color: black;
-  color: white;
-  display: inline-block;
-  border-radius: 2px;
-}
-
-.tagSlot {
-  background-color: black;
-  color: white;
-  margin: 2px;
-  padding: 3px 0 3px 10px;
-  border-radius: 2px;
-  display: inline-block;
-  max-width: 450px;
-}
-
-#tagName {
-  color: white;
-  padding-right: 10px;
-}
-
-#tagsText {
-  display: inline-block;
-  width: 85px;
-  height:22px;
-  border-radius: 0;
-}
-
-.deleteTagButton {
-    font-size: 10px;
-    border: none;
-    color: gray;
-    background: transparent;
-    padding-left: 0;
-    padding-right: 8px;
-    margin-left: 0;
-  }
-
-.deleteTagButton:focus {
-  color: gray;
-  text-decoration: none;
-}
-
-.deletetagButton:hover {
-  color: gray;
-  text-decoration: none;
-}
-
-.removeUploadTag {
-  font-size: 10px;
-  border: none;
-  color: gray;
-  background: transparent;
-}
-
-.glyphicon-tag {
-  margin-right: 0;
-}
-
-/* Number of likes */
-#divider {
-  width: 440px;
-  margin-top: 0;
-  margin-bottom: 10px;
-  float: left;
-}
-
-.likeButton {
-  background-color: inherit;
-  border: none;
-}
-
-.glyphicon-thumbs-up {
-  margin-right: 5px;
-  color: #333333;
-}
-
-#blueThumb {
-  color: blue;
-}
-
-#whiteThumb {
-  color: white;
-}
-
-.people {
-  color: #333333;
-}
-
+/* Styling for photo's meta data edits */
 .fullEditButton {
   color: #333333;
 }
@@ -640,17 +635,22 @@ tag {
   color: #333333;
 }
 
-#photoBar {
-  font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
-  padding-bottom: 10px;
-  margin-top: 20px;
-  margin-bottom: 0;
+#divider {
+  width: 440px;
+  margin-top: 0;
+  margin-bottom: 10px;
+  float: left;
 }
 
-/* Comments */
+/* Styling for photo's comments */
 .media-heading {
   font-size: 14px;
   font-weight: bold;
+}
+
+.media-body a {
+  color: inherit;
+  text-decoration: inherit;
 }
 
 #commentBox {
@@ -660,18 +660,40 @@ tag {
   max-height: 50%;
 }
 
-.editButton {
-  background-color: inherit;
-  border: none;
-  margin-left: 50px;
-}
-
 .date {
   color: #9d9d9d;
 }
 
-.commentEditField {
-  font-weight: normal;
+.commentButtons {
+  color: gray;
+  float: right;
+}
+
+.editCommentButton {
+  background-color: inherit;
+  border: none;
+  margin-right: 5px;
+  font-size: 10px;
+}
+
+.deleteCommentButton {
+  background-color: inherit;
+  border: none;
+  margin-right: 10px;
+  margin-left: 5px;
+  font-size: 10px;
+}
+
+.cancelEditComment {
+  background-color: inherit;
+  border: none;
+  margin-right: 10px;
+  margin-left: 5px;
+  font-size: 10px;
+}
+
+textarea {
+  resize: none;
 }
 
 .commentTextField {
@@ -682,53 +704,19 @@ tag {
   border-color: #ccc;
 }
 
+.commentEditField {
+  font-weight: normal;
+}
+
 .addCommentBox {
   margin-top: 10px;
   margin-bottom: 5px;
   float: left;
 }
 
-textarea {
-  resize: none;
-}
-
 #addButton {
   padding-top: 0;
   padding-bottom: 0;
-}
-
-.commentButton {
-  color: gray;
-}
-
-/* Edit comments */
-.editCommentButton {
-  background-color: inherit;
-  border: none;
-  margin-right: 5px;
-  font-size: 10px;
-}
-
-#commentText {
-  height:35px;
-}
-
-/* Delete comments */
-.deleteCommentButton {
-  background-color: inherit;
-  border: none;
-  margin-right: 10px;
-  margin-left: 5px;
-  font-size: 10px;
-}
-
-/* Delete comments */
-.cancelEditComment {
-  background-color: inherit;
-  border: none;
-  margin-right: 10px;
-  margin-left: 5px;
-  font-size: 10px;
 }
 
 #uploadSpinner {
@@ -737,28 +725,6 @@ textarea {
 
 #uploadText {
   display: inline;
-}
-
-.brandPageNode {
-  font-size: 86px;
-  font-weight: bolder;
-}
-
-.brandPagePhoto {
-  font-size: 86px;
-}
-
-.brandPageLogo {
-  font-size: 72px;
-  color:white;
-}
-
-.photoNode {
-  margin-top: 25%;
-}
-
-.brandPhoto {
-  margin-top: 8%;
 }
 
 .glyphicon-refresh {
@@ -785,8 +751,47 @@ textarea {
   color: #D8000C;
 }
 
+/*------- Styling for loading on index.ejs-------*/
+
+/* Styling for transition */
+.transition {
+  opacity:1.0;
+  width:100%;
+  height:100%;
+  z-index:10;
+  top:0;
+  left:0;
+  position: fixed;
+}
+
+.brandPagePhoto {
+  font-size: 80px;
+  color: white;
+}
+
+.brandPageNode {
+  font-size: 80px;
+  color: white;
+  font-weight: bolder;
+}
+
+.brandPageLogo {
+  font-size: 68px;
+  color:white;
+}
+
+.photoNode {
+  margin-top: 25%;
+}
+
+.brandPhoto {
+  margin-top: 8%;
+}
+
+
 /* ANIMATIONS
 ============================================================================= */
+
 .spin {
      -webkit-transform-origin: 50% 58%;
      transform-origin:50% 58%;
@@ -824,7 +829,7 @@ textarea {
   }
 }
 
-/* navbar state animation */
+/* Navbar state animation */
 
 @keyframes navSelected {
   to {
@@ -832,7 +837,7 @@ textarea {
     }
   }
 
-/* leaving animations ----------------------------------------- */
+/* leaving animations ---------------------------------------- */
 
 @keyframes slideOutLeft {
   to      { transform: translateX(-100%); }
@@ -847,20 +852,20 @@ textarea {
 }
 
 
-/* entering animations --------------------------------------- */
+/* Entering animations --------------------------------------- */
 
 @keyframes slideInLeft {
   from    { transform:translateX(-100%); }
   to      { transform: translateX(0); }
 }
 
-/* slide in from the right */
+/* Slide in from the right */
 @keyframes slideInRight {
   from    { transform:translateX(100%); }
   to      { transform: translateX(0); }
 }
 
-/* slide in from the bottom */
+/* Slide in from the bottom */
 @keyframes slideInDown {
   from    { transform:translateY(-100%); }
   to      { transform: translateY(0); }
@@ -869,16 +874,6 @@ textarea {
 .ng-enter       { z-index: 8888; }
 .ng-leave       { z-index: 9999; }
 
-/* page specific animations ------------------------ */
-
 /* loading -------------------------- */
 .loadingSplash                     { animation:slideInLeft 0.5s both ease-in;}
 .loadingSplash.ng-hide             { animation:slideOutRight 0.5s both ease-in;}
-
-/* about ------------------------ */
-/*.page-photo.ng-enter        { animation:slideInDown 0.5s both ease-in; transition-delay: 0.5s; }
-.page-photo.ng-leave        { animation:slideOutDown 0.5s both ease-in; }*/
-
-/* contact ---------------------- */
-/*.page-profile.ng-enter      { animation:slideInRight 0.5s both ease-in; transition-delay: 0.5s; }
-.page-profile.ng-leave      { animation:slideOutLeft 0.5s both ease-in; }*/

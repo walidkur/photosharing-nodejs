@@ -1,23 +1,20 @@
 <!-- Displays the profile info of the user -->
 <div class="container-full">
-
-  <div class="row profileContainer" id="profile" align="middle">
+  <div class="row profileContainer" align="middle">
     <div class="col-md-12">
-      <img class="img-responsive img-circle" ng-src={{profile.img}} id="profileImg"></img>
+      <img id="profileImg" class="img-responsive img-circle" ng-src={{profile.img}}></img>
       <div class="profileInfo">
         <h1 class="user">{{profile.name}}</h1>
       </div>
     </div>
   </div>
-
 </div>
 
 <!-- Displays user's uploaded photos with infinite-scroll -->
 <div class="container-fluid">
-
   <div class="row">
     <div class="col-md-12">
-      <div infinite-scroll="loadMore()" infinite-scroll-distance="1" class="gallery hidden" id="profileGallery">
+      <div id="profileGallery" class="gallery hidden" infinite-scroll="loadMore()" infinite-scroll-distance="1">
         <div ng-repeat="img in data">
           <a href="#/photo/{{img.lid}}/{{img.pid}}">
             <img ng-src="{{img.thumbnail}}"/>
@@ -29,6 +26,5 @@
         </div>
       </div>
     </div>
-
   </div>
 </div>
