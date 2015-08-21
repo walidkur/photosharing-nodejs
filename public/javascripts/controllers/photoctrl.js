@@ -16,9 +16,14 @@ photoApp.controller('photoController', function($location, $scope, $rootScope, $
   })
 
   $scope.editMeta = function(){
+    var titleEdit = '';
+    if($scope.photoTitleEdit !== $scope.photo.title){
+      titleEdit = '&title=' + $scope.photoTitleEdit;
+    }
+    
     apiService.editPhoto($scope.photo.editurl, $scope.photo.id,
     '?pid=' + $scope.photo.pid +
-    '&title=' + $scope.photoTitleEdit +
+    titleEdit +
     '&caption=' + $scope.photoSummaryEdit +
     '&visibility=' + $scope.photoVisibilityEdit,
     successCallback, errorCallback);
