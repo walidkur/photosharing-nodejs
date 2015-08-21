@@ -66,8 +66,42 @@ photoApp.controller('photoController', function($location, $scope, $rootScope, $
     }, 2000);
   }
 
+  // Readjusts the display layout for photo-pg at different widths
   angular.element(document).ready(function() {
     scrollComments();
+
+    if (window.innerWidth >= 800 && window.innerWidth <= 1200) {
+      $("#allContent").css("margin-left", "15%");
+      $("#allContent").css("margin-right", "15%");
+    }
+
+    if (window.innerWidth > 1200 && window.innerWidth <= 1415) {
+      $("#allContent").css("margin-left", "25%");
+    }
+
+    if (window.innerWidth < 800 || window.innerWidth > 1415) {
+      $("#allContent").css("margin-left", "0px");
+      $("#allContent").css("margin-right", "0px");
+    }
+
+  });
+
+  // Readjusts the display layout for photo-pg at different widths
+  $(window).resize(function () {
+    if (window.innerWidth >= 800 && window.innerWidth <= 1200) {
+      $("#allContent").css("margin-left", "15%");
+      $("#allContent").css("margin-right", "15%");
+    }
+
+    if (window.innerWidth > 1200 && window.innerWidth <= 1415) {
+      $("#allContent").css("margin-left", "25%");
+    }
+
+    if (window.innerWidth < 800 || window.innerWidth > 1415) {
+      $("#allContent").css("margin-left", "0px");
+      $("#allContent").css("margin-right", "0px");
+    }
+
   });
 
   function commentEditOpen(){
