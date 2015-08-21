@@ -16,14 +16,9 @@ photoApp.controller('photoController', function($location, $scope, $rootScope, $
   })
 
   $scope.editMeta = function(){
-    var titleEdit = '';
-    if($scope.photoTitleEdit !== $scope.photo.title){
-      titleEdit = '&title=' + $scope.photoTitleEdit;
-    }
-    
     apiService.editPhoto($scope.photo.editurl, $scope.photo.id,
     '?pid=' + $scope.photo.pid +
-    titleEdit +
+    '&title=' + $scope.photoTitleEdit +
     '&caption=' + $scope.photoSummaryEdit +
     '&visibility=' + $scope.photoVisibilityEdit,
     successCallback, errorCallback);
@@ -80,11 +75,12 @@ photoApp.controller('photoController', function($location, $scope, $rootScope, $
       $("#allContent").css("margin-right", "15%");
     }
 
-    if (window.innerWidth > 1200 && window.innerWidth <= 1415) {
+    if (window.innerWidth > 1200 && window.innerWidth <= 1430) {
       $("#allContent").css("margin-left", "25%");
+      $("#allContent").css("margin-right", "0%");
     }
 
-    if (window.innerWidth < 800 || window.innerWidth > 1415) {
+    if (window.innerWidth < 800 || window.innerWidth > 1430) {
       $("#allContent").css("margin-left", "0px");
       $("#allContent").css("margin-right", "0px");
     }
@@ -98,11 +94,12 @@ photoApp.controller('photoController', function($location, $scope, $rootScope, $
       $("#allContent").css("margin-right", "15%");
     }
 
-    if (window.innerWidth > 1200 && window.innerWidth <= 1415) {
+    if (window.innerWidth > 1200 && window.innerWidth <= 1430) {
       $("#allContent").css("margin-left", "25%");
+      $("#allContent").css("margin-right", "0%");
     }
 
-    if (window.innerWidth < 800 || window.innerWidth > 1415) {
+    if (window.innerWidth < 800 || window.innerWidth > 1430) {
       $("#allContent").css("margin-left", "0px");
       $("#allContent").css("margin-right", "0px");
     }
