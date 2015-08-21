@@ -3,10 +3,10 @@
   <!-- Add necessary spacing -->
   <br>
 
-  <div class="row">
+  <div id="allContent" class="row">
 
     <!--Photo with photoName and deletePhotoButton overlayed -->
-    <div class="col-lg-8 col-md-12 col-sm-12 col-xs-12">
+    <div class="col-lg-8 col-md-12 col-sm-12 col-xs-12" style="padding: 0px;">
       <div class="photo">
         <img class="img-responsive" id="clickedPhoto" ng-src="{{photo.link}}"/>
         <div ng-if="uid == photo.uid" class="photoToolBar"></div>
