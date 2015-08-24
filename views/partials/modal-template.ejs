@@ -1,7 +1,8 @@
-<!-- Upload header/title -->
+<!-- Upload modal's header -->
   <div class="modal-header">
     <h3 class="modal-title">Upload your photos!</h3>
   </div>
+
   <!-- The modal's body -->
   <div class="modal-body">
 
@@ -11,57 +12,60 @@
           Choose File...
           <input type="file" file-input="files" name="file_source" size="40">
         </span>
-        <span class='label label-info' id="upload-file-info"></span>
+        <span id="upload-file-info" class='label label-info'></span>
         <span>
-          <img height="10%" ng-src="{{preview}}">
+          <img ng-src="{{preview}}" height="10%">
         </span>
       </div>
-      <div ng-show="message.length > 0" class="alert alert-danger">
-          <p>{{message}}</p>
+      <div class="alert alert-danger" ng-show="message.length > 0">
+        <p>{{message}}</p>
       </div>
 
-      <!-- Creates ability to add a title for photos-->
+      <!-- Enables adding titles for photos-->
       <div class="form-group">
         <label for="title">Title:</label>
-        <input ng-keypress="checkPress($event, 'title')" ng-model="title" type="text" class="form-control" id="title">
+        <input id="title" class="form-control" type="text" ng-keypress="checkPress($event, 'title')" ng-model="title">
       </div>
 
-      <!-- Creates ability to add a caption for photos-->
+      <!-- Enables adding capitons for photos-->
       <div class="form-group">
         <label for="caption">Caption:</label>
-        <textarea ng-model="caption" type="text" class="form-control" id="caption"></textarea>
+        <textarea id="caption" class="form-control" type="text" ng-model="caption"></textarea>
       </div>
 
-      <!-- Creates ability to make tags for photos -->
+      <!-- Enables adding tags for photos -->
       <div class="uploadTag">
         <div class="form-group">
           <label for="tag">Tags:</label>
           <div style="position: relative">
-            <tag id="uploadTag" class="tag" ng-repeat="tag in appliedTags">{{tag}}<button class="removeUploadTag" ng-click="removeTag($index)"><span class="glyphicon glyphicon-remove"></span></button></tag>
-              <input ng-keypress="checkPress($event, 'tags')" id="tagField" ng-change="search($viewValue)" ng-model="tags" type="text" class="form-control">
-              <ul ng-show="tagsList.length > 0" class="dropdown-menu" style="display: block">
-                <li ng-click="addTag($index)" ng-repeat="tag in tagsList"><a href="">{{tag.name}}</a></li>
-              </ul>
+            <tag id="uploadTag" class="tag" ng-repeat="tag in appliedTags">{{tag}}
+              <button class="removeUploadTag" ng-click="removeTag($index)"><span class="glyphicon glyphicon-remove"></span></button>
+            </tag>
+            <input id="tagField" class="form-control" type="text" ng-keypress="checkPress($event, 'tags')" ng-change="search($viewValue)" ng-model="tags">
+            <ul class="dropdown-menu" ng-show="tagsList.length > 0" style="display: block">
+              <li ng-click="addTag($index)" ng-repeat="tag in tagsList"><a href="">{{tag.name}}</a></li>
+            </ul>
           </div>
         </div>
       </div>
 
-      <!-- Creates ability to share a photo with others-->
+      <!-- Enables photo sharing -->
       <div class="uploadPerson">
         <div class="form-group">
           <label for="person">Share with:</label>
           <div style="position: relative">
-            <tag id="uploadTag" class="person" ng-repeat="person in appliedPeople">{{person.name}}<button class="removeUploadTag" ng-click="removePerson($index)"><span class="glyphicon glyphicon-remove"></span></button></tag>
-              <input ng-keypress="checkPress($event, 'people')" id="peopleField" ng-change="peopleSearch($viewValue)" ng-model="people" type="text" class="form-control">
-              <ul ng-show="peopleList.length > 0" class="dropdown-menu" style="display: block">
-                <li ng-click="addPerson($index)" ng-repeat="person in peopleList"><a ng-bind-html="person.name" href=""></a></li>
-              </ul>
+            <tag id="uploadTag" class="person" ng-repeat="person in appliedPeople">{{person.name}}
+              <button class="removeUploadTag" ng-click="removePerson($index)"><span class="glyphicon glyphicon-remove"></span></button>
+            </tag>
+            <input ng-keypress="checkPress($event, 'people')" id="peopleField" ng-change="peopleSearch($viewValue)" ng-model="people" type="text" class="form-control">
+            <ul ng-show="peopleList.length > 0" class="dropdown-menu" style="display: block">
+              <li ng-click="addPerson($index)" ng-repeat="person in peopleList"><a ng-bind-html="person.name" href=""></a></li>
+            </ul>
           </div>
         </div>
-
       </div>
 
-      <!-- Creates ability to set photo to public or private visibility -->
+      <!-- Enables a photo's visibility to be set to public or private -->
       <div class="form-group">
         <label>
           <input type="radio" ng-model="visibility" value="private">
@@ -78,7 +82,11 @@
   <!-- The modal's footer -->
   <div class="modal-footer">
 
-    <!-- Creates the submit/"Upload" and "Close" buttons -->
-    <button id="uploadButton" type="submit" class="btn btn-info" ng-click="uploadFile()"><span id="uploadSpinner" class="glyphicon glyphicon-refresh spin"></span><span id="uploadText">Upload</span></button>
+    <!-- Creates the "Upload" and "Close" buttons -->
+    <button id="uploadButton" class="btn btn-info" type="submit" ng-click="uploadFile()">
+      <span id="uploadSpinner" class="glyphicon glyphicon-refresh spin"></span>
+      <span id="uploadText">Upload</span>
+    </button>
     <button class="btn btn-warning" ng-click="cancel()">Close</button>
+
   </div>
