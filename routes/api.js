@@ -1121,12 +1121,7 @@ router.post('/upload', isAuth, function(req, res, next){
       }
 
       // Assign the slug (identifier) to the filename of the uploaded file
-      var slug;
-      if(!isEmpty(req.query.title)){
-        slug = req.query.title + '.' + filename.split(".")[1];
-      } else {
-        slug = filename;
-      }
+      var slug = req.query.title + '.' + filename.split(".")[1];
 
       var headers = {
         'Authorization': 'Bearer ' + req.user.accessToken,
