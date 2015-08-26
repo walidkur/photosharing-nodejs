@@ -1363,7 +1363,7 @@ router.get('/searchTags', isAuth, function(req, res, next){
     return res.status(412).end();
   }
 
-  var url = 'https://' + config.server.domain + '/files/oauth/api/tags/feed?format=json&scope=document&pageSize=16&filter=' + req.query.q;
+  var url = 'https://' + config.server.domain + '/files/oauth/api/tags/feed?format=json&scope=document&pageSize=20&filter=' + req.query.q;
 
   var headers = {
     'Authorization' : 'Bearer ' + req.user.accessToken
@@ -1436,7 +1436,7 @@ router.get('/searchPeople', isAuth, function(req, res, next){
 
     res.send(body);
   })
-})
+});
 
 var hasOwnProperty = Object.prototype.hasOwnProperty;
 
