@@ -3,3 +3,4 @@ public/components/*
 config/server.js
 npm-debug.log
 .idea/
+.project
