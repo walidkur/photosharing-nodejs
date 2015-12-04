@@ -1,6 +1,6 @@
 var photoApp = angular.module('photoApp');
 
-photoApp.controller('navbarController', function($location, $scope, $rootScope, $http, $route, $routeParams, $cookies, $modal, $log, $window, apiService){
+photoApp.controller('navbarController', function($location, $scope, $rootScope, $http, $route, $routeParams, $cookies, $modal, $log, $window, apiService) {
 
   $scope.cookie = JSON.parse($cookies.get('user'));
   $rootScope.displayName = $scope.cookie.displayName;
@@ -13,20 +13,20 @@ photoApp.controller('navbarController', function($location, $scope, $rootScope, 
 
   $rootScope.buttons = [".profileButton", ".publicButton", ".privateButton", ".personalButton", ".uploadButton"];
 
-  $scope.peopleSearch = function(){
+  $scope.peopleSearch = function() {
     var people = $scope.searchQuery;
-    if(people == ''){
+    if (people == '') {
       $scope.resultList = [];
     } else {
-      $http.get('/api/searchPeople?q='+people).then(function(response){
+      $http.get('/api/searchPeople?q=' + people).then(function(response) {
         console.log(response);
         $scope.resultList = response.data.persons;
       });
     }
   };
 
-  $scope.select = function(button){
-    angular.forEach($rootScope.buttons, function(btn){
+  $scope.select = function(button) {
+    angular.forEach($rootScope.buttons, function(btn) {
       $(btn).css("animation", "");
       $(btn).css("box-shadow", "");
     });
@@ -40,13 +40,12 @@ photoApp.controller('navbarController', function($location, $scope, $rootScope, 
 
   $scope.animationsEnabled = false;
 
-  $scope.$on('$locationChangeStart', function(event, next, current){
+  $scope.$on('$locationChangeStart', function(event, next, current) {
     $rootScope.loading = true;
 
-    if($rootScope.hueIndex > 2){
+    if ($rootScope.hueIndex > 2) {
       $rootScope.hueIndex = 0;
-    }
-    else{
+    } else {
       $rootScope.hueIndex++;
     }
   });
@@ -55,37 +54,37 @@ photoApp.controller('navbarController', function($location, $scope, $rootScope, 
     apiService.logout(errorCallback);
 
     function errorCallback(data, status) {
-      if(status === 302)  $window.location.href = data;
+      if (status === 302) $window.location.href = data;
     }
   };
 
-  $scope.open = function (size) {
+  $scope.open = function(size) {
 
     var modalInstance = $modal.open({
       templateUrl: '/partials/modal-template',
       controller: 'ModalInstanceController',
       size: size,
       resolve: {
-        items: function () {
+        items: function() {
           return $scope.items;
         }
       }
     });
 
-    modalInstance.result.then(function (selectedItem) {
+    modalInstance.result.then(function(selectedItem) {
       $scope.selected = selectedItem;
-    }, function () {
+    }, function() {
       $log.info('Modal dismissed at: ' + new Date());
     });
   };
 
-  $scope.toggleAnimation = function () {
+  $scope.toggleAnimation = function() {
     $scope.animationsEnabled = !$scope.animationsEnabled;
   };
 
-  $scope.search = function () {
+  $scope.search = function() {
 
-    if($scope.searchQuery){
+    if ($scope.searchQuery) {
 
       $scope.searchTags = $scope.searchQuery.split(" ");
 
@@ -95,22 +94,22 @@ photoApp.controller('navbarController', function($location, $scope, $rootScope, 
 
   };
 
-  $scope.goToProfile = function(id){
+  $scope.goToProfile = function(id) {
     $scope.resultList = [];
     $scope.searchQuery = '';
     $window.location.assign('/#/profile/' + id);
   }
 
   $scope.mediumScreen = true;
-  $(document).ready(function(){
-    if ($(window).width() < 1218 || $(window).width() > 767){
+  $(document).ready(function() {
+    if ($(window).width() < 1218 || $(window).width() > 767) {
       $scope.mediumScreen = false;
     }
-    if ($(window).width() >= 1218 || $(window).width() <= 767){
+    if ($(window).width() >= 1218 || $(window).width() <= 767) {
       $scope.mediumScreen = true;
     }
     $scope.uploadSideA = $(window).width() >= 905;
-    if($(window).width() < 746){
+    if ($(window).width() < 746) {
       $('#searchText').css('width', '100%');
     } else {
       $('#searchText').css('width', '100px');
@@ -118,14 +117,14 @@ photoApp.controller('navbarController', function($location, $scope, $rootScope, 
   });
 
   $(window).resize(function() {
-    if ($(window).width() < 1218 || $(window).width() > 767){
+    if ($(window).width() < 1218 || $(window).width() > 767) {
       $scope.mediumScreen = false;
     }
-    if ($(window).width() >= 1218 || $(window).width() <= 746){
+    if ($(window).width() >= 1218 || $(window).width() <= 746) {
       $scope.mediumScreen = true;
     }
     $scope.uploadSideA = $(window).width() >= 905;
-    if($(window).width() < 746){
+    if ($(window).width() < 746) {
       $('#searchText').css('width', '100%');
     } else {
       $('#searchText').css('width', '100px');
@@ -133,20 +132,20 @@ photoApp.controller('navbarController', function($location, $scope, $rootScope, 
     $scope.$digest();
   });
 
-  var getAvatar = function () {
+  var getAvatar = function() {
 
     $http({
 
       method: 'GET',
       url: '/api/profile?uid=' + $rootScope.uid
 
-    }).success(function(data, status){
+    }).success(function(data, status) {
 
       $rootScope.avatar = data.img;
 
-    }).error(function(data, status){
+    }).error(function(data, status) {
 
-      if(status === 401 || status === 403){
+      if (status === 401 || status === 403) {
         $window.location.assign('/');
       }
 
@@ -170,15 +169,16 @@ photoApp.controller('ModalInstanceController', function($window, $http, $scope, 
   };
   $scope.loading = false;
 
-  $scope.$watch('files', function(newvalue, oldvalue){
-    $scope.previewFile();
+  $scope.$watch('files', function(newvalue, oldvalue) {
+    if (newvalue) {
+      $scope.previewFile();
+    }
   })
 
-  $scope.previewFile = function(){
-    console.log('Previewing')
+  $scope.previewFile = function() {
     $("#upload-file-info").html($scope.files[0].name.replace(/^.*\\/, ""))
     var reader = new FileReader();
-    reader.onload = function(){
+    reader.onload = function() {
       $scope.preview = reader.result;
       $scope.$apply();
     }
@@ -186,44 +186,44 @@ photoApp.controller('ModalInstanceController', function($window, $http, $scope, 
   }
 
 
-  $('html').click(function(e){
-    if($scope.tags.length > 0 && e.target != $('#tagField')[0]){
-      if($scope.appliedTags.indexOf($scope.tags) == -1) {
+  $('html').click(function(e) {
+    if ($scope.tags.length > 0 && e.target != $('#tagField')[0]) {
+      if ($scope.appliedTags.indexOf($scope.tags) == -1) {
         $scope.appliedTags.push($scope.tags);
       }
       clearTimeout($scope.lastSent);
       $scope.tags = '';
       $scope.tagsList = [];
-    } else if($scope.people && e.target != $('#peopleField')){
+    } else if ($scope.people && e.target != $('#peopleField')) {
       $scope.addPerson(0);
     }
   });
 
-  $scope.checkPress = function(event, context){
-    if(context == 'tags' && $scope.tags){
-      if($scope.tags.length > 20) {
+  $scope.checkPress = function(event, context) {
+    if (context == 'tags' && $scope.tags) {
+      if ($scope.tags.length > 20) {
         event.preventDefault();
       }
     }
-    if(context == 'title' && $scope.title){
-      if($scope.title.length > 38) {
+    if (context == 'title' && $scope.title) {
+      if ($scope.title.length > 38) {
         event.preventDefault();
       }
     }
-    if(event.keyCode == 10 || event.keyCode == 13){
-      if(context == 'tags') {
+    if (event.keyCode == 10 || event.keyCode == 13) {
+      if (context == 'tags') {
         if ($scope.appliedTags.indexOf($scope.tags) == -1) {
           $scope.appliedTags.push($scope.tags);
         }
         clearTimeout($scope.lastSent);
         $scope.tags = '';
         $scope.tagsList = [];
-      } else if(context == 'people'){
+      } else if (context == 'people') {
         $scope.addPerson(0);
       }
     }
-    if(event.keyCode == 32){
-      if(context == 'tags'){
+    if (event.keyCode == 32) {
+      if (context == 'tags') {
         if ($scope.appliedTags.indexOf($scope.tags) == -1) {
           $scope.appliedTags.push($scope.tags);
         }
@@ -234,48 +234,50 @@ photoApp.controller('ModalInstanceController', function($window, $http, $scope, 
     }
   };
 
-  $scope.peopleSearch = function(){
+  $scope.peopleSearch = function() {
     var people = $scope.people;
-    if(people == ''){
+    if (people == '') {
       $scope.peopleList = [];
     } else {
-      $http.get('/api/searchPeople?q='+people).then(function(response){
+      $http.get('/api/searchPeople?q=' + people).then(function(response) {
         $scope.peopleList = response.data.persons;
       })
     }
   };
 
   $scope.initiateSearch = function(param) {
-    $http.get("/api/searchTags?q="+param).then(function(response){
+    $http.get("/api/searchTags?q=" + param).then(function(response) {
       $scope.tagsList = response.data.items;
       console.log(response);
       console.log($scope.tagsList);
     });
   };
 
-  $scope.search = function(){
-    if($scope.tags == ''){
+  $scope.search = function() {
+    if ($scope.tags == '') {
       clearTimeout($scope.lastSent);
       $scope.tagsList = [];
       $scope.$digest();
     }
     clearTimeout($scope.lastSent);
-    $scope.lastSent = setTimeout(function(){$scope.initiateSearch($scope.tags)}, 100);
+    $scope.lastSent = setTimeout(function() {
+      $scope.initiateSearch($scope.tags)
+    }, 100);
   };
 
-  $scope.ok = function () {
+  $scope.ok = function() {
     $modalInstance.close($scope.selected.item);
   };
 
-  $scope.cancel = function () {
+  $scope.cancel = function() {
     $modalInstance.dismiss('cancel');
   };
 
-  $scope.removeTag = function(index){
+  $scope.removeTag = function(index) {
     $scope.appliedTags.splice(index, 1);
   };
 
-  $scope.removePerson = function(index){
+  $scope.removePerson = function(index) {
     $scope.appliedPeople.splice(index, 1);
   };
 
@@ -285,9 +287,9 @@ photoApp.controller('ModalInstanceController', function($window, $http, $scope, 
     $scope.tagsList = [];
   };
 
-  $scope.addPerson = function(index){
+  $scope.addPerson = function(index) {
     var person = $scope.peopleList[index];
-    if($scope.appliedPeople.indexOf(person) == -1){
+    if ($scope.appliedPeople.indexOf(person) == -1) {
       person.name = person.name.replace(/<B>/, "").replace(/<\/B>/, "");
       $scope.appliedPeople.push(person);
     }
@@ -295,7 +297,7 @@ photoApp.controller('ModalInstanceController', function($window, $http, $scope, 
     $scope.peopleList = [];
   };
 
-  $scope.uploadFile = function(){
+  $scope.uploadFile = function() {
     $scope.message = '';
     $('#uploadButton').attr('disabled', '');
     $('#uploadText').css('display', 'none');
@@ -305,32 +307,35 @@ photoApp.controller('ModalInstanceController', function($window, $http, $scope, 
 
     var url = '/api/upload?visibility=' + $scope.visibility;
 
-    if($scope.shares != ''){
+    if ($scope.shares != '') {
       var shares = [];
-      angular.forEach($scope.appliedPeople, function(person){
+      angular.forEach($scope.appliedPeople, function(person) {
         shares.push(person.id);
       });
       url = url + '&share=' + shares.join();
     }
 
-    if($scope.appliedTags){
+    if ($scope.appliedTags) {
       url = url + '&q=' + $scope.appliedTags.join();
     }
 
     url += '&title=' + $scope.title;
 
-    if($scope.caption){
+    if ($scope.caption) {
       url += '&caption=' + $scope.caption;
     }
 
     $http.post(url, fd, {
-      headers: { 'Content-Type' : undefined, 'X-Content-Length' : $scope.files[0].size},
+      headers: {
+        'Content-Type': undefined,
+        'X-Content-Length': $scope.files[0].size
+      },
       transformRequest: angular.identity
-    }).success(function(data, status){
+    }).success(function(data, status) {
       $scope.ok();
       $window.location.assign('/#/photo/' + data.lid + '/' + data.pid);
-    }).error(function(data, status){
-      if(status === 409){
+    }).error(function(data, status) {
+      if (status === 409) {
         $scope.message = 'You already have a photo with this name; please select another name.';
         $('#uploadButton').removeAttr('disabled');
         $('#uploadText').css('display', 'inline');
